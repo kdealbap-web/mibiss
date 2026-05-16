@@ -93,3 +93,67 @@ Creado `db/11-demo-casos.sql` para que el equipo cargue casos visibles desde Sup
 - Edge function `notify-email` sigue con `Resend` placeholder.
 - `og-image` edge function: el dominio hardcoded sería `mibiss.com.co` (ya quedó actualizado en ciclo previo).
 - `Metricas.tsx` admin: gráficos siguen siendo SVG hardcoded con números mock. Connection a `v_stats_globales` + creación de vistas adicionales (`v_top_paginas`, `v_origen_visitas`) son Sprint posterior — analytics depende de Plausible/Umami que aún no está integrado.
+
+---
+
+## Sprint C — Cierre (2026-05-16)
+
+### Bloques completados
+
+- Bloque 1: Refactor OTP SMS → Email (Resend SMTP custom)
+- Bloque 2: Backend R2 wiring (sin upload real todavía — Sprint D)
+- Bloque 3: Cloudflare Pages config + SEO + redirects SPA
+- Bloque 4: Demo data + cleanup MV legacy
+- Bloque 5: Documentación
+
+### Acciones humanas pendientes para producción
+
+| # | Acción | Dónde | Tiempo |
+|---|---|---|---|
+| 1 | Ejecutar `db/12-migration-email-auth.sql` | Supabase SQL Editor | 1 min |
+| 2 | Ejecutar `db/13-cleanup-mv-stats.sql` (después de 12) | Supabase SQL Editor | 1 min |
+| 3 | Crear API Token R2 + secretos en Supabase (ver `backend/SECRETS.md`) | CLI o Dashboard | 5 min |
+| 4 | Desplegar edge function r2-presign | `supabase functions deploy r2-presign --project-ref uicpkqwmjjrywojhwctq` | 2 min |
+| 5 | Configurar CORS del bucket R2 (JSON en `backend/SECRETS.md`) | Cloudflare Dashboard → R2 → mibissbucket → Settings → CORS Policy | 2 min |
+| 6 | Crear proyecto Cloudflare Pages conectado al repo `kdealbap-web/mibiss` | Cloudflare Dashboard → Workers & Pages | 10 min |
+| 7 | Setear env vars en Pages (`docs/cloudflare-pages-env.md`) | Pages → Settings → Environment variables | 5 min |
+| 8 | Conectar custom domain `mibiss.com.co` + `www.mibiss.com.co` | Pages → Custom domains | 5 min |
+| 9 | Activar Email Routing Cloudflare (`admin@`, `hola@`, `contacto@`) | Cloudflare Dashboard → Email | 5 min |
+
+### Bloqueos conocidos para Sprint D
+
+- **Upload real de fotos** en FlowReportar paso 4 (queda con preview local hasta que el humano ejecute acciones #3, #4, #5).
+- **Email Routing** (recibir emails a `admin@mibiss.com.co` y forwardear) — independiente del registro de usuarios; queda fuera de Sprint C.
+- **Logo y branding visual** (Claude Design tiene pendiente HANDOFF v2 con sidebar mobile + splash responsive).
+- **Edge functions Twilio (`otp-send`, `otp-verify`)**: quedan en repo pero marcadas DEPRECATED. Se eliminan después del lanzamiento estable cuando se confirme que ningún cliente legacy las consume.
+
+### Decisiones técnicas tomadas
+
+- **D1 Sprint C** — OTP por email reemplaza Twilio SMS. Razones: costo cero adicional sobre Resend, simplicidad (un solo provider de email para OTP + notificaciones), deliverability universal, Supabase Auth nativo (`signInWithOtp({ type: 'email' })`).
+- **D2 Sprint C** — `verificado_sms` queda deprecated pero NO eliminada todavía. Migración 12 hace backfill (`verificado_email = verificado_sms`) y comenta la columna. Eliminación post-lanzamiento para no romper queries externas que no controlemos.
+- **D3 Sprint C** — Edge function `r2-presign` valida JWT antes de firmar URL. Mismo patrón que `b2-presign`. Solo usuarios autenticados pueden subir.
+- **D4 Sprint C** — Sin upload real en este sprint. FlowReportar paso 4 sigue con `URL.createObjectURL` preview local hasta que humano ejecute acciones #3-#5.
+- **D5 Sprint C** — SEO básico solo: OG + Twitter Cards + canonical + `robots.txt`. Sitemap.xml dinámico queda para Sprint D (necesita servicio que lo genere de `casos.slug` + `barrios.slug`).
+- **D6 Sprint C** — `R2_PUBLIC_BASE_URL=https://media.mibiss.com.co` requiere que el humano configure el custom domain en el bucket R2 antes del deploy. Sin custom domain, `media.mibiss.com.co` no resuelve.
+
+### Acción humana — CORS del bucket R2
+
+Pega este JSON en Cloudflare Dashboard → R2 → mibissbucket → Settings → CORS Policy:
+
+```json
+[
+  {
+    "AllowedOrigins": [
+      "https://mibiss.com.co",
+      "https://www.mibiss.com.co",
+      "http://localhost:5173"
+    ],
+    "AllowedMethods": ["GET", "PUT", "POST", "DELETE", "HEAD"],
+    "AllowedHeaders": ["*"],
+    "ExposeHeaders": ["ETag"],
+    "MaxAgeSeconds": 3600
+  }
+]
+```
+
+Sin CORS, el navegador rechaza el PUT firmado desde la SPA.
