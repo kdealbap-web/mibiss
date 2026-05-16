@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mibiss.com.co/sitemap.xml
