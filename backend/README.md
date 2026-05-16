@@ -14,10 +14,10 @@ Lo que sí va en este folder:
 
 | Función | Ruta | Auth | Qué hace |
 |---------|------|:----:|----------|
-| `otp-send` | `POST /otp-send` | anon | Crea Twilio Verify, registra `verificaciones_otp`, aplica rate limit. |
-| `otp-verify` | `POST /otp-verify` | anon | Verifica el código, marca al ciudadano como `verificado_sms=true` y crea `auth.users`. |
-| `b2-presign` | `POST /b2-presign` | authn | Devuelve URL firmada de Backblaze B2 (S3 compat) para subida directa. |
-| `og-image` | `GET /og-image?caso=...` | anon | Genera OG image (1200×630) si el caso no tiene foto. Cachea en bucket `og-generated`. |
+| `otp-send` | `POST /otp-send` | anon | **DEPRECATED** (Twilio). Reemplazado por Supabase Auth `signInWithOtp` con SMTP custom (Resend) directo desde el frontend. |
+| `otp-verify` | `POST /otp-verify` | anon | **DEPRECATED** (Twilio). Reemplazado por `verifyOtp({ type: 'email' })`. |
+| `r2-presign` | `POST /r2-presign` | authn | Devuelve URL firmada de Cloudflare R2 (S3 compat) para subida directa. |
+| `og-image` | `GET /og-image?caso=...` | anon | Genera OG image (1200×630) si el caso no tiene foto. Cachea en R2. |
 | `notify-email` | interno | service_role | Envía email vía Resend (bienvenida, solicitud aprobada/rechazada, cambio estado). |
 | `refresh-stats` | cron | service_role | `REFRESH MATERIALIZED VIEW` cada 5 min. |
 
@@ -28,23 +28,16 @@ SUPABASE_URL=
 SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 
-TWILIO_ACCOUNT_SID=
-TWILIO_AUTH_TOKEN=
-TWILIO_VERIFY_SERVICE_SID=
-
-B2_KEY_ID=
-B2_APPLICATION_KEY=
-B2_BUCKET=labitacoradesoledad
-B2_S3_ENDPOINT=https://s3.us-east-005.backblazeb2.com
-B2_REGION=us-east-005
-B2_PUBLIC_BASE_URL=https://f005.backblazeb2.com/file/labitacoradesoledad
-# OJO: el bucket B2 se mantiene con su nombre legacy `labitacoradesoledad`
-# porque ya está creado y enlazado a la Application Key del proyecto.
-# El código y las URLs públicas internas (PUBLIC_BASE_URL) ya migraron a BISS.
+# Cloudflare R2 (S3 compat). Endpoint con accountId, región fija "auto".
+R2_ACCESS_KEY_ID=
+R2_SECRET_ACCESS_KEY=
+R2_BUCKET=mibissbucket
+R2_ENDPOINT=https://<accountid>.r2.cloudflarestorage.com
+R2_PUBLIC_BASE_URL=https://media.mibiss.com.co
 
 RESEND_API_KEY=
 
-PUBLIC_BASE_URL=https://biss.co
+PUBLIC_BASE_URL=https://mibiss.com.co
 ```
 
 ## Despliegue local de edge functions
@@ -52,10 +45,8 @@ PUBLIC_BASE_URL=https://biss.co
 ```bash
 # Instalar Supabase CLI: https://supabase.com/docs/guides/cli
 supabase login
-supabase link --project-ref [REF]
-supabase functions deploy otp-send
-supabase functions deploy otp-verify
-supabase functions deploy b2-presign
+supabase link --project-ref uicpkqwmjjrywojhwctq
+supabase functions deploy r2-presign
 supabase functions deploy og-image
 supabase functions deploy notify-email
 supabase functions deploy refresh-stats
