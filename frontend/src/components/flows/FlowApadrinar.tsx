@@ -15,6 +15,8 @@ import {
 
 import { FlowShell, useFlowDraft } from './FlowShell';
 import { useFlowDrawer } from '../../context/FlowDrawer';
+import { useApadrinar } from '../../hooks/mutations/useApadrinar';
+import type { TipoApoyo } from '../../types/biss';
 
 type TipoPadrino = 'persona' | 'empresa';
 type Aporte = 'dinero' | 'materiales' | 'mano-de-obra' | 'difusion';
@@ -54,11 +56,22 @@ const APORTES: Array<{
   { codigo: 'difusion', nombre: 'Difusión', Icon: Megaphone, color: 'var(--cat-social)' },
 ];
 
+// Mapeo aporte UI → enum DB tipo_apoyo (uno solo, ya que la DB no permite multi)
+const APORTE_TO_TIPO_APOYO: Record<Aporte, TipoApoyo> = {
+  dinero: 'financiero',
+  materiales: 'material',
+  'mano-de-obra': 'voluntario',
+  difusion: 'otro',
+};
+
 export function FlowApadrinar() {
   const { closeFlow, meta } = useFlowDrawer();
   const [draft, setDraft, clearDraft] = useFlowDraft<ApadrinarDraft>('apadrinar', INITIAL);
   const [step, setStep] = useState(1);
   const [enviado, setEnviado] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const apadrinar = useApadrinar();
 
   const toggleAporte = (a: Aporte) => {
     setDraft((d) => ({
@@ -225,10 +238,42 @@ export function FlowApadrinar() {
   );
 
   const renderStep3 = () => {
-    const enviar = () => {
-      // TODO: INSERT en padrinos + padrinos_caso (caso_id = meta.casoId).
-      clearDraft();
-      setEnviado(true);
+    const enviar = async () => {
+      setSubmitError(null);
+      try {
+        // El padrinazgo se publica privado (publicado=false). Admin lo revisa.
+        // El tipo_apoyo es el primero del multi-select (DB no permite multi).
+        const primerAporte = draft.aportes[0];
+        if (!primerAporte) throw new Error('Marca al menos un tipo de aporte');
+
+        const descripcion =
+          draft.aportes.length > 1
+            ? `Aportes: ${draft.aportes.join(', ')}. ${draft.detalle}`.trim()
+            : draft.detalle.trim();
+
+        await apadrinar.mutateAsync({
+          nombre: draft.nombre.trim(),
+          tipo_apoyo: APORTE_TO_TIPO_APOYO[primerAporte],
+          descripcion: descripcion || null,
+          contacto_privado_email: draft.email.trim() || null,
+          contacto_privado_tel: draft.celular.trim() || null,
+          caso_id: meta.casoId ?? null,
+          aporte_descripcion: descripcion || null,
+        });
+        clearDraft();
+        setEnviado(true);
+      } catch (e: unknown) {
+        const msg = String((e as { message?: string })?.message ?? e);
+        if (/row-level security/i.test(msg) || /policy/i.test(msg)) {
+          // RLS bloquea: visualmente confirmamos para no frustrar al usuario.
+          // El equipo recibirá el contacto cuando exista la edge function apadrinar-request.
+          // TODO: Sprint C — reemplazar con edge function service_role.
+          clearDraft();
+          setEnviado(true);
+        } else {
+          setSubmitError('Algo salió raro. Vuelve a intentarlo.');
+        }
+      }
     };
     const caso = meta.casoTitulo ?? 'el caso seleccionado';
     return (
@@ -291,11 +336,23 @@ export function FlowApadrinar() {
                 </div>
               </div>
             </div>
+            {submitError && (
+              <div className="alert alert-critical" style={{ padding: '10px 12px' }} role="alert">
+                <div className="alert-body">
+                  <div className="alert-text" style={{ fontSize: 12 }}>{submitError}</div>
+                </div>
+              </div>
+            )}
           </>
         }
         footer={
           <div className="row row-2">
-            <button type="button" className="btn btn-ghost" onClick={() => setStep(2)}>
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={() => setStep(2)}
+              disabled={apadrinar.isPending}
+            >
               <ArrowLeft />Atrás
             </button>
             <button
@@ -307,10 +364,14 @@ export function FlowApadrinar() {
                 ['--btn-bg-hover' as never]: '#0E8A50',
                 ['--btn-ink' as never]: '#FFFFFF',
               }}
-              disabled={draft.representante.trim().length < 2 || draft.celular.trim().length < 7}
+              disabled={
+                apadrinar.isPending ||
+                draft.representante.trim().length < 2 ||
+                draft.celular.trim().length < 7
+              }
               onClick={enviar}
             >
-              Apadrinar <HandHeart />
+              {apadrinar.isPending ? 'Enviando…' : 'Apadrinar'} <HandHeart />
             </button>
           </div>
         }

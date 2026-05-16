@@ -18,6 +18,7 @@ import {
 import { AdminLayout } from '../../components/layout/AdminLayout';
 import { AdminTopbar } from '../../components/layout/AdminTopbar';
 import { useSolicitudes } from '../../hooks/useSolicitudes';
+import { useAprobarSolicitud, useRechazarSolicitud } from '../../hooks/mutations/useModerarSolicitud';
 import { formatRelative } from '../../lib/format';
 import type { SolicitudPendiente } from '../../types/biss';
 
@@ -107,6 +108,18 @@ export function Solicitudes() {
 
 function SolicitudRow({ sol }: { sol: SolicitudPendiente }) {
   const Icon = CAT_ICON[sol.categoria_codigo] ?? MoreHorizontal;
+  const aprobar = useAprobarSolicitud();
+  const rechazar = useRechazarSolicitud();
+
+  const handleAprobar = () => aprobar.mutate(sol.id);
+  const handleRechazar = () => {
+    const motivo = window.prompt('Motivo del rechazo:');
+    if (!motivo || motivo.trim().length < 3) return;
+    rechazar.mutate({ id: sol.id, motivo: motivo.trim() });
+  };
+
+  const busy = aprobar.isPending || rechazar.isPending;
+
   return (
     <tr>
       <td>
@@ -133,13 +146,13 @@ function SolicitudRow({ sol }: { sol: SolicitudPendiente }) {
         <span className="mono" style={{ fontSize: 12 }}>{formatRelative(sol.creado_en)}</span>
       </td>
       <td className="action-cell">
-        <button type="button" className="approve" aria-label="Aprobar">
+        <button type="button" className="approve" aria-label="Aprobar" onClick={handleAprobar} disabled={busy}>
           <Check style={{ width: 14, height: 14 }} />
         </button>
-        <button type="button" aria-label="Editar">
+        <button type="button" aria-label="Editar" disabled={busy}>
           <Edit style={{ width: 14, height: 14 }} />
         </button>
-        <button type="button" className="danger" aria-label="Rechazar">
+        <button type="button" className="danger" aria-label="Rechazar" onClick={handleRechazar} disabled={busy}>
           <X style={{ width: 14, height: 14 }} />
         </button>
       </td>

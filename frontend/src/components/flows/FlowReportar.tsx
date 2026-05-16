@@ -22,6 +22,11 @@ import {
 
 import { FlowShell, useFlowDraft } from './FlowShell';
 import { useFlowDrawer } from '../../context/FlowDrawer';
+import { useReportarCaso } from '../../hooks/mutations/useReportarCaso';
+import { useCategorias } from '../../hooks/useCategorias';
+import { useBarrios } from '../../hooks/useBarrios';
+import { useMiPerfil } from '../../hooks/useMiCuenta';
+import { formatFolio } from '../../lib/format';
 
 type Categoria =
   | 'agua' | 'luz' | 'infraestructura' | 'salud'
@@ -57,19 +62,19 @@ const CATS: Array<{ codigo: Categoria; nombre: string; color: string; Icon: type
   { codigo: 'otros', nombre: 'Otros', color: 'var(--cat-otros)', Icon: MoreHorizontal },
 ];
 
-function generarFolioLocal(): string {
-  const año = new Date().getFullYear();
-  const n = String(Math.floor(1000 + Math.random() * 9000));
-  return `CS-${año}-${n}`;
-}
-
 export function FlowReportar() {
   const { closeFlow } = useFlowDrawer();
   const [draft, setDraft, clearDraft] = useFlowDraft<ReportarDraft>('reportar', INITIAL);
   const [step, setStep] = useState(1);
   const [folio, setFolio] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   // Files locales — fuera del draft serializado (no se pueden serializar a JSON).
   const [fotos, setFotos] = useState<File[]>([]);
+
+  const { data: categorias = [] } = useCategorias();
+  const { data: barrios = [] } = useBarrios();
+  const { data: miPerfil } = useMiPerfil();
+  const reportar = useReportarCaso();
 
   const onClose = () => {
     closeFlow();
@@ -356,11 +361,49 @@ export function FlowReportar() {
   // Step 5 — revisa y envía
   const renderStep5 = () => {
     const cat = CATS.find((c) => c.codigo === draft.categoria);
-    const enviar = () => {
-      // TODO: cuando R2 + auth listos: subir fotos a R2, hacer INSERT en solicitudes_caso.
-      // Por ahora generamos folio temporal local y mostramos confirmación.
-      setFolio(generarFolioLocal());
-      clearDraft();
+
+    const enviar = async () => {
+      setSubmitError(null);
+      try {
+        if (!miPerfil) {
+          throw new Error('Necesitas iniciar sesión y verificar tu celular antes de reportar.');
+        }
+        if (!draft.categoria) throw new Error('Falta categoría');
+
+        const categoria = categorias.find((c) => c.codigo === draft.categoria);
+        if (!categoria) throw new Error('Categoría no encontrada en el catálogo');
+
+        // Resolver barrio: por nombre (case-insensitive). Fallback al barrio del ciudadano.
+        const nombreLower = draft.ubicacionLabel.trim().toLowerCase();
+        let barrioId = miPerfil.barrio_id;
+        if (nombreLower) {
+          const found = barrios.find((b) => b.nombre.toLowerCase() === nombreLower);
+          if (found) barrioId = found.id;
+        }
+
+        const created = await reportar.mutateAsync({
+          ciudadano_id: miPerfil.id,
+          barrio_id: barrioId,
+          categoria_id: categoria.id,
+          titulo: draft.titulo.trim(),
+          descripcion: draft.descripcion.trim(),
+        });
+
+        // El "folio" mostrado es el id corto + año. Slug definitivo se genera cuando se aprueba.
+        const año = new Date(created.creado_en).getFullYear();
+        const shortId = created.id.slice(0, 8).toUpperCase();
+        setFolio(`SOL-${año}-${shortId}`);
+        clearDraft();
+      } catch (e: unknown) {
+        const msg = String((e as { message?: string })?.message ?? e);
+        if (/row-level security/i.test(msg) || /verificado_sms/i.test(msg)) {
+          setSubmitError('Necesitas verificar tu celular antes de continuar.');
+        } else if (/iniciar sesión/i.test(msg)) {
+          setSubmitError(msg);
+        } else {
+          setSubmitError('Algo salió raro. Vuelve a intentarlo.');
+        }
+      }
     };
     return (
       <FlowShell
@@ -424,11 +467,29 @@ export function FlowReportar() {
                 </div>
               </div>
             </div>
+            {submitError && (
+              <div
+                className="alert alert-critical"
+                style={{ padding: '10px 12px' }}
+                role="alert"
+              >
+                <div className="alert-body">
+                  <div className="alert-text" style={{ fontSize: 12 }}>
+                    {submitError}
+                  </div>
+                </div>
+              </div>
+            )}
           </>
         }
         footer={
           <div className="row row-2">
-            <button type="button" className="btn btn-ghost" onClick={() => setStep(4)}>
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={() => setStep(4)}
+              disabled={reportar.isPending}
+            >
               <ArrowLeft />Atrás
             </button>
             <button
@@ -441,8 +502,9 @@ export function FlowReportar() {
                 ['--btn-ink' as never]: '#FFFFFF',
               }}
               onClick={enviar}
+              disabled={reportar.isPending}
             >
-              Enviar caso <Send />
+              {reportar.isPending ? 'Enviando…' : 'Enviar caso'} <Send />
             </button>
           </div>
         }
@@ -475,9 +537,9 @@ export function FlowReportar() {
             <div className="confirm-text">
               Te avisamos por SMS cuando lo revisemos. Suele tomar de 24 a 72 horas hábiles.
             </div>
-            <div className="confirm-folio">{folio}</div>
+            <div className="confirm-folio">{formatFolio(folio)}</div>
             <div style={{ fontSize: 11.5, color: 'var(--ink-soft)', marginTop: 4 }}>
-              Guarda este folio.
+              Guarda este folio mientras tu caso se aprueba.
             </div>
           </div>
         </div>

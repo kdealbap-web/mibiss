@@ -45,19 +45,22 @@ export function FlowIngresar() {
   }, [step]);
 
   const sendOtp = () => {
-    // TODO: invocar edge function otp-send con el celular.
+    // TODO: Sprint C — reemplazar mock OTP con edge function otp-send/otp-verify
+    // cuando Twilio esté configurado. Por ahora: cualquier código de 6 dígitos válido en dev.
     setStep(2);
     setOtpDigits(['', '', '', '', '', '']);
     setTimeout(() => inputsRef.current[0]?.focus(), 100);
   };
 
   const verifyOtp = () => {
-    // TODO: invocar edge function otp-verify; si user nuevo → step 3, si ya existe → cerrar.
+    // TODO: Sprint C — verificar contra Twilio + crear/buscar ciudadano vía edge function
+    // service_role; setSession en supabase.auth. Por ahora simula usuario nuevo y va al paso 3.
     setStep(3);
   };
 
   const finishLogin = () => {
-    // TODO: persistir sesión real (cookie + supabase.auth.setSession).
+    // TODO: Sprint C — INSERT en ciudadanos + auth.users vía edge function otp-verify,
+    // luego supabase.auth.setSession. Por ahora limpia draft y muestra confirmación.
     clearDraft();
     setSesionLista(true);
   };

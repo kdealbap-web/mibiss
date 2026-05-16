@@ -64,6 +64,9 @@ Cada mutation espera `success` del server antes de invalidar. Más simple. (R6 d
 ### D6. Error capture en flows
 Capturo error de Supabase. Si el mensaje contiene `row-level security`, muestro copy cercano: "Necesitas verificar tu celular antes de continuar." Si es genérico: "Algo salió raro. Vuelve a intentarlo."
 
+### D7. CiudadanosService.crearVerificado queda en standby
+La RLS de `ciudadanos.insert` requiere `auth_user_id = auth.uid()`, que solo se obtiene tras `signInWithOtp` real (Twilio). En dev sin Twilio NO podemos crear ciudadanos desde el frontend (lo bloquea RLS). FlowIngresar paso 3 queda con `TODO: Sprint C — reemplazar mock OTP` y no llama a Supabase. Cuando Twilio esté listo, el edge function `otp-verify` debería crear `auth.users` + `ciudadanos` juntos con service_role.
+
 ---
 
 ## Por revisar en Sprint C (no toco ahora)

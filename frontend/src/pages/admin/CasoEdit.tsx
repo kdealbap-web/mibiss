@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
   Eye,
@@ -14,6 +15,12 @@ import { useCaso } from '../../hooks/useCaso';
 import { useActualizaciones } from '../../hooks/useActualizaciones';
 import { useBarrios } from '../../hooks/useBarrios';
 import { useCategorias } from '../../hooks/useCategorias';
+import {
+  useCambiarEstadoCaso,
+  useEditarCaso,
+  useAgregarActualizacion,
+} from '../../hooks/mutations/useCasoMutations';
+import { useSession } from '../../hooks/useMiCuenta';
 import { formatFolio } from '../../lib/format';
 import type { EstadoCaso } from '../../types/biss';
 
@@ -46,8 +53,94 @@ export function CasoEdit() {
   const { data: actualizaciones = [] } = useActualizaciones(caso?.id ?? null);
   const { data: categorias = [] } = useCategorias();
   const { data: barrios = [] } = useBarrios();
+  const session = useSession();
+
+  const editar = useEditarCaso(slug);
+  const cambiarEstado = useCambiarEstadoCaso(slug);
+  const agregarActualizacion = useAgregarActualizacion(slug);
 
   const folioVisible = caso ? formatFolio(caso.slug) : formatFolio(slug);
+
+  const [titulo, setTitulo] = useState('');
+  const [descripcion, setDescripcion] = useState('');
+  const [categoriaCodigo, setCategoriaCodigo] = useState('');
+  const [estadoNuevo, setEstadoNuevo] = useState<EstadoCaso>('pendiente');
+  const [lat, setLat] = useState('');
+  const [lng, setLng] = useState('');
+  const [feedback, setFeedback] = useState<{ kind: 'ok' | 'err'; msg: string } | null>(null);
+
+  useEffect(() => {
+    if (!caso) return;
+    setTitulo(caso.titulo);
+    setDescripcion(caso.descripcion);
+    setCategoriaCodigo(caso.categoria_codigo);
+    setEstadoNuevo(caso.estado);
+    setLat(caso.lat?.toString() ?? '');
+    setLng(caso.lng?.toString() ?? '');
+  }, [caso]);
+
+  const guardar = async () => {
+    if (!caso) return;
+    setFeedback(null);
+    try {
+      const catId = categorias.find((c) => c.codigo === categoriaCodigo)?.id;
+      const latN = lat.trim() ? Number(lat) : null;
+      const lngN = lng.trim() ? Number(lng) : null;
+      await editar.mutateAsync({
+        casoId: caso.id,
+        patch: {
+          titulo: titulo.trim(),
+          descripcion: descripcion.trim(),
+          ...(catId ? { categoria_id: catId } : {}),
+          lat: Number.isFinite(latN as number) ? latN : null,
+          lng: Number.isFinite(lngN as number) ? lngN : null,
+        },
+      });
+
+      if (estadoNuevo !== caso.estado) {
+        await cambiarEstado.mutateAsync({
+          casoId: caso.id,
+          nuevo: estadoNuevo,
+        });
+      }
+
+      setFeedback({ kind: 'ok', msg: 'Cambios guardados.' });
+    } catch (e: unknown) {
+      const msg = String((e as { message?: string })?.message ?? e);
+      setFeedback({
+        kind: 'err',
+        msg: /row-level security|permission/i.test(msg)
+          ? 'No tienes permisos para editar este caso.'
+          : 'Algo salió raro al guardar. Vuelve a intentarlo.',
+      });
+    }
+  };
+
+  const agregarNota = async () => {
+    if (!caso || !session?.user) return;
+    const texto = window.prompt('Texto de la nota (10–500 caracteres):');
+    if (!texto || texto.trim().length < 10) return;
+    setFeedback(null);
+    try {
+      await agregarActualizacion.mutateAsync({
+        caso_id: caso.id,
+        tipo: 'nota',
+        texto: texto.trim(),
+        autor_cms_id: session.user.id,
+      });
+      setFeedback({ kind: 'ok', msg: 'Nota agregada.' });
+    } catch (e: unknown) {
+      const msg = String((e as { message?: string })?.message ?? e);
+      setFeedback({
+        kind: 'err',
+        msg: /row-level security|permission/i.test(msg)
+          ? 'No tienes permisos para anotar este caso.'
+          : 'No pudimos agregar la nota.',
+      });
+    }
+  };
+
+  const busy = editar.isPending || cambiarEstado.isPending;
 
   return (
     <AdminLayout>
@@ -63,11 +156,11 @@ export function CasoEdit() {
         actions={
           <>
             <span className="badge badge-folio">{folioVisible}</span>
-            <button type="button" className="btn btn-secondary btn-sm">
+            <Link to={`/caso/${slug}`} className="btn btn-secondary btn-sm">
               <Eye />Vista previa
-            </button>
-            <button type="button" className="btn btn-primary btn-sm">
-              <Save />Guardar cambios
+            </Link>
+            <button type="button" className="btn btn-primary btn-sm" onClick={guardar} disabled={busy || !caso}>
+              <Save />{busy ? 'Guardando…' : 'Guardar cambios'}
             </button>
           </>
         }
@@ -83,6 +176,18 @@ export function CasoEdit() {
           </div>
         )}
 
+        {feedback && (
+          <div
+            className={feedback.kind === 'ok' ? 'alert alert-info' : 'alert alert-critical'}
+            style={{ padding: '10px 12px' }}
+            role="alert"
+          >
+            <div className="alert-body">
+              <div className="alert-text" style={{ fontSize: 12 }}>{feedback.msg}</div>
+            </div>
+          </div>
+        )}
+
         {caso && (
           <div className="editor-grid">
             <div>
@@ -92,12 +197,23 @@ export function CasoEdit() {
                 <div className="stack stack-4">
                   <div className="field">
                     <label className="field-label" htmlFor="caso-titulo">Título</label>
-                    <input id="caso-titulo" className="field-input" type="text" defaultValue={caso.titulo} />
+                    <input
+                      id="caso-titulo"
+                      className="field-input"
+                      type="text"
+                      value={titulo}
+                      onChange={(e) => setTitulo(e.target.value)}
+                    />
                   </div>
                   <div className="row row-3" style={{ gap: 14 }}>
                     <div className="field grow">
                       <label className="field-label" htmlFor="caso-cat">Categoría</label>
-                      <select id="caso-cat" className="field-select" defaultValue={caso.categoria_codigo}>
+                      <select
+                        id="caso-cat"
+                        className="field-select"
+                        value={categoriaCodigo}
+                        onChange={(e) => setCategoriaCodigo(e.target.value)}
+                      >
                         {categorias.map((c) => (
                           <option key={c.id} value={c.codigo}>{c.nombre}</option>
                         ))}
@@ -105,7 +221,12 @@ export function CasoEdit() {
                     </div>
                     <div className="field grow">
                       <label className="field-label" htmlFor="caso-estado">Estado</label>
-                      <select id="caso-estado" className="field-select" defaultValue={caso.estado}>
+                      <select
+                        id="caso-estado"
+                        className="field-select"
+                        value={estadoNuevo}
+                        onChange={(e) => setEstadoNuevo(e.target.value as EstadoCaso)}
+                      >
                         <option value="pendiente">Pendiente</option>
                         <option value="critico">Crítico</option>
                         <option value="progreso">En gestión</option>
@@ -120,7 +241,8 @@ export function CasoEdit() {
                       id="caso-desc"
                       className="field-textarea"
                       style={{ minHeight: 140 }}
-                      defaultValue={caso.descripcion}
+                      value={descripcion}
+                      onChange={(e) => setDescripcion(e.target.value)}
                     />
                   </div>
                 </div>
@@ -142,8 +264,13 @@ export function CasoEdit() {
                     <h2>Línea de tiempo</h2>
                     <div className="card-sub">Cada cambio se notifica al ciudadano por SMS.</div>
                   </div>
-                  <button type="button" className="btn btn-primary btn-sm">
-                    <Plus />Agregar evento
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm"
+                    onClick={agregarNota}
+                    disabled={agregarActualizacion.isPending || !session?.user}
+                  >
+                    <Plus />{agregarActualizacion.isPending ? 'Agregando…' : 'Agregar nota'}
                   </button>
                 </div>
 
@@ -205,20 +332,23 @@ export function CasoEdit() {
                 <h2>Ubicación</h2>
                 <div className="field" style={{ marginBottom: 12 }}>
                   <label className="field-label">Barrio</label>
-                  <select className="field-select" defaultValue={caso.barrio_id}>
+                  <select className="field-select" defaultValue={caso.barrio_id} disabled>
                     {barrios.map((b) => (
                       <option key={b.id} value={b.id}>{b.nombre}</option>
                     ))}
                   </select>
+                  <span className="field-helper">
+                    Cambiar de barrio requiere mover el capítulo. Por ahora se edita desde DB.
+                  </span>
                 </div>
                 <div className="row row-3" style={{ gap: 10, marginBottom: 12 }}>
                   <div className="field grow">
                     <label className="field-label" style={{ fontSize: 11 }}>Latitud</label>
-                    <input className="field-input mono" defaultValue={caso.lat ?? ''} />
+                    <input className="field-input mono" value={lat} onChange={(e) => setLat(e.target.value)} />
                   </div>
                   <div className="field grow">
                     <label className="field-label" style={{ fontSize: 11 }}>Longitud</label>
-                    <input className="field-input mono" defaultValue={caso.lng ?? ''} />
+                    <input className="field-input mono" value={lng} onChange={(e) => setLng(e.target.value)} />
                   </div>
                 </div>
               </div>
@@ -229,10 +359,15 @@ export function CasoEdit() {
                   <span style={{ fontSize: 13.5, fontWeight: 600 }}>Caso publicado</span>
                   <input
                     type="checkbox"
-                    defaultChecked={caso.publicado_en !== null}
+                    checked={caso.publicado_en !== null}
+                    readOnly
                     style={{ accentColor: 'var(--biss-teal)', width: 18, height: 18 }}
                   />
                 </label>
+                <p className="caption" style={{ fontSize: 11 }}>
+                  La publicación se controla con el estado del caso (los estados visibles son
+                  crítico, progreso y resuelto).
+                </p>
               </div>
 
               <div
@@ -251,10 +386,15 @@ export function CasoEdit() {
                       ['--btn-ink' as never]: '#991B1B',
                       ['--btn-bg-hover' as never]: 'rgba(228,4,44,0.08)',
                     }}
+                    onClick={() => {
+                      if (!caso) return;
+                      cambiarEstado.mutate({ casoId: caso.id, nuevo: 'archivado' });
+                    }}
+                    disabled={cambiarEstado.isPending}
                   >
                     <Archive />Archivar
                   </button>
-                  <button type="button" className="btn btn-danger btn-sm">
+                  <button type="button" className="btn btn-danger btn-sm" disabled>
                     <Trash2 />Eliminar
                   </button>
                 </div>
@@ -266,4 +406,3 @@ export function CasoEdit() {
     </AdminLayout>
   );
 }
-

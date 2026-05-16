@@ -4,6 +4,7 @@ import { Filter, CheckCheck, Edit, X, Check } from 'lucide-react';
 import { AdminLayout } from '../../components/layout/AdminLayout';
 import { AdminTopbar } from '../../components/layout/AdminTopbar';
 import { useTestimoniosPendientes } from '../../hooks/useTestimonios';
+import { useAprobarTestimonio, useRechazarTestimonio } from '../../hooks/mutations/useModerarTestimonio';
 import { formatRelative } from '../../lib/format';
 import type { TestimonioPendiente } from '../../types/biss';
 
@@ -58,6 +59,17 @@ export function TestimoniosAdmin() {
 
 function ModCard({ t }: { t: TestimonioPendiente }) {
   const autor = t.firmar_como ?? (t.ciudadano_nombre ?? 'Anónimo');
+  const aprobar = useAprobarTestimonio();
+  const rechazar = useRechazarTestimonio();
+  const busy = aprobar.isPending || rechazar.isPending;
+
+  const handleAprobar = () => aprobar.mutate(t.id);
+  const handleRechazar = () => {
+    const motivo = window.prompt('Motivo del rechazo:');
+    if (!motivo || motivo.trim().length < 3) return;
+    rechazar.mutate({ id: t.id, motivo: motivo.trim() });
+  };
+
   return (
     <div className="mod-card">
       <div className="mod-card-head">
@@ -81,7 +93,7 @@ function ModCard({ t }: { t: TestimonioPendiente }) {
       </div>
       <div className="mod-card-body">{t.mensaje}</div>
       <div className="mod-card-actions">
-        <button type="button" className="btn btn-ghost btn-sm">
+        <button type="button" className="btn btn-ghost btn-sm" disabled={busy}>
           <Edit />Editar
         </button>
         <button
@@ -92,6 +104,8 @@ function ModCard({ t }: { t: TestimonioPendiente }) {
             ['--btn-border' as never]: 'var(--state-critical)',
             ['--btn-bg-hover' as never]: 'var(--state-critical-bg)',
           }}
+          onClick={handleRechazar}
+          disabled={busy}
         >
           <X />Rechazar
         </button>
@@ -103,8 +117,11 @@ function ModCard({ t }: { t: TestimonioPendiente }) {
             ['--btn-border' as never]: 'var(--state-resolved)',
             ['--btn-bg-hover' as never]: '#0E8A50',
           }}
+          onClick={handleAprobar}
+          disabled={busy}
         >
-          <Check />Aprobar y publicar
+          <Check />
+          {aprobar.isPending ? 'Aprobando…' : 'Aprobar y publicar'}
         </button>
       </div>
     </div>

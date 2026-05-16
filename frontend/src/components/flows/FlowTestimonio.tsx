@@ -17,6 +17,9 @@ import {
 
 import { FlowShell, useFlowDraft } from './FlowShell';
 import { useFlowDrawer } from '../../context/FlowDrawer';
+import { useSumarTestimonio } from '../../hooks/mutations/useSumarTestimonio';
+import { useMiPerfil } from '../../hooks/useMiCuenta';
+import type { RelacionTestimonio } from '../../types/biss';
 
 type Rol = 'vecino' | 'familia' | 'testigo' | 'profesional' | 'prefiere-no-decir';
 
@@ -50,11 +53,24 @@ const ROLES: Array<{
   { codigo: 'prefiere-no-decir', title: 'Prefiero no decir', sub: 'Igual cuenta tu historia', color: 'var(--cat-otros)', Icon: User },
 ];
 
+// rol del prototipo → enum DB testimonios.relacion
+const ROL_TO_RELACION: Record<string, RelacionTestimonio> = {
+  vecino: 'vecino',
+  familia: 'familiar',
+  testigo: 'otro',
+  profesional: 'lider',
+  'prefiere-no-decir': 'otro',
+};
+
 export function FlowTestimonio() {
   const { closeFlow, meta } = useFlowDrawer();
   const [draft, setDraft, clearDraft] = useFlowDraft<TestimonioDraft>('testimonio', INITIAL);
   const [step, setStep] = useState(1);
   const [enviado, setEnviado] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const { data: miPerfil } = useMiPerfil();
+  const sumar = useSumarTestimonio();
 
   const renderStep1 = () => (
     <FlowShell
@@ -150,10 +166,40 @@ export function FlowTestimonio() {
   );
 
   const renderStep3 = () => {
-    const publicar = () => {
-      // TODO: INSERT en testimonios (caso_id = meta.casoId si aplica), respetando moderación.
-      clearDraft();
-      setEnviado(true);
+    const publicar = async () => {
+      setSubmitError(null);
+      try {
+        if (!miPerfil) {
+          throw new Error('Necesitas iniciar sesión y verificar tu celular antes de sumar tu voz.');
+        }
+        if (!draft.rol) throw new Error('Falta rol');
+
+        const firmarComo = draft.anonimo
+          ? null
+          : draft.nombre.trim() || `${miPerfil.nombres} ${miPerfil.apellidos}`.trim();
+
+        await sumar.mutateAsync({
+          ciudadano_id: miPerfil.id,
+          capitulo_id: meta.capituloId ?? null,
+          caso_id: meta.casoId ?? null,
+          firmar_como: firmarComo,
+          relacion: ROL_TO_RELACION[draft.rol] ?? 'otro',
+          mensaje: draft.historia.trim(),
+        });
+        clearDraft();
+        setEnviado(true);
+      } catch (e: unknown) {
+        const msg = String((e as { message?: string })?.message ?? e);
+        if (/row-level security/i.test(msg) || /verificado_sms/i.test(msg)) {
+          setSubmitError('Necesitas verificar tu celular antes de continuar.');
+        } else if (/iniciar sesión/i.test(msg)) {
+          setSubmitError(msg);
+        } else if (/asociado a un caso o a un cap/i.test(msg)) {
+          setSubmitError('Sumamos testimonios desde un caso o un capítulo. Vuelve atrás y elige uno.');
+        } else {
+          setSubmitError('Algo salió raro. Vuelve a intentarlo.');
+        }
+      }
     };
     return (
       <FlowShell
@@ -227,11 +273,23 @@ export function FlowTestimonio() {
                 </div>
               </div>
             </div>
+            {submitError && (
+              <div className="alert alert-critical" style={{ padding: '10px 12px' }} role="alert">
+                <div className="alert-body">
+                  <div className="alert-text" style={{ fontSize: 12 }}>{submitError}</div>
+                </div>
+              </div>
+            )}
           </>
         }
         footer={
           <div className="row row-2">
-            <button type="button" className="btn btn-ghost" onClick={() => setStep(2)}>
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={() => setStep(2)}
+              disabled={sumar.isPending}
+            >
               <ArrowLeft />Atrás
             </button>
             <button
@@ -243,10 +301,13 @@ export function FlowTestimonio() {
                 ['--btn-bg-hover' as never]: '#B00752',
                 ['--btn-ink' as never]: '#FFFFFF',
               }}
-              disabled={!draft.anonimo && draft.nombre.trim().length < 2}
+              disabled={
+                sumar.isPending ||
+                (!draft.anonimo && draft.nombre.trim().length < 2)
+              }
               onClick={publicar}
             >
-              Publicar testimonio <Send />
+              {sumar.isPending ? 'Publicando…' : 'Publicar testimonio'} <Send />
             </button>
           </div>
         }
