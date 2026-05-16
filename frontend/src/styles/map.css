@@ -7,8 +7,9 @@
 .biss-map { font-family: var(--font-display); }
 .biss-map .leaflet-tile-pane { filter: saturate(0.95); }
 
-/* divIcon wrapper sin background — los estilos del pin viven en home.css (.pin-hito) */
-.leaflet-div-icon.pin-hito-marker {
+/* divIcon wrapper sin background — los estilos del pin viven en home.css (.pin-hito / .pin-case) */
+.leaflet-div-icon.pin-hito-marker,
+.leaflet-div-icon.pin-case-marker {
   background: transparent !important;
   border: 0 !important;
 }

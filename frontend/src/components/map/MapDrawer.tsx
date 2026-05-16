@@ -1,29 +1,13 @@
 import { Link } from 'react-router-dom';
-import { X, Clock, MessageSquare, BookOpen, ArrowRight } from 'lucide-react';
+import { X, BookOpen, ArrowRight } from 'lucide-react';
 
-import type { EstadoCaso } from '../../types/biss';
-
-interface MapDrawerCaso {
-  folio: string;
-  titulo: string;
-  categoria: string;
-  estado: EstadoCaso;
-  barrio: string;
-  zona: string;
-  capituloSlug: string;
-  descripcion: string;
-  portadaUrl?: string;
-  vecinos: number;
-  voces: number;
-  padrinos: number;
-  ultima?: { when: string; what: string };
-  vozDelBarrio?: { texto: string; autor: string };
-}
+import type { CasoPublico, EstadoCaso } from '../../types/biss';
+import { formatFolio, formatRelative } from '../../lib/format';
 
 interface MapDrawerProps {
   open: boolean;
   onClose: () => void;
-  caso: MapDrawerCaso | null;
+  caso: CasoPublico | null;
 }
 
 /**
@@ -32,23 +16,40 @@ interface MapDrawerProps {
  * Vive embebido en BissMap (position: absolute, dentro de #biss-map).
  * El CSS vive en home.css (.map-drawer + .map-drawer-overlay).
  */
-export function MapDrawer({ open, onClose, caso }: MapDrawerProps) {
-  if (!caso) return null;
+const ESTADO_BADGE: Record<EstadoCaso, { cls: string; txt: string }> = {
+  pendiente: { cls: 'badge', txt: 'Pendiente' },
+  critico: { cls: 'badge badge-critical', txt: 'Crítico' },
+  progreso: { cls: 'badge badge-progress', txt: 'En gestión' },
+  resuelto: { cls: 'badge badge-resolved', txt: 'Resuelto' },
+  archivado: { cls: 'badge', txt: 'Archivado' },
+};
 
-  const estadoBadge = {
-    pendiente: 'badge badge-neutral',
-    critico: 'badge badge-critical',
-    progreso: 'badge badge-progress',
-    resuelto: 'badge badge-resolved',
-    archivado: 'badge badge-neutral',
-  }[caso.estado];
-  const estadoLabel = {
-    pendiente: 'Pendiente',
-    critico: 'Crítico',
-    progreso: 'En gestión',
-    resuelto: 'Resuelto',
-    archivado: 'Archivado',
-  }[caso.estado];
+export function MapDrawer({ open, onClose, caso }: MapDrawerProps) {
+  if (!caso) {
+    return (
+      <>
+        <div
+          className="map-drawer-overlay"
+          data-open={open ? 'true' : undefined}
+          onClick={onClose}
+          aria-hidden="true"
+        />
+        <div
+          className="map-drawer"
+          data-open={open ? 'true' : undefined}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="mdr-body">
+            <p className="caption">Un segundo…</p>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  const { cls, txt } = ESTADO_BADGE[caso.estado];
+  const folioVisible = formatFolio(caso.slug);
 
   return (
     <>
@@ -63,21 +64,24 @@ export function MapDrawer({ open, onClose, caso }: MapDrawerProps) {
         data-open={open ? 'true' : undefined}
         role="dialog"
         aria-modal="true"
-        aria-label={`Caso ${caso.folio}`}
+        aria-label={`Caso ${folioVisible}`}
       >
         <div className="mdr-header">
           <div className="row1">
-            <span className="mdr-folio">{caso.folio}</span>
+            <span className="mdr-folio">{folioVisible}</span>
             <button type="button" className="mdr-close" aria-label="Cerrar" onClick={onClose}>
               <X style={{ width: 16, height: 16 }} />
             </button>
           </div>
           <h3 className="mdr-title">{caso.titulo}</h3>
           <div className="mdr-meta">
-            <span className={`badge badge-cat-${caso.categoria}`}>{caso.categoria}</span>
-            <span className={estadoBadge}><span className="dot" />{estadoLabel}</span>
+            <span className={`badge badge-cat-${caso.categoria_codigo}`}>{caso.categoria_nombre}</span>
+            <span className={cls}>
+              <span className="dot" />
+              {txt}
+            </span>
             <span className="caption" style={{ fontSize: 11.5 }}>
-              {caso.barrio} · {caso.zona}
+              {caso.barrio_nombre}
             </span>
           </div>
         </div>
@@ -86,9 +90,9 @@ export function MapDrawer({ open, onClose, caso }: MapDrawerProps) {
           <div
             className="mdr-cover"
             style={
-              caso.portadaUrl
+              caso.portada_url
                 ? {
-                    backgroundImage: `url(${caso.portadaUrl})`,
+                    backgroundImage: `url(${caso.portada_url})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     color: 'transparent',
@@ -96,49 +100,21 @@ export function MapDrawer({ open, onClose, caso }: MapDrawerProps) {
                 : undefined
             }
           >
-            {!caso.portadaUrl && 'FOTO DEL CASO'}
+            {!caso.portada_url && 'FOTO DEL CASO'}
           </div>
           <p className="mdr-desc">{caso.descripcion}</p>
-          <div className="mdr-quick">
-            <div className="q"><div className="n">{caso.vecinos}</div><div className="l">Vecinos</div></div>
-            <div className="q"><div className="n">{caso.voces}</div><div className="l">Voces</div></div>
-            <div className="q"><div className="n">{caso.padrinos}</div><div className="l">Padrinos</div></div>
-          </div>
-          {caso.ultima && (
-            <div>
-              <div className="mdr-section-head">
-                <Clock />Última actualización
-              </div>
-              <div className="mdr-update">
-                <div className="when">{caso.ultima.when}</div>
-                <div className="what">{caso.ultima.what}</div>
-              </div>
-            </div>
-          )}
-          {caso.vozDelBarrio && (
-            <div>
-              <div className="mdr-section-head">
-                <MessageSquare />Una voz del barrio
-              </div>
-              <div className="mdr-mini-quote">
-                {caso.vozDelBarrio.texto}
-                <div className="who">— {caso.vozDelBarrio.autor}</div>
-              </div>
+          {caso.publicado_en && (
+            <div className="caption" style={{ fontSize: 11.5 }}>
+              Publicado {formatRelative(caso.publicado_en)}
             </div>
           )}
         </div>
 
         <div className="mdr-footer">
-          <Link
-            to={`/capitulo/${caso.capituloSlug}`}
-            className="btn btn-secondary"
-          >
+          <Link to={`/capitulo/${caso.barrio_slug}`} className="btn btn-secondary" onClick={onClose}>
             <BookOpen />Capítulo
           </Link>
-          <Link
-            to={`/caso/${caso.folio}`}
-            className="btn btn-primary"
-          >
+          <Link to={`/caso/${caso.slug}`} className="btn btn-primary" onClick={onClose}>
             <ArrowRight />Ver caso completo
           </Link>
         </div>

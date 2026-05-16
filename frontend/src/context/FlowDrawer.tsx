@@ -12,7 +12,9 @@ export interface FlowMeta {
   casoId?: string;
   casoFolio?: string;
   casoTitulo?: string;
+  capituloId?: string;
   capituloSlug?: string;
+  barrioId?: number;
 }
 
 interface FlowDrawerContextValue {

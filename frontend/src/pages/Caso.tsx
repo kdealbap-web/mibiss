@@ -2,10 +2,15 @@ import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
   Construction,
-  MapPin,
+  Droplets,
+  Lightbulb,
+  Heart,
+  GraduationCap,
+  TreePine,
   Users,
+  MoreHorizontal,
+  MapPin,
   Building2,
-  Megaphone,
   HandHeart,
   MessageSquareQuote,
   Share2,
@@ -14,48 +19,138 @@ import {
 import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
 import { useFlowDrawer } from '../context/FlowDrawer';
+import { useCaso, useMultimediaCaso } from '../hooks/useCaso';
+import { useActualizaciones } from '../hooks/useActualizaciones';
+import { useTestimoniosPorCaso } from '../hooks/useTestimonios';
+import { usePadrinosPorCaso } from '../hooks/usePadrinos';
+import { formatFolio, formatRelative } from '../lib/format';
+import type { CasoPublico, EstadoCaso, TipoApoyo } from '../types/biss';
 
 import '../styles/page-caso.css';
 
-const TIMELINE = [
-  {
-    fecha: '2 MAY 2026 · 09:10',
-    titulo: 'Aprobado para intervención',
-    texto:
-      'Secretaría de Obras confirmó cuadrilla para la semana del 6 al 10 de mayo. Kevin radicó memorando CON-2026-088.',
-    color: 'var(--state-progress)',
-  },
-  {
-    fecha: '15 ABR 2026 · 15:22',
-    titulo: 'Radicado por el concejal',
-    texto:
-      'Kevin radicó oficio formal a la Secretaría de Obras con fotos y firma de 14 vecinos.',
-    color: 'var(--biss-teal)',
-  },
-  {
-    fecha: '3 ABR 2026',
-    titulo: '3 testimonios nuevos',
-    texto: 'Diana, Don Rafael y Marlén sumaron sus voces al caso.',
-    color: 'var(--cat-social)',
-  },
-  {
-    fecha: '10 SEP 2025 · 18:50',
-    titulo: 'Caso reportado',
-    texto: 'Édgar Polo abrió el caso desde la app. Subió 3 fotos del cráter después de la lluvia.',
-    color: 'var(--state-critical)',
-  },
-];
+const ICON_CAT: Record<string, typeof Construction> = {
+  agua: Droplets,
+  luz: Lightbulb,
+  infraestructura: Construction,
+  salud: Heart,
+  educacion: GraduationCap,
+  'medio-ambiente': TreePine,
+  social: Users,
+  otros: MoreHorizontal,
+};
+
+const ESTADO_LABEL: Record<EstadoCaso, string> = {
+  pendiente: 'Pendiente',
+  critico: 'Crítico',
+  progreso: 'En gestión',
+  resuelto: 'Resuelto',
+  archivado: 'Archivado',
+};
+
+const ESTADO_BADGE: Record<EstadoCaso, string> = {
+  pendiente: 'badge',
+  critico: 'badge badge-critical',
+  progreso: 'badge badge-progress',
+  resuelto: 'badge badge-resolved',
+  archivado: 'badge',
+};
+
+const TIMELINE_COLOR: Record<EstadoCaso, string> = {
+  pendiente: 'var(--ink-faint)',
+  critico: 'var(--state-critical)',
+  progreso: 'var(--state-progress)',
+  resuelto: 'var(--state-resolved)',
+  archivado: 'var(--ink-soft)',
+};
+
+function fechaCorta(iso: string): string {
+  const d = new Date(iso);
+  return d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+const APORTE_LABEL: Record<TipoApoyo, string> = {
+  financiero: 'Financiero',
+  material: 'Materiales',
+  voluntario: 'Voluntario',
+  politico: 'Político',
+  otro: 'Otro',
+};
 
 export function Caso() {
   const { folio = '' } = useParams<{ folio: string }>();
   const { openFlow } = useFlowDrawer();
+  const slug = folio.toLowerCase();
+
+  const { data: caso, isLoading, isError } = useCaso(slug);
+  const { data: media = [] } = useMultimediaCaso(caso?.id ?? null);
+  const { data: actualizaciones = [] } = useActualizaciones(caso?.id ?? null);
+  const { data: testimonios = [] } = useTestimoniosPorCaso(caso?.id ?? null);
+  const { data: padrinos = [] } = usePadrinosPorCaso(caso?.id ?? null);
 
   useEffect(() => {
     document.body.classList.add('caso-body');
     return () => document.body.classList.remove('caso-body');
   }, []);
 
-  const folioVisible = folio.toUpperCase() || 'CS-2026-0142';
+  if (isLoading) {
+    return (
+      <>
+        <Navbar active="casos" />
+        <section className="caso-hero">
+          <div className="caso-hero-inner">
+            <p className="caption">Un segundo…</p>
+          </div>
+        </section>
+        <Footer />
+      </>
+    );
+  }
+
+  if (isError || !caso) {
+    return (
+      <>
+        <Navbar active="casos" />
+        <section className="caso-hero">
+          <div className="caso-hero-inner">
+            <h1>No encontramos ese caso</h1>
+            <p className="lead" style={{ color: 'var(--ink-soft)' }}>
+              Puede que el folio esté mal escrito o que el caso aún no esté publicado.{' '}
+              <Link to="/home" style={{ color: 'var(--biss-teal-900)', fontWeight: 700 }}>
+                Vuelve al mapa
+              </Link>
+              .
+            </p>
+          </div>
+        </section>
+        <Footer />
+      </>
+    );
+  }
+
+  return (
+    <CasoContent
+      caso={caso}
+      media={media}
+      actualizaciones={actualizaciones}
+      testimonios={testimonios}
+      padrinos={padrinos}
+      openFlow={openFlow}
+    />
+  );
+}
+
+interface CasoContentProps {
+  caso: CasoPublico;
+  media: import('../types/biss').MultimediaCaso[];
+  actualizaciones: import('../types/biss').ActualizacionCaso[];
+  testimonios: import('../types/biss').TestimonioPublico[];
+  padrinos: import('../hooks/usePadrinos').PadrinoConAporte[];
+  openFlow: ReturnType<typeof useFlowDrawer>['openFlow'];
+}
+
+function CasoContent({ caso, media, actualizaciones, testimonios, padrinos, openFlow }: CasoContentProps) {
+  const Icon = ICON_CAT[caso.categoria_codigo] ?? MoreHorizontal;
+  const folioVisible = formatFolio(caso.slug);
 
   return (
     <>
@@ -65,26 +160,27 @@ export function Caso() {
         <div className="caso-hero-inner">
           <div className="caso-breadcrumb">
             <Link to="/home">Soledad</Link> <span>/</span>
-            <Link to="/capitulo/soledad-2000">Soledad 2000</Link> <span>/</span>
-            <span>Cráter en la calle 30</span>
+            <Link to={`/capitulo/${caso.barrio_slug}`}>{caso.barrio_nombre}</Link> <span>/</span>
+            <span>{caso.titulo}</span>
           </div>
-          <h1>Cráter en la calle 30</h1>
+          <h1>{caso.titulo}</h1>
           <div className="meta-row">
-            <span className="badge badge-cat-infraestructura">
-              <Construction />Infraestructura
+            <span className={`badge badge-cat-${caso.categoria_codigo}`}>
+              <Icon />{caso.categoria_nombre}
             </span>
-            <span className="badge badge-progress">
-              <span className="dot" />En gestión
+            <span className={ESTADO_BADGE[caso.estado]}>
+              <span className="dot" />{ESTADO_LABEL[caso.estado]}
             </span>
             <span className="badge badge-folio">{folioVisible}</span>
             <span className="caption row row-2">
               <MapPin style={{ width: 14, height: 14, color: 'var(--biss-teal-900)' }} />
-              Soledad 2000 · calle 30 × carrera 18
+              {caso.barrio_nombre}
             </span>
-            <span className="caption row row-2">
-              <Users style={{ width: 14, height: 14, color: 'var(--biss-teal-900)' }} />
-              14 vecinos sumados
-            </span>
+            {caso.publicado_en && (
+              <span className="caption row row-2">
+                Publicado {formatRelative(caso.publicado_en)}
+              </span>
+            )}
           </div>
         </div>
       </section>
@@ -93,77 +189,97 @@ export function Caso() {
         <div>
           <div className="caso-card">
             <h2>Lo que pasa</h2>
-            <p>
-              El cráter de la calle 30 lleva ocho meses sin tapar. La moto de Don Édgar se cayó
-              dos veces. Los carros lo esquivan invadiendo el carril contrario, lo que ha causado
-              al menos dos choques este año. Cuando llueve, el agua tapa el hueco y deja a vecinos
-              cayendo sin verlo.
-            </p>
-            <p style={{ marginTop: 10 }}>
-              El gobierno anterior pintó el lugar con cal blanca pero nunca trajo asfalto. Triple A
-              radicó tres oficios. Hoy seguimos esperando cuadrilla.
-            </p>
+            <p style={{ whiteSpace: 'pre-wrap' }}>{caso.descripcion}</p>
           </div>
 
           <div className="caso-card">
             <h2>Multimedia</h2>
-            <div className="gallery">
-              <div className="ph big">FOTO 01 · 12 SEP</div>
-              <div className="ph">FOTO 02</div>
-              <div className="ph">FOTO 03</div>
-              <div className="ph">VIDEO · 18 OCT</div>
-              <div className="ph">FOTO 05</div>
-            </div>
+            {media.length === 0 ? (
+              <p className="caption">Todavía no hay fotos o videos. Cuando los suban, aparecen aquí.</p>
+            ) : (
+              <div className="gallery">
+                {media.map((m, i) => (
+                  <div
+                    key={m.id}
+                    className={`ph${i === 0 ? ' big' : ''}`}
+                    style={
+                      m.tipo === 'foto'
+                        ? {
+                            backgroundImage: `url(${m.thumb_url ?? m.url})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            color: 'transparent',
+                          }
+                        : undefined
+                    }
+                  >
+                    {m.tipo === 'foto' ? `FOTO ${String(i + 1).padStart(2, '0')}` : m.tipo.toUpperCase()}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="caso-card">
             <h2>Línea de tiempo</h2>
-            <div className="timeline">
-              {TIMELINE.map((t, i) => (
-                <div key={i} className="timeline-item">
-                  <div className="timeline-dot" style={{ background: t.color }} />
-                  <div className="timeline-content">
-                    <div className="timeline-date">{t.fecha}</div>
-                    <div className="timeline-title">{t.titulo}</div>
-                    <div className="timeline-text">{t.texto}</div>
+            {actualizaciones.length === 0 ? (
+              <p className="caption">Todavía no hay movimientos. Te avisamos cuando algo pase.</p>
+            ) : (
+              <div className="timeline">
+                {actualizaciones.map((a) => (
+                  <div key={a.id} className="timeline-item">
+                    <div
+                      className="timeline-dot"
+                      style={{
+                        background: TIMELINE_COLOR[a.estado_nuevo ?? caso.estado],
+                      }}
+                    />
+                    <div className="timeline-content">
+                      <div className="timeline-date">{fechaCorta(a.ocurrido_en)}</div>
+                      <div className="timeline-title">
+                        {a.tipo === 'cambio_estado' && a.estado_anterior && a.estado_nuevo
+                          ? `${ESTADO_LABEL[a.estado_anterior]} → ${ESTADO_LABEL[a.estado_nuevo]}`
+                          : a.tipo === 'nota'
+                          ? 'Nota del equipo'
+                          : a.tipo === 'hito'
+                          ? 'Hito'
+                          : a.tipo === 'reunion'
+                          ? 'Reunión'
+                          : a.tipo === 'correccion'
+                          ? 'Corrección'
+                          : 'Foto agregada'}
+                      </div>
+                      <div className="timeline-text">{a.texto}</div>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="caso-card">
             <h2>Voces sobre este caso</h2>
-            <div className="caso-testimonio">
-              <p>
-                Esa mañana iba al colegio con mi hija. Cuando vimos a Don Édgar tirado en la calle,
-                ella se asustó tanto que no quiso volver a pasar por ahí. Llevo tres meses
-                cargándola para evitarle el susto.
-              </p>
-              <div className="author">
-                <strong>Diana Pérez</strong> · vecina · hace 3 semanas
-              </div>
-            </div>
-            <div
-              className="caso-testimonio"
-              style={{ borderLeftColor: 'var(--biss-teal)' }}
-            >
-              <p>
-                Como presidente de la JAC ya radicamos doce oficios. Triple A no responde
-                formalmente. Esto no es un cráter, es un símbolo de cómo nos tratan.
-              </p>
-              <div className="author">
-                <strong>Don Rafael Caicedo</strong> · líder comunal · hace 2 semanas
-              </div>
-            </div>
+            {testimonios.length === 0 ? (
+              <p className="caption">Aquí no hay voces todavía. Si vives esto, cuéntalo.</p>
+            ) : (
+              testimonios.map((t) => (
+                <div key={t.id} className="caso-testimonio">
+                  <p>{t.mensaje}</p>
+                  <div className="author">
+                    <strong>{t.autor_visible}</strong> · {t.relacion} · {formatRelative(t.creado_en)}
+                  </div>
+                </div>
+              ))
+            )}
             <button
               type="button"
               className="btn btn-secondary btn-sm"
               style={{ marginTop: 8 }}
               onClick={() =>
                 openFlow('testimonio', {
+                  casoId: caso.id,
                   casoFolio: folioVisible,
-                  casoTitulo: 'Cráter en la calle 30',
+                  casoTitulo: caso.titulo,
                 })
               }
             >
@@ -176,69 +292,52 @@ export function Caso() {
           <div className="caso-side-card">
             <h3>Datos del caso</h3>
             <div className="data-row"><span className="k">Folio</span><span className="v mono">{folioVisible}</span></div>
-            <div className="data-row"><span className="k">Reportado</span><span className="v">10 sep 2025</span></div>
-            <div className="data-row"><span className="k">Última actualización</span><span className="v">2 may 2026</span></div>
-            <div className="data-row"><span className="k">Barrio</span><span className="v">Soledad 2000</span></div>
-            <div className="data-row"><span className="k">Coordenadas</span><span className="v mono">10.9131,<br />-74.7634</span></div>
-            <div className="data-row"><span className="k">Vecinos sumados</span><span className="v">14</span></div>
+            <div className="data-row"><span className="k">Reportado</span><span className="v">{fechaCorta(caso.publicado_en ?? caso.actualizado_en)}</span></div>
+            <div className="data-row"><span className="k">Última actualización</span><span className="v">{fechaCorta(caso.actualizado_en)}</span></div>
+            <div className="data-row"><span className="k">Barrio</span><span className="v">{caso.barrio_nombre}</span></div>
+            {caso.lat != null && caso.lng != null && (
+              <div className="data-row"><span className="k">Coordenadas</span><span className="v mono">{caso.lat.toFixed(5)},<br />{caso.lng.toFixed(5)}</span></div>
+            )}
           </div>
 
           <div className="caso-side-card">
             <h3>Padrinos del caso</h3>
-            <div className="padrino-card">
-              <div className="av"><Building2 style={{ width: 18, height: 18 }} /></div>
-              <div>
-                <div className="name">Ferretería Don Iván</div>
-                <div className="aporte">Asfalto en frío · 4 sacos + herramienta menor</div>
-              </div>
-            </div>
-            <div className="padrino-card">
-              <div className="av" style={{ background: 'var(--cat-luz)', borderRadius: 12 }}>
-                <Megaphone style={{ width: 18, height: 18 }} />
-              </div>
-              <div>
-                <div className="name" style={{ color: '#92400E' }}>Panadería Atlántico</div>
-                <div className="aporte" style={{ color: '#B45309' }}>Difusión y refrigerios para cuadrilla</div>
-              </div>
-            </div>
+            {padrinos.length === 0 ? (
+              <p className="caption">Aún nadie ha apadrinado este caso. ¿Quieres ser el primero?</p>
+            ) : (
+              padrinos.map((p) => (
+                <div key={p.id} className="padrino-card">
+                  <div className="av">
+                    {p.logo_url ? (
+                      <img src={p.logo_url} alt={p.nombre} style={{ width: 28, height: 28, borderRadius: 8, objectFit: 'cover' }} />
+                    ) : (
+                      <Building2 style={{ width: 18, height: 18 }} />
+                    )}
+                  </div>
+                  <div>
+                    <div className="name">{p.nombre}</div>
+                    <div className="aporte">
+                      {APORTE_LABEL[p.tipo_apoyo]}
+                      {p.aporte_descripcion ? ` · ${p.aporte_descripcion}` : ''}
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
             <button
               type="button"
               className="btn btn-secondary btn-sm"
               style={{ marginTop: 10, width: '100%' }}
               onClick={() =>
                 openFlow('apadrinar', {
+                  casoId: caso.id,
                   casoFolio: folioVisible,
-                  casoTitulo: 'Cráter en la calle 30',
+                  casoTitulo: caso.titulo,
                 })
               }
             >
               <HandHeart />Apadrinar este caso
             </button>
-          </div>
-
-          <div className="caso-side-card">
-            <h3>Reportado por</h3>
-            <div className="row row-3">
-              <div
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 99,
-                  background: 'var(--biss-teal)',
-                  color: '#FFFFFF',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 800,
-                }}
-              >
-                EP
-              </div>
-              <div>
-                <div style={{ fontWeight: 700, color: 'var(--ink-strong)' }}>Édgar Polo</div>
-                <div style={{ fontSize: 12, color: 'var(--ink-soft)' }}>Vecino · Soledad 2000</div>
-              </div>
-            </div>
           </div>
         </aside>
       </main>
@@ -259,8 +358,9 @@ export function Caso() {
             style={{ ['--btn-ink' as never]: 'var(--cat-social)' }}
             onClick={() =>
               openFlow('testimonio', {
+                casoId: caso.id,
                 casoFolio: folioVisible,
-                casoTitulo: 'Cráter en la calle 30',
+                casoTitulo: caso.titulo,
               })
             }
           >
@@ -271,8 +371,9 @@ export function Caso() {
             className="btn btn-primary btn-sm"
             onClick={() =>
               openFlow('apadrinar', {
+                casoId: caso.id,
                 casoFolio: folioVisible,
-                casoTitulo: 'Cráter en la calle 30',
+                casoTitulo: caso.titulo,
               })
             }
           >
@@ -285,3 +386,4 @@ export function Caso() {
     </>
   );
 }
+

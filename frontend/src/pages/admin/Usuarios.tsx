@@ -1,137 +1,54 @@
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Download,
   UserPlus,
   Users,
   Shield,
-  AlertCircle,
-  Search,
   Crown,
-  User,
   Eye,
   Edit,
-  Ban,
-  ArrowUp,
-  ChevronLeft,
-  ChevronRight,
+  Search,
 } from 'lucide-react';
 
 import { AdminLayout } from '../../components/layout/AdminLayout';
 import { AdminTopbar } from '../../components/layout/AdminTopbar';
+import { useUsuariosCms, useCiudadanos } from '../../hooks/useUsuarios';
+import { useBarrios } from '../../hooks/useBarrios';
+import { formatRelative, initials } from '../../lib/format';
+import type { Ciudadano, UsuarioCms } from '../../types/biss';
 
-type Estado = 'activo' | 'revisar';
-
-interface UsuarioRow {
-  iniciales: string;
-  iconBg: string;
-  nombre: string;
-  contacto: string;
-  rol: 'admin' | 'editor' | 'ciudadano';
-  barrio: string;
-  casos: string;
-  ultima: string;
-  estado: Estado;
-  acciones: ('ver' | 'editar' | 'suspender' | 'promover')[];
-}
-
-const ROWS: UsuarioRow[] = [
-  {
-    iniciales: 'KB',
-    iconBg: 'var(--cat-social)',
-    nombre: 'Kevin Balvuena',
-    contacto: 'kevin@biss.gov.co · +57 318 444 0001',
-    rol: 'admin',
-    barrio: '—',
-    casos: '—',
-    ultima: 'ahora',
-    estado: 'activo',
-    acciones: ['ver', 'editar'],
-  },
-  {
-    iniciales: 'LM',
-    iconBg: 'var(--biss-teal)',
-    nombre: 'Lucía Mendoza',
-    contacto: 'lucia@biss.gov.co · +57 301 222 1888',
-    rol: 'editor',
-    barrio: '—',
-    casos: '—',
-    ultima: 'hace 2h',
-    estado: 'activo',
-    acciones: ['ver', 'editar', 'suspender'],
-  },
-  {
-    iniciales: 'EP',
-    iconBg: 'var(--cat-agua)',
-    nombre: 'Édgar Polo',
-    contacto: '+57 301 245 8890',
-    rol: 'ciudadano',
-    barrio: 'Soledad 2000',
-    casos: '3',
-    ultima: 'hace 4h',
-    estado: 'activo',
-    acciones: ['ver', 'promover'],
-  },
-  {
-    iniciales: 'DP',
-    iconBg: 'var(--cat-luz)',
-    nombre: 'Diana Pérez',
-    contacto: '+57 312 778 4521',
-    rol: 'ciudadano',
-    barrio: 'Soledad 2000',
-    casos: '1',
-    ultima: 'hace 1d',
-    estado: 'activo',
-    acciones: ['ver', 'promover'],
-  },
-  {
-    iniciales: 'JL',
-    iconBg: 'var(--state-critical)',
-    nombre: 'José L.',
-    contacto: '+57 320 411 5577 · reportado 2 veces',
-    rol: 'ciudadano',
-    barrio: 'Salamanca',
-    casos: '7',
-    ultima: 'hace 12h',
-    estado: 'revisar',
-    acciones: ['ver', 'suspender'],
-  },
-  {
-    iniciales: 'RC',
-    iconBg: 'var(--cat-medio-ambiente)',
-    nombre: 'Rosalba C.',
-    contacto: '+57 300 871 1124 · líder JAC',
-    rol: 'ciudadano',
-    barrio: 'La Candelaria',
-    casos: '5',
-    ultima: 'hace 30m',
-    estado: 'activo',
-    acciones: ['ver', 'promover'],
-  },
-];
-
-function badgeRol(r: UsuarioRow['rol']) {
-  if (r === 'admin') {
-    return (
-      <span className="badge" style={{ background: 'var(--cat-social-bg)', color: 'var(--cat-social)' }}>
-        <Crown />Admin
-      </span>
-    );
-  }
-  if (r === 'editor') {
-    return (
-      <span className="badge" style={{ background: 'var(--biss-teal-50)', color: 'var(--biss-teal-900)' }}>
-        <Shield />Editor
-      </span>
-    );
-  }
-  return (
-    <span className="badge">
-      <User />Ciudadano
-    </span>
-  );
-}
+type Tab = 'cms' | 'ciudadanos';
 
 export function Usuarios() {
+  const [tab, setTab] = useState<Tab>('cms');
+  const [q, setQ] = useState('');
+  const { data: cmsUsers = [], isLoading: cmsLoading } = useUsuariosCms();
+  const { data: ciudadanos = [], isLoading: cLoading } = useCiudadanos();
+  const { data: barrios = [] } = useBarrios();
+
+  const barrioById = useMemo(() => {
+    const m: Record<number, string> = {};
+    barrios.forEach((b) => (m[b.id] = b.nombre));
+    return m;
+  }, [barrios]);
+
+  const cmsFiltered = useMemo(() => {
+    const t = q.trim().toLowerCase();
+    if (!t) return cmsUsers;
+    return cmsUsers.filter(
+      (u) => u.nombre.toLowerCase().includes(t) || u.email.toLowerCase().includes(t),
+    );
+  }, [cmsUsers, q]);
+
+  const ciudFiltered = useMemo(() => {
+    const t = q.trim().toLowerCase();
+    if (!t) return ciudadanos;
+    return ciudadanos.filter((c) =>
+      `${c.nombres} ${c.apellidos} ${c.telefono_celular} ${c.email}`.toLowerCase().includes(t),
+    );
+  }, [ciudadanos, q]);
+
   return (
     <AdminLayout>
       <AdminTopbar
@@ -141,7 +58,7 @@ export function Usuarios() {
             <span style={{ color: 'var(--ink-strong)', fontWeight: 600 }}>Usuarios</span>
           </>
         }
-        title="Usuarios · 847 ciudadanos · 6 editores"
+        title={`Usuarios · ${ciudadanos.length} ciudadanos · ${cmsUsers.length} CMS`}
         actions={
           <>
             <button type="button" className="btn btn-secondary btn-sm">
@@ -156,15 +73,21 @@ export function Usuarios() {
 
       <div className="admin-page">
         <div className="row row-3 wrap" style={{ gap: 8 }}>
-          <button type="button" className="chip chip-active">Todos <span className="chip-count">853</span></button>
-          <button type="button" className="chip">
-            <Users style={{ color: 'var(--biss-teal)' }} />Ciudadanos <span className="chip-count">847</span>
+          <button
+            type="button"
+            className={tab === 'cms' ? 'chip chip-active' : 'chip'}
+            onClick={() => setTab('cms')}
+          >
+            <Shield style={{ color: 'var(--cat-social)' }} />Equipo CMS{' '}
+            <span className="chip-count">{cmsUsers.length}</span>
           </button>
-          <button type="button" className="chip">
-            <Shield style={{ color: 'var(--cat-social)' }} />Editores <span className="chip-count">6</span>
-          </button>
-          <button type="button" className="chip">
-            <AlertCircle style={{ color: 'var(--state-critical)' }} />Reportados <span className="chip-count">2</span>
+          <button
+            type="button"
+            className={tab === 'ciudadanos' ? 'chip chip-active' : 'chip'}
+            onClick={() => setTab('ciudadanos')}
+          >
+            <Users style={{ color: 'var(--biss-teal)' }} />Ciudadanos{' '}
+            <span className="chip-count">{ciudadanos.length}</span>
           </button>
         </div>
 
@@ -181,105 +104,146 @@ export function Usuarios() {
           >
             <div className="map-search-wrap" style={{ flex: 1, maxWidth: 360 }}>
               <Search strokeWidth={2.2} />
-              <input type="search" placeholder="Buscar por nombre, celular o barrio…" />
+              <input
+                type="search"
+                placeholder="Buscar por nombre, celular o email…"
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+              />
             </div>
-            <select
-              className="field-select"
-              style={{ minHeight: 38, padding: '6px 14px', fontSize: 13, width: 'auto' }}
-              defaultValue="Todos los barrios"
-            >
-              <option>Todos los barrios</option>
-              <option>Soledad 2000</option>
-              <option>Don Bosco</option>
-            </select>
           </div>
 
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th style={{ width: 36 }}>
-                  <input type="checkbox" style={{ accentColor: 'var(--biss-teal)' }} />
-                </th>
-                <th>Usuario</th>
-                <th>Rol</th>
-                <th>Barrio</th>
-                <th>Casos</th>
-                <th>Última actividad</th>
-                <th>Estado</th>
-                <th style={{ textAlign: 'right' }}>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {ROWS.map((u) => (
-                <tr key={u.nombre}>
-                  <td>
-                    <input type="checkbox" style={{ accentColor: 'var(--biss-teal)' }} />
-                  </td>
-                  <td>
-                    <div className="row-title">
-                      <div className="ic-mini" style={{ background: u.iconBg }}>
-                        {u.iniciales}
-                      </div>
-                      <div>
-                        <div>{u.nombre}</div>
-                        <div className="row-meta">{u.contacto}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>{badgeRol(u.rol)}</td>
-                  <td>{u.barrio}</td>
-                  <td><strong>{u.casos}</strong></td>
-                  <td>
-                    <span className="mono" style={{ fontSize: 12 }}>{u.ultima}</span>
-                  </td>
-                  <td>
-                    {u.estado === 'activo' ? (
-                      <span className="badge badge-resolved"><span className="dot" />Activo</span>
-                    ) : (
-                      <span className="badge badge-critical"><span className="dot" />Revisar</span>
-                    )}
-                  </td>
-                  <td className="action-cell">
-                    {u.acciones.includes('ver') && (
-                      <button type="button" aria-label="Ver perfil">
-                        <Eye style={{ width: 14, height: 14 }} />
-                      </button>
-                    )}
-                    {u.acciones.includes('editar') && (
-                      <button type="button" aria-label="Editar">
-                        <Edit style={{ width: 14, height: 14 }} />
-                      </button>
-                    )}
-                    {u.acciones.includes('promover') && (
-                      <button type="button" aria-label="Promover">
-                        <ArrowUp style={{ width: 14, height: 14 }} />
-                      </button>
-                    )}
-                    {u.acciones.includes('suspender') && (
-                      <button type="button" className="danger" aria-label="Suspender">
-                        <Ban style={{ width: 14, height: 14 }} />
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+          {tab === 'cms' && (
+            <>
+              {cmsLoading && <p className="caption" style={{ padding: 20 }}>Un segundo…</p>}
+              {!cmsLoading && cmsFiltered.length === 0 && (
+                <p className="caption" style={{ padding: 20 }}>
+                  Sin editores registrados.
+                </p>
+              )}
+              {cmsFiltered.length > 0 && (
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Usuario</th>
+                      <th>Rol</th>
+                      <th>Última actividad</th>
+                      <th style={{ textAlign: 'right' }}>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cmsFiltered.map((u) => (
+                      <CmsRow key={u.id} u={u} />
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </>
+          )}
 
-        <div className="row row-3" style={{ justifyContent: 'space-between' }}>
-          <span className="caption">Mostrando {ROWS.length} de 853 usuarios</span>
-          <div className="row row-2">
-            <button type="button" className="btn btn-ghost btn-sm" disabled>
-              <ChevronLeft />
-            </button>
-            <span className="caption" style={{ padding: '0 8px' }}>1 / 142</span>
-            <button type="button" className="btn btn-ghost btn-sm">
-              <ChevronRight />
-            </button>
-          </div>
+          {tab === 'ciudadanos' && (
+            <>
+              {cLoading && <p className="caption" style={{ padding: 20 }}>Un segundo…</p>}
+              {!cLoading && ciudFiltered.length === 0 && (
+                <p className="caption" style={{ padding: 20 }}>
+                  Sin ciudadanos registrados.
+                </p>
+              )}
+              {ciudFiltered.length > 0 && (
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Ciudadano</th>
+                      <th>Barrio</th>
+                      <th>Celular</th>
+                      <th>Verificado</th>
+                      <th>Registrado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ciudFiltered.map((c) => (
+                      <CiudadanoRow key={c.id} c={c} barrioNombre={barrioById[c.barrio_id] ?? '—'} />
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </>
+          )}
         </div>
       </div>
     </AdminLayout>
   );
 }
+
+function CmsRow({ u }: { u: UsuarioCms }) {
+  return (
+    <tr>
+      <td>
+        <div className="row-title">
+          <div className="ic-mini" style={{ background: 'var(--biss-teal)' }}>
+            {initials(u.nombre)}
+          </div>
+          <div>
+            <div>{u.nombre}</div>
+            <div className="row-meta">{u.email}</div>
+          </div>
+        </div>
+      </td>
+      <td>
+        {u.rol === 'superadmin' || u.rol === 'admin' ? (
+          <span className="badge" style={{ background: 'var(--cat-social-bg)', color: 'var(--cat-social)' }}>
+            <Crown />
+            {u.rol === 'superadmin' ? 'Superadmin' : 'Admin'}
+          </span>
+        ) : (
+          <span className="badge" style={{ background: 'var(--biss-teal-50)', color: 'var(--biss-teal-900)' }}>
+            <Shield />Editor
+          </span>
+        )}
+      </td>
+      <td>
+        <span className="mono" style={{ fontSize: 12 }}>{formatRelative(u.creado_en)}</span>
+      </td>
+      <td className="action-cell">
+        <button type="button" aria-label="Ver perfil">
+          <Eye style={{ width: 14, height: 14 }} />
+        </button>
+        <button type="button" aria-label="Editar">
+          <Edit style={{ width: 14, height: 14 }} />
+        </button>
+      </td>
+    </tr>
+  );
+}
+
+function CiudadanoRow({ c, barrioNombre }: { c: Ciudadano; barrioNombre: string }) {
+  const nombre = `${c.nombres} ${c.apellidos}`.trim();
+  return (
+    <tr>
+      <td>
+        <div className="row-title">
+          <div className="ic-mini" style={{ background: 'var(--cat-agua)' }}>
+            {initials(nombre)}
+          </div>
+          <div>
+            <div>{nombre}</div>
+            <div className="row-meta">{c.email}</div>
+          </div>
+        </div>
+      </td>
+      <td>{barrioNombre}</td>
+      <td className="mono" style={{ fontSize: 12 }}>{c.telefono_celular}</td>
+      <td>
+        {c.verificado_sms ? (
+          <span className="badge badge-resolved"><span className="dot" />Sí</span>
+        ) : (
+          <span className="badge"><span className="dot" />Pendiente</span>
+        )}
+      </td>
+      <td>
+        <span className="mono" style={{ fontSize: 12 }}>{formatRelative(c.creado_en)}</span>
+      </td>
+    </tr>
+  );
+}
+

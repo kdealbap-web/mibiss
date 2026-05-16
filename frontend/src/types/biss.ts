@@ -121,3 +121,175 @@ export interface StatsPorCategoria {
   orden: number;
   casos: number;
 }
+
+// =============================================================================
+// Entidades de detalle (no expuestas en vistas públicas)
+// =============================================================================
+
+export type RelacionTestimonio = 'vecino' | 'victima' | 'lider' | 'familiar' | 'otro';
+export type EstadoTestimonio = 'pendiente' | 'aprobado' | 'rechazado' | 'oculto';
+export type EstadoSolicitud = 'pendiente' | 'aprobada' | 'rechazada' | 'duplicada';
+export type TipoApoyo = 'financiero' | 'material' | 'voluntario' | 'politico' | 'otro';
+export type TipoMedia = 'foto' | 'video' | 'pdf';
+export type TipoUpdate = 'nota' | 'cambio_estado' | 'hito' | 'reunion' | 'correccion' | 'foto';
+
+export interface Testimonio {
+  id: string;
+  ciudadano_id: string | null;
+  firmar_como: string | null;
+  relacion: RelacionTestimonio;
+  mensaje: string;
+  capitulo_id: string | null;
+  caso_id: string | null;
+  estado: EstadoTestimonio;
+  motivo_rechazo: string | null;
+  creado_en: string;
+  moderado_en: string | null;
+  moderado_por: string | null;
+}
+
+export interface TestimonioPublico {
+  id: string;
+  relacion: RelacionTestimonio;
+  mensaje: string;
+  capitulo_id: string | null;
+  caso_id: string | null;
+  creado_en: string;
+  autor_visible: string;
+}
+
+export interface TestimonioPendiente {
+  id: string;
+  relacion: RelacionTestimonio;
+  mensaje: string;
+  firmar_como: string | null;
+  capitulo_id: string | null;
+  caso_id: string | null;
+  creado_en: string;
+  ciudadano_nombre: string | null;
+  ciudadano_telefono: string | null;
+}
+
+export interface Comentario {
+  id: string;
+  ciudadano_id: string;
+  capitulo_id: string;
+  caso_id: string | null;
+  texto: string;
+  oculto: boolean;
+  motivo_oculto: string | null;
+  editado_en: string | null;
+  creado_en: string;
+}
+
+export interface ActualizacionCaso {
+  id: string;
+  caso_id: string;
+  tipo: TipoUpdate;
+  texto: string;
+  estado_anterior: EstadoCaso | null;
+  estado_nuevo: EstadoCaso | null;
+  autor_cms_id: string;
+  ocurrido_en: string;
+  creado_en: string;
+}
+
+export interface Padrino {
+  id: string;
+  nombre: string;
+  tipo_apoyo: TipoApoyo;
+  descripcion: string | null;
+  logo_url: string | null;
+  contacto_privado_email: string | null;
+  contacto_privado_tel: string | null;
+  publicado: boolean;
+  creado_en: string;
+}
+
+export interface PadrinoCaso {
+  caso_id: string;
+  padrino_id: string;
+  aporte_descripcion: string | null;
+  desde: string | null;
+  hasta: string | null;
+}
+
+export interface SolicitudPendiente {
+  id: string;
+  titulo: string;
+  descripcion: string;
+  lat: number | null;
+  lng: number | null;
+  creado_en: string;
+  estado: EstadoSolicitud;
+  ciudadano_id: string;
+  ciudadano: string;
+  telefono_celular: string;
+  barrio_id: number;
+  barrio: string;
+  categoria_codigo: string;
+  categoria: string;
+}
+
+export interface UsuarioCms {
+  id: string;
+  nombre: string;
+  email: string;
+  rol: 'superadmin' | 'admin' | 'editor';
+  activo: boolean;
+  creado_en: string;
+}
+
+export interface Ciudadano {
+  id: string;
+  auth_user_id: string | null;
+  cedula: string;
+  nombres: string;
+  apellidos: string;
+  fecha_nacimiento: string;
+  barrio_id: number;
+  estado_civil: string;
+  direccion: string;
+  email: string;
+  telefono_celular: string;
+  telefono_fijo: string | null;
+  miembros_hogar: number;
+  estrato: number;
+  escolaridad: string;
+  verificado_sms: boolean;
+  consentimiento_habeas_data: boolean;
+  acepta_notificaciones: boolean;
+  creado_en: string;
+  eliminado_en: string | null;
+}
+
+export interface CasoDetalle {
+  id: string;
+  capitulo_id: string;
+  categoria_id: number;
+  titulo: string;
+  slug: string;
+  descripcion: string;
+  estado: EstadoCaso;
+  lat: number | null;
+  lng: number | null;
+  solicitud_origen_id: string | null;
+  creado_por: string | null;
+  publicado_en: string | null;
+  resuelto_en: string | null;
+  creado_en: string;
+  actualizado_en: string;
+}
+
+export interface MultimediaCaso {
+  id: string;
+  caso_id: string;
+  tipo: TipoMedia;
+  url: string;
+  thumb_url: string | null;
+  nombre_original: string | null;
+  bytes: number | null;
+  orden: number;
+  subido_por: string | null;
+  creado_en: string;
+}

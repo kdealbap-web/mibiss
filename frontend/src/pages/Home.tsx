@@ -19,6 +19,7 @@ import {
 import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
 import { BissMap } from '../components/map/BissMap';
+import { MapDrawer } from '../components/map/MapDrawer';
 import { useFlowDrawer } from '../context/FlowDrawer';
 
 import { useBarrios } from '../hooks/useBarrios';
@@ -27,7 +28,7 @@ import { useStatsGlobales } from '../hooks/useStats';
 import { useStatsPorCategoria } from '../hooks/useCategorias';
 import { useCapitulosPublicos } from '../hooks/useCapitulos';
 import { formatNumber } from '../lib/format';
-import type { Barrio, CapituloPublico, Zona } from '../types/biss';
+import type { Barrio, CapituloPublico, CasoPublico, Zona } from '../types/biss';
 
 const CATEGORIA_ICON: Record<string, typeof MapIcon> = {
   agua: Droplets,
@@ -141,6 +142,7 @@ export function Home() {
   const [search, setSearch] = useState('');
   const [catFilter, setCatFilter] = useState<string>('all');
   const [stateFilter, setStateFilter] = useState<EstadoFilter | null>(null);
+  const [drawerCaso, setDrawerCaso] = useState<CasoPublico | null>(null);
 
   const totals = stats.data;
 
@@ -315,7 +317,15 @@ export function Home() {
           </div>
 
           <div className="map-wrap">
-            <BissMap onBarrioClick={(b) => navigate(`/capitulo/${b.slug}`)} />
+            <BissMap
+              onBarrioClick={(b) => navigate(`/capitulo/${b.slug}`)}
+              onCasoClick={(c) => setDrawerCaso(c)}
+            />
+            <MapDrawer
+              open={drawerCaso !== null}
+              onClose={() => setDrawerCaso(null)}
+              caso={drawerCaso}
+            />
             <aside className="map-side">
               <div className="map-search-wrap" style={{ marginBottom: 4 }}>
                 <Search strokeWidth={2.2} />
