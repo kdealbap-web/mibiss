@@ -1,0 +1,124 @@
+/* ============================================================
+   page-caso.css · BISS · /caso/:folio
+   Portado verbatim del <style> de Design/caso.html.
+   ============================================================ */
+
+.caso-body { background: var(--surface-sunken); }
+
+.caso-hero {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 32px 0;
+}
+.caso-hero-inner {
+  max-width: 1100px; margin-inline: auto;
+  padding: 0 24px;
+  display: grid; gap: 16px;
+}
+.caso-breadcrumb { font-size: 13px; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; }
+.caso-hero h1 {
+  font-family: var(--font-display); font-weight: 900;
+  font-size: clamp(1.875rem, 4vw, 2.75rem);
+  color: var(--ink-strong);
+  letter-spacing: -0.025em; line-height: 1.05;
+}
+.caso-hero .meta-row {
+  display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+}
+
+.caso-main {
+  max-width: 1100px; margin: 28px auto 80px;
+  padding: 0 24px;
+  display: grid; gap: 24px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 1024px) { .caso-main { grid-template-columns: 1.7fr 1fr; } }
+
+.caso-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+}
+.caso-card + .caso-card { margin-top: 16px; }
+.caso-card h2 {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: 1.375rem; color: var(--ink-strong);
+  margin-bottom: 12px;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.gallery .ph {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius);
+  background-color: var(--surface-sunken);
+  background-image: repeating-linear-gradient(135deg, rgba(6, 119, 124, 0.10) 0 10px, transparent 10px 20px);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink-faint);
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
+}
+.gallery .ph.big { grid-column: span 2; grid-row: span 2; aspect-ratio: 16 / 9; }
+
+.padrino-card {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  background: var(--state-resolved-bg);
+  border: 1px solid var(--state-resolved-border);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+}
+.padrino-card:last-child { margin-bottom: 0; }
+.padrino-card .av {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: var(--state-resolved); color: #FFFFFF;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 800;
+}
+.padrino-card .name { font-weight: 700; color: #065F46; font-size: 14px; }
+.padrino-card .aporte { font-size: 12px; color: #047857; }
+
+.caso-testimonio {
+  padding: 14px 18px;
+  background: var(--surface-raised);
+  border-left: 4px solid var(--cat-social);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+}
+.caso-testimonio p { font-size: 14.5px; line-height: 1.55; color: var(--ink); }
+.caso-testimonio .author { margin-top: 8px; font-size: 12px; color: var(--ink-soft); }
+.caso-testimonio .author strong { color: var(--ink-strong); }
+
+.action-bar {
+  position: sticky; bottom: 0; left: 0; right: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 14px 20px calc(14px + env(safe-area-inset-bottom));
+  display: flex; gap: 8px; justify-content: space-between;
+  flex-wrap: wrap;
+  z-index: 40;
+  box-shadow: 0 -8px 20px rgba(6, 119, 124, 0.06);
+}
+
+.caso-side-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+}
+.caso-side-card + .caso-side-card { margin-top: 14px; }
+.caso-side-card h3 { font-family: var(--font-display); font-weight: 800; font-size: 15px; color: var(--ink-strong); margin-bottom: 10px; }
+.data-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.data-row:last-child { border-bottom: 0; }
+.data-row .k { color: var(--ink-soft); font-weight: 600; }
+.data-row .v { color: var(--ink-strong); font-weight: 700; text-align: right; }

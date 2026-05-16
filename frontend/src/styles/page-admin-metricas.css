@@ -1,0 +1,35 @@
+/* page-admin-metricas.css */
+
+.chart-card { padding: 22px 24px; }
+.chart-svg { width: 100%; height: 240px; }
+
+.legend-row {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  font-size: 12px; color: var(--ink-soft);
+  margin-top: 10px;
+}
+.legend-row .item { display: flex; align-items: center; gap: 6px; }
+.legend-row .swatch { width: 12px; height: 12px; border-radius: 3px; }
+
+.heatmap {
+  display: grid;
+  grid-template-columns: 80px repeat(7, 1fr);
+  gap: 4px;
+  font-size: 11px;
+}
+.heatmap .lbl { color: var(--ink-soft); display: flex; align-items: center; font-weight: 600; }
+.heatmap .cell {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  background: var(--biss-teal-50);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--biss-teal-900);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 10px;
+}
+.heatmap .cell[data-h='1'] { background: #C2EBED; }
+.heatmap .cell[data-h='2'] { background: #9CE0E4; }
+.heatmap .cell[data-h='3'] { background: #5AC9CF; color: #FFFFFF; }
+.heatmap .cell[data-h='4'] { background: #0CB9C1; color: #FFFFFF; }
+.heatmap .cell[data-h='5'] { background: #06777C; color: #FFFFFF; }

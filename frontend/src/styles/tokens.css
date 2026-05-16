@@ -1,0 +1,174 @@
+/* ============================================================
+   tokens.css — BISS Design Tokens
+   Fuente de verdad: "manual básico de marca BISS" (equipo Kevin).
+   Paleta primaria: teal #0CB9C1 + paleta secundaria de 7 colores.
+   Tipografía oficial: VAG Round → sustituto Google Fonts: Nunito.
+   ============================================================ */
+
+@layer base {
+  :root {
+    /* ===== MARCA · teal monocromático ===== */
+    --biss-teal:        #0CB9C1;
+    --biss-teal-700:    #0A9BA2;
+    --biss-teal-900:    #06777C;
+    --biss-teal-100:    #C2EBED;
+    --biss-teal-50:     #E1F7F8;
+
+    /* Aliases legacy (compat con componentes que aún referencian navy/lima).
+       Estos apuntan al teal en su rol correspondiente. NO crear nuevos usos. */
+    --biss-navy:        #0CB9C1;
+    --biss-navy-700:    #0A9BA2;
+    --biss-navy-50:     #E1F7F8;
+    --biss-navy-100:    #C2EBED;
+    --biss-navy-900:    #06777C;
+    --biss-lima:        #0CB9C1;
+    --biss-lima-600:    #0A9BA2;
+    --biss-lima-700:    #06777C;
+    --biss-lima-100:    #C2EBED;
+    --biss-lima-50:     #E1F7F8;
+
+    /* ===== TINTA Y SUPERFICIES ===== */
+    --ink-strong:       #06777C;   /* titulares · teal-900 */
+    --ink:              #1F2937;   /* body */
+    --ink-soft:         #53575F;   /* del manual */
+    --ink-faint:        #9AA3B2;
+    --ink-inverse:      #FFFFFF;
+
+    --surface:          #FFFFFF;
+    --surface-raised:   #FAFBFC;
+    --surface-sunken:   #F2F3F4;   /* del manual */
+    --surface-dark:     #0CB9C1;
+    --surface-accent:   #E1F7F8;
+
+    --border:           #E5E7EB;
+    --border-strong:    #CBD2DC;
+    --border-accent:    #0CB9C1;
+    --border-focus:     #0CB9C1;
+
+    /* ===== ESTADOS · paleta del manual ===== */
+    --state-critical:        #E4042C;
+    --state-critical-bg:     #FCE3E8;
+    --state-critical-border: #F6A3B1;
+
+    --state-progress:        #FDC746;   /* amarillo · atención/en movimiento */
+    --state-progress-bg:     #FFF4D4;
+    --state-progress-border: #FBE085;
+    --state-progress-ink:    #8A6800;   /* texto legible sobre amarillo */
+
+    --state-resolved:        #3DAF6C;
+    --state-resolved-bg:     #DDF3E5;
+    --state-resolved-border: #9CD8B4;
+
+    --state-info:            #0CB9C1;
+    --state-info-bg:         #E1F7F8;
+    --state-info-border:     #C2EBED;
+
+    /* ===== 8 CATEGORÍAS =====
+       Diversificadas para evitar choque con estados. Donde hubo match natural,
+       se adoptó el hex del manual (agua, social, otros); el resto del brief. */
+    --cat-agua:            #3773B9;   /* manual */
+    --cat-agua-bg:         #DCE6F2;
+    --cat-luz:             #F59E0B;   /* brief · amber distinto de progress yellow */
+    --cat-luz-bg:          #FEF3C7;
+    --cat-infraestructura: #92400E;
+    --cat-infraestructura-bg: #FEF3C7;
+    --cat-salud:           #E11D48;   /* brief · rosa quirúrgico distinto de critical */
+    --cat-salud-bg:        #FFE4E6;
+    --cat-educacion:       #7C3AED;
+    --cat-educacion-bg:    #EDE9FE;
+    --cat-medio-ambiente:  #15803D;   /* verde bosque · distinto de resolved */
+    --cat-medio-ambiente-bg:#DCFCE7;
+    --cat-social:          #D20B62;   /* manual */
+    --cat-social-bg:       #FBD8E6;
+    --cat-otros:           #53575F;   /* manual · slate del manual */
+    --cat-otros-bg:        #F2F3F4;
+
+    /* ===== 5 ZONAS TERRITORIALES (atenuadas) ===== */
+    --zone-centro-norte:    #1FAF4A;
+    --zone-occidental:      #2F33A3;
+    --zone-oriental:        #C99C0A;
+    --zone-sur:             #D9534F;
+    --zone-sur-occidental:  #7E57C2;
+
+    /* ===== TIPOGRAFÍA · VAG Rounded Next (manual oficial · única familia) =====
+       Cargada vía shared/fonts.css. Una sola familia para display + UI.
+       Fallback puro a system-ui si todos los CDN fallan. */
+    --font-display: 'VAG Rounded Next', system-ui, sans-serif;
+    --font-sans:    'VAG Rounded Next', system-ui, -apple-system, sans-serif;
+    --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+    --font-hand:    'Caveat', cursive;
+
+    --fw-light:     300;
+    --fw-normal:    400;
+    --fw-medium:    500;   /* Nunito skips 500 — mapped to 600 visually */
+    --fw-semibold:  600;
+    --fw-bold:      700;
+    --fw-extrabold: 800;
+    --fw-black:     900;
+
+    --fs-xs:    0.75rem;
+    --fs-sm:    0.875rem;
+    --fs-base:  1rem;
+    --fs-lg:    1.125rem;
+    --fs-xl:    1.25rem;
+    --fs-2xl:   1.5rem;
+    --fs-3xl:   1.875rem;
+    --fs-4xl:   2.25rem;
+    --fs-5xl:   3rem;
+    --fs-6xl:   3.75rem;
+    --fs-display-sm: 2.5rem;
+    --fs-display:    3.75rem;
+    --fs-display-lg: 5.25rem;
+
+    --lh-tight: 1.05;
+    --lh-snug:  1.2;
+    --lh-base:  1.55;
+    --lh-loose: 1.7;
+
+    /* ===== RADIOS · isologo squircle marca el tono ===== */
+    --radius-sm:       8px;
+    --radius:          12px;
+    --radius-md:       16px;
+    --radius-lg:       20px;
+    --radius-xl:       28px;
+    --radius-2xl:      36px;
+    --radius-squircle: 24px;
+    --radius-pill:     9999px;
+
+    /* ===== SOMBRAS · teal-tinted ===== */
+    --shadow-sm:     0 1px 2px rgba(6, 119, 124, 0.06);
+    --shadow-card:   0 2px 6px rgba(6, 119, 124, 0.07), 0 1px 2px rgba(6, 119, 124, 0.04);
+    --shadow-raised: 0 8px 20px rgba(6, 119, 124, 0.09), 0 2px 6px rgba(6, 119, 124, 0.05);
+    --shadow-pop:    0 16px 32px rgba(6, 119, 124, 0.14), 0 6px 12px rgba(6, 119, 124, 0.07);
+    --shadow-focus:  0 0 0 3px rgba(12, 185, 193, 0.35);
+    --shadow-inset:  inset 0 2px 4px rgba(6, 119, 124, 0.05);
+    --shadow-cta:    0 4px 12px rgba(12, 185, 193, 0.30);
+
+    /* ===== TRANSICIONES ===== */
+    --t-fast:   120ms cubic-bezier(0.4, 0, 0.2, 1);
+    --t-base:   200ms cubic-bezier(0.4, 0, 0.2, 1);
+    --t-page:   280ms cubic-bezier(0.16, 1, 0.3, 1);
+    --t-modal:  240ms cubic-bezier(0.32, 0.72, 0, 1);
+    --t-bounce: 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* ===== Z-INDEX ===== */
+    --z-nav:    100;
+    --z-drawer: 1000;
+    --z-modal:  1050;
+    --z-splash: 9999;
+    --z-toast:  11000;
+
+    /* ===== ESPACIADO (base 4) ===== */
+    --sp-1:  4px;   --sp-2:  8px;   --sp-3:  12px;  --sp-4:  16px;
+    --sp-5:  20px;  --sp-6:  24px;  --sp-8:  32px;  --sp-10: 40px;
+    --sp-12: 48px;  --sp-16: 64px;  --sp-20: 80px;  --sp-24: 96px;
+
+    /* ===== LAYOUT ===== */
+    --container-max: 1280px;
+    --container-pad: 20px;
+    --navbar-h:      64px;
+
+    /* ===== MAPA ===== */
+    --map-tile-url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+  }
+}

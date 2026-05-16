@@ -1,0 +1,80 @@
+# ============================================================================
+# BISS · .gitignore
+# ============================================================================
+
+# --- Dependencies ------------------------------------------------------------
+node_modules/
+.pnpm-store/
+
+# --- Build outputs -----------------------------------------------------------
+dist/
+build/
+.next/
+out/
+.vercel/
+.wrangler/
+
+# --- Caches ------------------------------------------------------------------
+.cache/
+.parcel-cache/
+.eslintcache
+.turbo/
+*.tsbuildinfo
+
+# --- Environment & secrets ---------------------------------------------------
+.env
+.env.local
+.env*.local
+.env.secrets
+.env.production
+.env.development
+backend/.env*
+frontend/.env*
+
+# Credenciales sueltas
+**/token.md
+**/credentials.json
+**/secrets.json
+**/*.pem
+**/*.key
+
+# --- IDE ---------------------------------------------------------------------
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# --- Logs --------------------------------------------------------------------
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# --- Test coverage -----------------------------------------------------------
+coverage/
+*.lcov
+.nyc_output/
+
+# --- OS ----------------------------------------------------------------------
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# --- Agentes locales ---------------------------------------------------------
+.claude/
+.cursor/
+.aider*
+
+# --- Material de referencia (vive local, no en repo) ------------------------
+Design/
+*.zip
+*.rar
+*.7z
+
+# --- Archivos temporales de exploración -------------------------------------
+**/inventario_biss.txt
+**/manual_marca_extracted.txt

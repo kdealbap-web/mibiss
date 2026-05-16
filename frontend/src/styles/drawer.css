@@ -1,0 +1,77 @@
+/* ============================================================
+   drawer.css · BISS · Drawer primitivo
+   Mobile: bottom-sheet 92vh slide-up 280ms
+   Desktop: lateral derecho 520px slide-right
+   ============================================================ */
+
+.biss-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 119, 124, 0.42);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--t-page);
+  z-index: 900;
+}
+.biss-drawer-backdrop[data-open='true'] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.biss-drawer {
+  position: fixed;
+  z-index: 901;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  box-shadow: -8px 0 32px rgba(6, 119, 124, 0.22);
+  transition: transform var(--t-page);
+  will-change: transform;
+  overscroll-behavior: contain;
+}
+
+/* Mobile (default) — bottom sheet */
+.biss-drawer {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 92vh;
+  max-height: 92vh;
+  border-radius: 20px 20px 0 0;
+  transform: translateY(100%);
+}
+.biss-drawer[data-open='true'] {
+  transform: translateY(0);
+}
+
+/* Desktop — lateral derecho */
+@media (min-width: 1024px) {
+  .biss-drawer {
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: auto;
+    height: 100vh;
+    max-height: 100vh;
+    width: min(520px, 92vw);
+    border-radius: 20px 0 0 20px;
+    transform: translateX(100%);
+  }
+  .biss-drawer[data-open='true'] {
+    transform: translateX(0);
+  }
+}
+
+/* La .sheet (de storyboard.css) llena el drawer.
+   Override sus min-height/borders cuando vive dentro del drawer. */
+.biss-drawer .sheet {
+  height: 100%;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+.biss-drawer .sheet-body {
+  overflow-y: auto;
+}

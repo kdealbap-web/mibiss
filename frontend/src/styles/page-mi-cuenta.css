@@ -1,0 +1,65 @@
+/* ============================================================
+   page-mi-cuenta.css · BISS · /mi-cuenta
+   Portado verbatim del <style> de Design/mi-cuenta.html.
+   ============================================================ */
+
+.mc-body { background: var(--surface-sunken); }
+.mc-shell { max-width: 980px; margin-inline: auto; padding: 32px 20px 80px; }
+
+.profile-card {
+  background: var(--biss-teal);
+  color: #FFFFFF;
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+}
+.profile-avatar {
+  width: 72px; height: 72px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.18);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 900; font-size: 28px;
+  color: #FFFFFF;
+  flex-shrink: 0;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+}
+.profile-card h1 {
+  color: #FFFFFF; font-family: var(--font-display); font-weight: 900;
+  font-size: 1.75rem; letter-spacing: -0.02em;
+}
+.profile-card .sub { color: rgba(255, 255, 255, 0.88); font-size: 14px; margin-top: 2px; }
+.profile-stats {
+  margin-left: auto;
+  display: flex; gap: 24px;
+}
+.profile-stat .n { font-family: var(--font-display); font-weight: 900; font-size: 28px; line-height: 1; }
+.profile-stat .l { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255, 255, 255, 0.85); margin-top: 4px; }
+
+.mc-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+}
+.mc-tabs { margin-bottom: 18px; }
+
+.case-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.case-row:last-child { border-bottom: 0; }
+.case-row .ico {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #FFFFFF;
+  flex-shrink: 0;
+}
+.case-row .title { font-weight: var(--fw-bold); color: var(--ink-strong); }
+.case-row .meta { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+.case-row .meta .mono { font-weight: 600; }

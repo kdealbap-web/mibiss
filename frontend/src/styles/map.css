@@ -1,0 +1,50 @@
+/* ============================================================
+   map.css · BISS · estilos de Leaflet + pins divIcon
+   Cargado por BissMap.tsx. Trabajo sobre las clases que Leaflet
+   genera + las divIcons que definimos en JS.
+   ============================================================ */
+
+.biss-map { font-family: var(--font-display); }
+.biss-map .leaflet-tile-pane { filter: saturate(0.95); }
+
+/* divIcon wrapper sin background — los estilos del pin viven en home.css (.pin-hito) */
+.leaflet-div-icon.pin-hito-marker {
+  background: transparent !important;
+  border: 0 !important;
+}
+
+/* Tooltip propio */
+.biss-map-tooltip.leaflet-tooltip {
+  background: var(--biss-teal-900);
+  color: #FFFFFF;
+  border: 0;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 12px rgba(6, 119, 124, 0.45);
+}
+.biss-map-tooltip.leaflet-tooltip::before {
+  display: none;
+}
+
+/* Overlay de loading / error */
+.biss-map-overlay {
+  position: absolute;
+  inset: auto 12px 12px auto;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--biss-teal-900);
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-size: 13px;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  box-shadow: 0 6px 16px rgba(6, 119, 124, 0.18);
+  z-index: 401;
+}
+.biss-map-overlay-error {
+  background: var(--state-critical);
+  color: #FFFFFF;
+}

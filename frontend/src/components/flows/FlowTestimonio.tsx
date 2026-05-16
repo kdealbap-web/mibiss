@@ -1,0 +1,305 @@
+import { useState } from 'react';
+import {
+  ArrowRight,
+  ArrowLeft,
+  Home as HomeIcon,
+  Heart,
+  Eye,
+  Briefcase,
+  User,
+  CheckCircle2,
+  Info,
+  Shield,
+  Send,
+  MessageSquareQuote,
+  Check,
+} from 'lucide-react';
+
+import { FlowShell, useFlowDraft } from './FlowShell';
+import { useFlowDrawer } from '../../context/FlowDrawer';
+
+type Rol = 'vecino' | 'familia' | 'testigo' | 'profesional' | 'prefiere-no-decir';
+
+interface TestimonioDraft {
+  rol: Rol | null;
+  historia: string;
+  nombre: string;
+  barrio: string;
+  anonimo: boolean;
+}
+
+const INITIAL: TestimonioDraft = {
+  rol: null,
+  historia: '',
+  nombre: '',
+  barrio: '',
+  anonimo: false,
+};
+
+const ROLES: Array<{
+  codigo: Rol;
+  title: string;
+  sub: string;
+  color: string;
+  Icon: typeof HomeIcon;
+}> = [
+  { codigo: 'vecino', title: 'Soy vecino del barrio', sub: 'Vivo cerca y me afecta', color: 'var(--cat-social)', Icon: HomeIcon },
+  { codigo: 'familia', title: 'Soy familia afectada', sub: 'Le pasó a alguien cercano', color: 'var(--cat-salud)', Icon: Heart },
+  { codigo: 'testigo', title: 'Pasé por ahí ese día', sub: 'Lo vi, soy testigo', color: 'var(--cat-agua)', Icon: Eye },
+  { codigo: 'profesional', title: 'Soy profesional involucrado', sub: 'Médico, docente, líder social…', color: 'var(--cat-educacion)', Icon: Briefcase },
+  { codigo: 'prefiere-no-decir', title: 'Prefiero no decir', sub: 'Igual cuenta tu historia', color: 'var(--cat-otros)', Icon: User },
+];
+
+export function FlowTestimonio() {
+  const { closeFlow, meta } = useFlowDrawer();
+  const [draft, setDraft, clearDraft] = useFlowDraft<TestimonioDraft>('testimonio', INITIAL);
+  const [step, setStep] = useState(1);
+  const [enviado, setEnviado] = useState(false);
+
+  const renderStep1 = () => (
+    <FlowShell
+      step={1}
+      totalSteps={3}
+      title="¿Quién eres tú aquí?"
+      lead="Tu rol nos ayuda a entender la historia. No es público."
+      onClose={closeFlow}
+      body={
+        <>
+          {ROLES.map((r) => {
+            const selected = draft.rol === r.codigo;
+            return (
+              <button
+                key={r.codigo}
+                type="button"
+                className="pick"
+                data-state={selected ? 'selected' : undefined}
+                onClick={() => setDraft((d) => ({ ...d, rol: r.codigo }))}
+              >
+                <div className="pick-icon" style={{ background: r.color }}>
+                  <r.Icon style={{ width: 18, height: 18 }} />
+                </div>
+                <div className="pick-body">
+                  <div className="pick-title">{r.title}</div>
+                  <div className="pick-sub">{r.sub}</div>
+                </div>
+                <CheckCircle2 className="pick-check" />
+              </button>
+            );
+          })}
+        </>
+      }
+      footer={
+        <button
+          type="button"
+          className="btn btn-primary btn-block"
+          disabled={!draft.rol}
+          onClick={() => setStep(2)}
+        >
+          Continuar <ArrowRight />
+        </button>
+      }
+    />
+  );
+
+  const renderStep2 = () => (
+    <FlowShell
+      step={2}
+      totalSteps={3}
+      title="¿Qué pasó? ¿Qué sentiste?"
+      lead="Cuéntalo en tus palabras. Lo que viste, lo que viviste, cómo te afectó."
+      onClose={closeFlow}
+      onBack={() => setStep(1)}
+      body={
+        <>
+          <div className="mini-field">
+            <label htmlFor="t-story">Tu historia</label>
+            <textarea
+              id="t-story"
+              style={{ minHeight: 140 }}
+              value={draft.historia}
+              onChange={(e) => setDraft((d) => ({ ...d, historia: e.target.value }))}
+            />
+            <span className="hint">
+              {draft.historia.length} caracteres · sin límite máximo
+            </span>
+          </div>
+          <div className="row row-2" style={{ padding: '2px 0' }}>
+            <Info style={{ width: 14, height: 14, color: 'var(--biss-teal-900)' }} />
+            <span style={{ fontSize: 11.5, color: 'var(--ink-soft)' }}>
+              Sin tecnicismos. Una historia vale más que una queja.
+            </span>
+          </div>
+        </>
+      }
+      footer={
+        <div className="row row-2">
+          <button type="button" className="btn btn-ghost" onClick={() => setStep(1)}>
+            <ArrowLeft />Atrás
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary grow"
+            disabled={draft.historia.trim().length < 20}
+            onClick={() => setStep(3)}
+          >
+            Continuar <ArrowRight />
+          </button>
+        </div>
+      }
+    />
+  );
+
+  const renderStep3 = () => {
+    const publicar = () => {
+      // TODO: INSERT en testimonios (caso_id = meta.casoId si aplica), respetando moderación.
+      clearDraft();
+      setEnviado(true);
+    };
+    return (
+      <FlowShell
+        step={3}
+        totalSteps={3}
+        title="¿Cómo firmas?"
+        lead="Puedes firmar con tu nombre o ir anónimo. Tú decides."
+        onClose={closeFlow}
+        onBack={() => setStep(2)}
+        body={
+          <>
+            <div className="mini-field">
+              <label htmlFor="t-name">Tu nombre</label>
+              <input
+                id="t-name"
+                type="text"
+                value={draft.nombre}
+                onChange={(e) => setDraft((d) => ({ ...d, nombre: e.target.value }))}
+                disabled={draft.anonimo}
+              />
+              <span className="hint">Aparecerá como autora del testimonio.</span>
+            </div>
+            <div className="mini-field">
+              <label htmlFor="t-zone">¿De qué barrio eres?</label>
+              <input
+                id="t-zone"
+                type="text"
+                value={draft.barrio}
+                onChange={(e) => setDraft((d) => ({ ...d, barrio: e.target.value }))}
+              />
+              <span className="hint">Opcional. Da contexto a tu voz.</span>
+            </div>
+            <div
+              className="toggle"
+              data-on={draft.anonimo ? 'true' : 'false'}
+              role="switch"
+              aria-checked={draft.anonimo}
+              tabIndex={0}
+              onClick={() => setDraft((d) => ({ ...d, anonimo: !d.anonimo }))}
+              onKeyDown={(e) => {
+                if (e.key === ' ' || e.key === 'Enter') {
+                  e.preventDefault();
+                  setDraft((d) => ({ ...d, anonimo: !d.anonimo }));
+                }
+              }}
+              style={{ cursor: 'pointer' }}
+            >
+              <div>
+                <div className="toggle-text">Prefiero ser anónimo</div>
+                <div style={{ fontSize: 11, color: 'var(--ink-soft)', marginTop: 2 }}>
+                  Tu historia se publica sin nombre.
+                </div>
+              </div>
+              <div className="toggle-track" />
+            </div>
+            <div
+              className="alert"
+              style={{
+                background: 'var(--state-info-bg)',
+                border: '1px solid var(--state-info-border)',
+                padding: '10px 12px',
+              }}
+            >
+              <Shield
+                className="alert-icon"
+                style={{ width: 16, height: 16, color: 'var(--biss-teal-900)' }}
+              />
+              <div className="alert-body">
+                <div className="alert-text" style={{ fontSize: 12, color: 'var(--biss-teal-900)' }}>
+                  Tu celular siempre queda privado. Solo lo ve BISS para confirmar que eres tú.
+                </div>
+              </div>
+            </div>
+          </>
+        }
+        footer={
+          <div className="row row-2">
+            <button type="button" className="btn btn-ghost" onClick={() => setStep(2)}>
+              <ArrowLeft />Atrás
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary grow"
+              style={{
+                ['--btn-bg' as never]: 'var(--cat-social)',
+                ['--btn-border' as never]: 'var(--cat-social)',
+                ['--btn-bg-hover' as never]: '#B00752',
+                ['--btn-ink' as never]: '#FFFFFF',
+              }}
+              disabled={!draft.anonimo && draft.nombre.trim().length < 2}
+              onClick={publicar}
+            >
+              Publicar testimonio <Send />
+            </button>
+          </div>
+        }
+      />
+    );
+  };
+
+  if (enviado) {
+    return (
+      <div className="sheet">
+        <div className="sheet-handle" />
+        <div className="sheet-bar">
+          <span className="sheet-bar-step" style={{ color: 'var(--state-resolved)' }}>
+            <Check style={{ width: 13, height: 13, verticalAlign: -2 }} /> Publicado
+          </span>
+          <button type="button" className="x" aria-label="Cerrar" onClick={closeFlow}>
+            <ArrowLeft style={{ display: 'none' }} />
+          </button>
+        </div>
+        <div className="sheet-body">
+          <div className="confirm">
+            <div
+              className="confirm-mark"
+              style={{ background: 'var(--cat-social-bg)', color: 'var(--cat-social)' }}
+            >
+              <MessageSquareQuote />
+            </div>
+            <div className="confirm-title">Gracias por sumar tu voz</div>
+            <div className="confirm-text">
+              {meta.casoFolio ? (
+                <>
+                  Tu testimonio entra a revisión para el caso{' '}
+                  <strong>{meta.casoFolio}</strong>. Cuando lo aprobemos, aparece en el caso.
+                </>
+              ) : (
+                <>
+                  Tu testimonio entra a revisión. Cuando lo aprobemos, aparece en el caso. Suele
+                  tomar 12 a 24 horas.
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="sheet-footer">
+          <button type="button" className="btn btn-primary btn-block" onClick={closeFlow}>
+            Volver al caso
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (step === 1) return renderStep1();
+  if (step === 2) return renderStep2();
+  return renderStep3();
+}

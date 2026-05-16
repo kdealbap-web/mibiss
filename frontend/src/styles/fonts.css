@@ -1,0 +1,21 @@
+/* ============================================================
+   fonts.css — Carga de tipografías oficiales BISS
+   Fuente única de verdad. Cambiar aquí si la URL de VAG cae.
+   ============================================================ */
+
+/* VAG Rounded Next · sustituto digital actual de VAG Round del manual
+   (Monotype Design Studio, 8 estilos). CDN gratuito + @font-face de respaldo. */
+@import url('https://fonts.cdnfonts.com/css/vag-rounded-next');
+
+/* Respaldo · si cdnfonts cae, se intenta onlinewebfonts (VAG Rounded Black) */
+@font-face {
+  font-family: 'VAG Rounded Next';
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+  src: url('https://db.onlinewebfonts.com/t/cd3171ba224d913fb350d907c9c82516.woff2') format('woff2'),
+       url('https://db.onlinewebfonts.com/t/cd3171ba224d913fb350d907c9c82516.woff') format('woff');
+}
+
+/* Google Fonts · JetBrains Mono (folios), Caveat (firma Kevin). Sin Nunito. */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Caveat:wght@600&display=swap');

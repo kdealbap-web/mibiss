@@ -1,0 +1,1838 @@
+[
+  {
+    "nombre": "ANTONIO NARIÑO",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.916644,
+    "lng": -74.781243,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "BARRIO NORMANDIA",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.920186,
+    "lng": -74.776511,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "BELLA MURILLO",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.917171,
+    "lng": -74.787197,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "COSTA DE ORO",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.923535,
+    "lng": -74.783217,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "EL ENCANTO",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.919255,
+    "lng": -74.784719,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "EL EXITO",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.925305,
+    "lng": -74.781695,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "ELPARQUE",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.929925,
+    "lng": -74.777473,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LA ALIANZA",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.917902,
+    "lng": -74.779196,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LA ARBOLEDA",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.927931,
+    "lng": -74.774985,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LA FARRUCA",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.917447,
+    "lng": -74.776039,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LA ILUSION",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.919199,
+    "lng": -74.771619,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LA INMACULADA",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.913096,
+    "lng": -74.783509,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LA PUERTA DE ORO",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.916595,
+    "lng": -74.783442,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LAS COLONIAS",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.918765,
+    "lng": -74.781477,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LAS COLONIAS II",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.917525,
+    "lng": -74.781251,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LAS GAVIOTAS",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.926651,
+    "lng": -74.782847,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LAS GAVIOTAS II",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.926117,
+    "lng": -74.785663,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LAS NUBES",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.915568,
+    "lng": -74.774687,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LAS TRINITARIAS",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.924477,
+    "lng": -74.786052,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LOS BALKANES",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.927435,
+    "lng": -74.785116,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LOS FUNDADORES",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.920998,
+    "lng": -74.779294,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LOS ROSALES",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.915636,
+    "lng": -74.786532,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "MUVDI",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.924172,
+    "lng": -74.781664,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "NORMANDIA NORTE",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.922398,
+    "lng": -74.777048,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "NUEVA JERUSALEN",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.916374,
+    "lng": -74.77561,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "NUEVO MILENIO",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.912972,
+    "lng": -74.78796,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "PORTAL DE LAS MORAS",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.921029,
+    "lng": -74.778292,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "RIOS DE AGUA VIVA",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.92649,
+    "lng": -74.778576,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "TAJAMAR",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.918202,
+    "lng": -74.777412,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "TAJAMAR II",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.917258,
+    "lng": -74.775331,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "TERMINAL",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.915236,
+    "lng": -74.783828,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "URB PARQUE MUVDI",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.924063,
+    "lng": -74.7778,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "URB. LAS MORAS",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.921377,
+    "lng": -74.785947,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA CECILIA",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.929594,
+    "lng": -74.781597,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA DE ARAGON",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.922164,
+    "lng": -74.792246,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA DEL CARMEN",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.928741,
+    "lng": -74.783549,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA ESTEFANY",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.91556,
+    "lng": -74.777848,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA KATANGA",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.921833,
+    "lng": -74.783687,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA KATANGA II",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.922533,
+    "lng": -74.78164,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA LAS MORAS I",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.919068,
+    "lng": -74.786834,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA LINDA I",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.917329,
+    "lng": -74.786308,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA LOZANO",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.92043,
+    "lng": -74.780768,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA MERLY",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.918816,
+    "lng": -74.780073,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA MONACO",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.916078,
+    "lng": -74.776618,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA MUVDI",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.924025,
+    "lng": -74.777219,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA ROSA",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.914944,
+    "lng": -74.780326,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA SEVERA",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.930985,
+    "lng": -74.780567,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA SOLEDAD",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.915481,
+    "lng": -74.781876,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA VIOLA",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.918963,
+    "lng": -74.783936,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA ZAMBRANO",
+    "comuna": "COMUNA CENTRO NORTE",
+    "zona_id": 1,
+    "lat": 10.922291,
+    "lng": -74.779765,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "ALTOS DE LA VILLA",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.916801,
+    "lng": -74.797357,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "ALTOS DE LOS ALMENDROS",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.918248,
+    "lng": -74.80123,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "ALTOS DE LOS ROBLES",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.919769,
+    "lng": -74.797127,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "ALTOS DE SEVILLA",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.91975,
+    "lng": -74.789085,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "CIUDAD TRASNMETRO",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.911702,
+    "lng": -74.790502,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "CONJ RES LOS ROBLES",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.918289,
+    "lng": -74.797636,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "CUCHILLA DE LOS ANGELES",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.913782,
+    "lng": -74.794064,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "EL MANANTIAL",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.9121,
+    "lng": -74.794059,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "JARDIN DE VILLA ESTADIO",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.922842,
+    "lng": -74.793634,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LOS ALMENDROS",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.922431,
+    "lng": -74.800458,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LOS ALMENDROS II",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.919623,
+    "lng": -74.802086,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LOS ALMENDROS III",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.918459,
+    "lng": -74.805436,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LOS ALMENDROS IV",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.916615,
+    "lng": -74.805586,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LOS CAMPANOS",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.915454,
+    "lng": -74.795734,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LOS CEDROS",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.919229,
+    "lng": -74.794995,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LOS CEREZOS",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.918744,
+    "lng": -74.806777,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LOS ROBLES",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.922399,
+    "lng": -74.79652,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LOS ROBLES IV",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.922116,
+    "lng": -74.794734,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LOS ROBLES IX",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.920851,
+    "lng": -74.797792,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LOS ROBLES VIII",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.921094,
+    "lng": -74.798956,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LOS ROBLES X",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.917216,
+    "lng": -74.798419,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "MARIA DE LOS ANGELES",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.914011,
+    "lng": -74.793484,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "MORAS IV ETAPA",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.917627,
+    "lng": -74.792862,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "MORAS NORTE",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.920356,
+    "lng": -74.78827,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "MORAS OCCIDENTE",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.92015,
+    "lng": -74.787347,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "NUEVO HORIZONTE",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.916658,
+    "lng": -74.792819,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "NUEVO HORIZONTE II",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.915026,
+    "lng": -74.793119,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "PORTAL DE LOS MANANTIALES",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.911484,
+    "lng": -74.797797,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "PORTAL DE LOS NOGALES",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.915321,
+    "lng": -74.796875,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "RESERVA DE LOS ALMENDROS",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.9188,
+    "lng": -74.79754,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "TERRANOVA",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.910176,
+    "lng": -74.788398,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "TRANSMETRO",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.914176,
+    "lng": -74.790539,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA ANGELITA",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.91943,
+    "lng": -74.785963,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA CAMPANOS II",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.917594,
+    "lng": -74.796746,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA ESTADIO",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.923254,
+    "lng": -74.791778,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA ESTADIO II",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.917444,
+    "lng": -74.792684,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA ESTADIO NORTE",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.919576,
+    "lng": -74.79151,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA LAS MORAS II",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.917971,
+    "lng": -74.792883,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA SEVILLA",
+    "comuna": "COMUNA OCCIDENTAL",
+    "zona_id": 2,
+    "lat": 10.922393,
+    "lng": -74.793535,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "12 DE OCTUBRE",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.921248,
+    "lng": -74.757352,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "16 DE JUNIO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.915314,
+    "lng": -74.765105,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "20 DE JULIO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.92468,
+    "lng": -74.764993,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "7 DE AGOSTO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.919575,
+    "lng": -74.758894,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "BARRIO CENTRO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.920547,
+    "lng": -74.761928,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "CACHIMBERO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.921864,
+    "lng": -74.75875,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "CALLE DE LAS FLORES",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.92176,
+    "lng": -74.762928,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "COSTA HERMOSA",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.934779,
+    "lng": -74.768894,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "CRUZ DE MAYO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.9231,
+    "lng": -74.760211,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "EL CABRERA",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.92449,
+    "lng": -74.7626,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "EL CARNERO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.92122,
+    "lng": -74.768088,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "EL CENTENARIO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.925694,
+    "lng": -74.763355,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "EL CORTIJO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.916706,
+    "lng": -74.78754,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "EL FERROCARRIL",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.923997,
+    "lng": -74.768189,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "EL HIPODROMO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.927978,
+    "lng": -74.767748,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "EL ORIENTAL",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.923033,
+    "lng": -74.761448,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "EL PASITO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.9183,
+    "lng": -74.762015,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "EL PORVENIR",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.927571,
+    "lng": -74.75967,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "EL RIO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.931122,
+    "lng": -74.768175,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "EL TRIUNFO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.929211,
+    "lng": -74.764435,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "EL TUCAN",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.930775,
+    "lng": -74.77265,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "JUAN D ROMERO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.91685,
+    "lng": -74.761723,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LA ESPERANZA",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.907095,
+    "lng": -74.787671,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LA FLORESTA I",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.916887,
+    "lng": -74.766588,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LA FLORESTA PLAN II",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.918502,
+    "lng": -74.765149,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LA LOMA",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.918056,
+    "lng": -74.760525,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LA MARIA",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.922217,
+    "lng": -74.764504,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LA RIVERA",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.936621,
+    "lng": -74.766126,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LA VICTORIA",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.938444,
+    "lng": -74.76649,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LAS FERIAS",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.938602,
+    "lng": -74.764495,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LAS MARGARITAS",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.931856,
+    "lng": -74.763414,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LOS ARAYANES",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.928338,
+    "lng": -74.770921,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LOS MANGOS",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.931457,
+    "lng": -74.762632,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "NUEVO TRIUNFO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.923069,
+    "lng": -74.756813,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "PRIMERO DE MAYO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.938474,
+    "lng": -74.762317,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "PUMAREJO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.917361,
+    "lng": -74.764653,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "RIGOBERTA MENCHU",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.913191,
+    "lng": -74.76193,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "SALAMANCA",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.930121,
+    "lng": -74.76239,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "SALCEDO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.923732,
+    "lng": -74.75808,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "SAN ANTONIO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.91826,
+    "lng": -74.765807,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "SANTANA",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.92322,
+    "lng": -74.762917,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "SITIO HERMOSO",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.934001,
+    "lng": -74.771333,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "SOLUCIONES MINIMAS",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.931661,
+    "lng": -74.765344,
+    "fuente": "vecino",
+    "confianza": "media"
+  },
+  {
+    "nombre": "URB. SALAMANCA",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.930993,
+    "lng": -74.76536,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "URB. SOL REAL",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.919836,
+    "lng": -74.765886,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA SALAMAR",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.934798,
+    "lng": -74.764581,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA SOFIA",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.933929,
+    "lng": -74.764536,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VISTA HERMOSA",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.936473,
+    "lng": -74.769441,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "ZONA INDUSTRIAL",
+    "comuna": "COMUNA ORIENTAL",
+    "zona_id": 3,
+    "lat": 10.936147,
+    "lng": -74.761137,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "23 DE NOVIEMBRE",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.907436,
+    "lng": -74.770662,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "AEROPUERTO",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.900289,
+    "lng": -74.772448,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "ALTOS DE JESUS",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.90409,
+    "lng": -74.778174,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "BELLA JERUSALEN",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.901474,
+    "lng": -74.778125,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "CIUDAD BOLIVAR",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.911133,
+    "lng": -74.776912,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "CIUDAD DEL PARQUE",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.914628,
+    "lng": -74.768832,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "CIUDAD PARAISO",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.899332,
+    "lng": -74.782618,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "CIUDADELA METR.",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.910119,
+    "lng": -74.782903,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "DOÑA MANUELA",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.905888,
+    "lng": -74.781176,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "EL ESFUERZO",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.895976,
+    "lng": -74.765847,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "EL OASIS",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.91684,
+    "lng": -74.770943,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "EL RECUERDO",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.917826,
+    "lng": -74.768343,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "GRANABASTOS",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.899842,
+    "lng": -74.791671,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LA BONANZA",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.914309,
+    "lng": -74.772512,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LA CANDELARIA",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.90228,
+    "lng": -74.781164,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LA FE",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.915678,
+    "lng": -74.771812,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LINDA MARIA",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.914385,
+    "lng": -74.770459,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LINDA MARIA II",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.91375,
+    "lng": -74.768946,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "MANUELA BELTRAN",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.912508,
+    "lng": -74.771691,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "MATHA  GISELLA",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.906257,
+    "lng": -74.778507,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "MONTECARMELO",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.910726,
+    "lng": -74.773719,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "PORTAL DE S ANTONIO",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.912098,
+    "lng": -74.768658,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "PRADO DE SOLEDAD",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.90664,
+    "lng": -74.776085,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "PRADO SOLEDAD III",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.904953,
+    "lng": -74.778494,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "RENACER",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.908261,
+    "lng": -74.771964,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "SAN JUAN EUDES",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.902995,
+    "lng": -74.77822,
+    "fuente": "vecino",
+    "confianza": "media"
+  },
+  {
+    "nombre": "SAN VICENTE",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.902412,
+    "lng": -74.777662,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "SOLEDAD DOS MIL",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.913039,
+    "lng": -74.778523,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA ADELA I",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.909152,
+    "lng": -74.773937,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA ADELA II",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.907733,
+    "lng": -74.774022,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA ANITA",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.896222,
+    "lng": -74.767499,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA DEL REY",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.904648,
+    "lng": -74.775734,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA ESTHER",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.903474,
+    "lng": -74.77951,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA GLADIS",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.896967,
+    "lng": -74.765503,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA MARIA",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.90373,
+    "lng": -74.784309,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA MONIKA",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.907626,
+    "lng": -74.772927,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA SOL",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.903095,
+    "lng": -74.782403,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VIÑAS DEL REY",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.906479,
+    "lng": -74.772154,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "ZARABANDA",
+    "comuna": "COMUNA SUR",
+    "zona_id": 4,
+    "lat": 10.906069,
+    "lng": -74.774258,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "ALTOS DE LA METROPOLITANA",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.90805,
+    "lng": -74.782434,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "BELLO HORIZONTE",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.90845,
+    "lng": -74.784665,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "CIUDAD BONITA",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.909124,
+    "lng": -74.800581,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "CIUDAD CAMELOT",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.907029,
+    "lng": -74.793213,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "CIUDAD CARIBE",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.91132,
+    "lng": -74.791124,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "CIUDAD CARIBE IV",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.902914,
+    "lng": -74.798999,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "CIUDAD FALLACE",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.907401,
+    "lng": -74.799943,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "CIUDAD SALITRE",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.898884,
+    "lng": -74.793892,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "DON BOSCO",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.899777,
+    "lng": -74.80052,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LA CENTRAL",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.901578,
+    "lng": -74.796196,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LACANDELARIA I",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.904649,
+    "lng": -74.790783,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LACANDELARIA II",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.902962,
+    "lng": -74.788002,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LAS COMETAS",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.905038,
+    "lng": -74.787558,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LOS CUSULES",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.910441,
+    "lng": -74.785317,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "LOS LOTEROS",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.910084,
+    "lng": -74.790888,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "NUEVA ESPERANZA",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.904078,
+    "lng": -74.804745,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "PORTAL DE JORDAN",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.905607,
+    "lng": -74.799985,
+    "fuente": "vecino",
+    "confianza": "media"
+  },
+  {
+    "nombre": "SAN BERNARDO",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.899535,
+    "lng": -74.797604,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "SI NOS DEJAN",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.899886,
+    "lng": -74.795494,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "TERRANOVA II",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.920632,
+    "lng": -74.788722,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA CARMEN I",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.90919,
+    "lng": -74.787138,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA CARMEN II",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.907962,
+    "lng": -74.787562,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA KARLA I",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.906907,
+    "lng": -74.784644,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA MARIA SILENA",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.900668,
+    "lng": -74.801952,
+    "fuente": "ocr",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA MURILLO",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.903891,
+    "lng": -74.791296,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA SANTA",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.904844,
+    "lng": -74.800259,
+    "fuente": "manual",
+    "confianza": "alta"
+  },
+  {
+    "nombre": "VILLA VALENTINA",
+    "comuna": "COMUNA SUR-OCCIDENTAL",
+    "zona_id": 5,
+    "lat": 10.907063,
+    "lng": -74.783592,
+    "fuente": "manual",
+    "confianza": "alta"
+  }
+]
