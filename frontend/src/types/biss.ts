@@ -198,9 +198,9 @@ export interface Padrino {
   id: string;
   nombre: string;
   tipo_apoyo: TipoApoyo;
-  descripcion: string | null;
+  descripcion: string;
   logo_url: string | null;
-  contacto_privado_email: string | null;
+  contacto_privado_email: string;
   contacto_privado_tel: string | null;
   publicado: boolean;
   creado_en: string;
