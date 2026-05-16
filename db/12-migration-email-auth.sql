@@ -39,42 +39,72 @@ UPDATE public.ciudadanos
 COMMENT ON COLUMN public.ciudadanos.verificado_sms
   IS 'DEPRECATED: usar verificado_email. Se eliminará después del lanzamiento estable.';
 
--- 7. Actualizar RLS de testimonios.insert
-DROP POLICY IF EXISTS testimonios_insert_verificado ON public.testimonios;
-DROP POLICY IF EXISTS p_testimonios_insert_verificado ON public.testimonios;
-CREATE POLICY p_testimonios_insert_verificado ON public.testimonios
-  FOR INSERT TO authenticated
-  WITH CHECK (
-    ciudadano_id IN (
-      SELECT id FROM public.ciudadanos
-      WHERE auth_user_id = auth.uid()
-        AND verificado_email = true
-    )
-  );
+-- 7-9. Actualizar RLS de tablas que gatean por verificación.
+-- Cada sección se ejecuta solo si la tabla existe — así la migración es
+-- order-agnostic respecto a 09-testimonios.sql u otras tablas opcionales.
 
--- 8. Actualizar RLS de solicitudes_caso.insert
-DROP POLICY IF EXISTS p_solicitudes_insert_self ON public.solicitudes_caso;
-CREATE POLICY p_solicitudes_insert_self ON public.solicitudes_caso
-  FOR INSERT TO authenticated
-  WITH CHECK (
-    ciudadano_id IN (
-      SELECT id FROM public.ciudadanos
-      WHERE auth_user_id = auth.uid()
-        AND verificado_email = true
-    )
-  );
+DO $$
+BEGIN
+  -- 7. testimonios.insert
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'testimonios'
+  ) THEN
+    EXECUTE 'DROP POLICY IF EXISTS testimonios_insert_verificado ON public.testimonios';
+    EXECUTE 'DROP POLICY IF EXISTS p_testimonios_insert_verificado ON public.testimonios';
+    EXECUTE 'DROP POLICY IF EXISTS p_testimonios_insert_self ON public.testimonios';
+    EXECUTE $POL$
+      CREATE POLICY p_testimonios_insert_verificado ON public.testimonios
+        FOR INSERT TO authenticated
+        WITH CHECK (
+          ciudadano_id IN (
+            SELECT id FROM public.ciudadanos
+            WHERE auth_user_id = auth.uid()
+              AND verificado_email = true
+          )
+        )
+    $POL$;
+  END IF;
 
--- 9. Actualizar RLS de comentarios.insert
-DROP POLICY IF EXISTS p_comentarios_insert ON public.comentarios;
-CREATE POLICY p_comentarios_insert ON public.comentarios
-  FOR INSERT TO authenticated
-  WITH CHECK (
-    ciudadano_id IN (
-      SELECT id FROM public.ciudadanos
-      WHERE auth_user_id = auth.uid()
-        AND verificado_email = true
-    )
-  );
+  -- 8. solicitudes_caso.insert (tabla viene de 01-schema, siempre debería existir)
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'solicitudes_caso'
+  ) THEN
+    EXECUTE 'DROP POLICY IF EXISTS p_solicitudes_insert_self ON public.solicitudes_caso';
+    EXECUTE 'DROP POLICY IF EXISTS solicitudes_caso_insert_verificado ON public.solicitudes_caso';
+    EXECUTE $POL$
+      CREATE POLICY p_solicitudes_insert_self ON public.solicitudes_caso
+        FOR INSERT TO authenticated
+        WITH CHECK (
+          ciudadano_id IN (
+            SELECT id FROM public.ciudadanos
+            WHERE auth_user_id = auth.uid()
+              AND verificado_email = true
+          )
+        )
+    $POL$;
+  END IF;
+
+  -- 9. comentarios.insert
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'comentarios'
+  ) THEN
+    EXECUTE 'DROP POLICY IF EXISTS p_comentarios_insert ON public.comentarios';
+    EXECUTE $POL$
+      CREATE POLICY p_comentarios_insert ON public.comentarios
+        FOR INSERT TO authenticated
+        WITH CHECK (
+          ciudadano_id IN (
+            SELECT id FROM public.ciudadanos
+            WHERE auth_user_id = auth.uid()
+              AND verificado_email = true
+          )
+        )
+    $POL$;
+  END IF;
+END $$;
 
 -- 10. Función trigger: cuando un auth.user confirma email, marcar verificado_email
 CREATE OR REPLACE FUNCTION public.sync_email_verified()
