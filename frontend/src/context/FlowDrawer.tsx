@@ -15,6 +15,8 @@ export interface FlowMeta {
   capituloId?: string;
   capituloSlug?: string;
   barrioId?: number;
+  /** Pre-llena el campo email en FlowIngresar paso 1. */
+  prefillEmail?: string;
 }
 
 interface FlowDrawerContextValue {

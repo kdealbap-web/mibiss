@@ -16,7 +16,7 @@ export function Login() {
   const { openFlow } = useFlowDrawer();
 
   const [tab, setTab] = useState<Tab>('ciudadano');
-  const [celular, setCelular] = useState('');
+  const [ciudadanoEmail, setCiudadanoEmail] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [recordar, setRecordar] = useState(true);
@@ -30,7 +30,7 @@ export function Login() {
 
   const onCiudadanoSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    openFlow('ingresar');
+    openFlow('ingresar', { prefillEmail: ciudadanoEmail.trim() });
   };
 
   const onEditorSubmit = async (e: React.FormEvent) => {
@@ -80,7 +80,7 @@ export function Login() {
           </div>
           <h1>Entra a BISS</h1>
           <p className="sub">
-            Entra con tu celular. Si eres del equipo, cambia abajo a "Editor".
+            Entra con tu correo. Si eres del equipo, cambia abajo a "Editor".
           </p>
 
           <div className="auth-tabs">
@@ -103,46 +103,29 @@ export function Login() {
           {tab === 'ciudadano' ? (
             <form className="stack" onSubmit={onCiudadanoSubmit}>
               <div className="field">
-                <label className="field-label" htmlFor="cel">
-                  Tu celular
+                <label className="field-label" htmlFor="ci-email">
+                  Tu correo
                 </label>
-                <div style={{ display: 'flex', gap: 6 }}>
-                  <span
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      padding: '0 14px',
-                      border: '1.5px solid var(--border)',
-                      borderRadius: 'var(--radius)',
-                      fontSize: 14,
-                      fontWeight: 700,
-                      color: 'var(--biss-teal-900)',
-                      background: 'var(--surface)',
-                    }}
-                  >
-                    +57
-                  </span>
-                  <input
-                    id="cel"
-                    className="field-input"
-                    type="tel"
-                    placeholder="300 000 0000"
-                    value={celular}
-                    onChange={(e) => setCelular(e.target.value)}
-                    required
-                    style={{ flex: 1 }}
-                  />
-                </div>
+                <input
+                  id="ci-email"
+                  className="field-input"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="tu@correo.com"
+                  value={ciudadanoEmail}
+                  onChange={(e) => setCiudadanoEmail(e.target.value)}
+                  required
+                />
                 <span className="field-helper">
-                  Te enviamos un código por SMS · sin contraseña.
+                  Te enviamos un código de 6 dígitos por email · sin contraseña.
                 </span>
               </div>
               <button
                 className="btn btn-primary btn-block btn-lg"
                 type="submit"
-                disabled={celular.replace(/\D/g, '').length < 7}
+                disabled={!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ciudadanoEmail.trim())}
               >
-                <ArrowRight />Enviar código
+                <ArrowRight />Continuar
               </button>
             </form>
           ) : (

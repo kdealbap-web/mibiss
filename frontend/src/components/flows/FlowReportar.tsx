@@ -366,7 +366,7 @@ export function FlowReportar() {
       setSubmitError(null);
       try {
         if (!miPerfil) {
-          throw new Error('Necesitas iniciar sesión y verificar tu celular antes de reportar.');
+          throw new Error('Necesitas iniciar sesión y verificar tu email antes de reportar.');
         }
         if (!draft.categoria) throw new Error('Falta categoría');
 
@@ -396,8 +396,8 @@ export function FlowReportar() {
         clearDraft();
       } catch (e: unknown) {
         const msg = String((e as { message?: string })?.message ?? e);
-        if (/row-level security/i.test(msg) || /verificado_sms/i.test(msg)) {
-          setSubmitError('Necesitas verificar tu celular antes de continuar.');
+        if (/row-level security/i.test(msg) || /verificado_email/i.test(msg)) {
+          setSubmitError('Necesitas verificar tu email antes de continuar.');
         } else if (/iniciar sesión/i.test(msg)) {
           setSubmitError(msg);
         } else {

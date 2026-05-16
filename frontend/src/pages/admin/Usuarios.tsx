@@ -234,7 +234,7 @@ function CiudadanoRow({ c, barrioNombre }: { c: Ciudadano; barrioNombre: string 
       <td>{barrioNombre}</td>
       <td className="mono" style={{ fontSize: 12 }}>{c.telefono_celular}</td>
       <td>
-        {c.verificado_sms ? (
+        {c.verificado_email ? (
           <span className="badge badge-resolved"><span className="dot" />Sí</span>
         ) : (
           <span className="badge"><span className="dot" />Pendiente</span>

@@ -188,8 +188,8 @@ export function MiCuenta() {
                   <div className="data-row"><span className="k">Barrio</span><span className="v">{barrioNombre}</span></div>
                   <div className="data-row"><span className="k">Vecino desde</span><span className="v">{fechaIngreso}</span></div>
                   <div className="data-row">
-                    <span className="k">Verificado SMS</span>
-                    <span className="v">{perfil.verificado_sms ? 'Sí' : 'Pendiente'}</span>
+                    <span className="k">Email verificado</span>
+                    <span className="v">{perfil.verificado_email ? 'Sí' : 'Pendiente'}</span>
                   </div>
                 </>
               )}

@@ -251,12 +251,14 @@ export interface Ciudadano {
   estado_civil: string;
   direccion: string;
   email: string;
-  telefono_celular: string;
+  telefono_celular: string | null;
   telefono_fijo: string | null;
   miembros_hogar: number;
   estrato: number;
   escolaridad: string;
+  /** @deprecated usar verificado_email. Se elimina post-lanzamiento. */
   verificado_sms: boolean;
+  verificado_email: boolean;
   consentimiento_habeas_data: boolean;
   acepta_notificaciones: boolean;
   creado_en: string;

@@ -7,62 +7,154 @@ import {
   CheckCircle2,
   Check,
   Hand,
+  Mail,
 } from 'lucide-react';
 
 import { FlowShell, useFlowDraft } from './FlowShell';
 import { useFlowDrawer } from '../../context/FlowDrawer';
+import { supabase } from '../../lib/supabase';
+import { useBarrios } from '../../hooks/useBarrios';
 
 interface IngresarDraft {
-  celular: string;
-  nombre: string;
-  barrio: string;
-  notificaciones: boolean;
+  email: string;
+  cedula: string;
+  nombres: string;
+  apellidos: string;
+  fechaNacimiento: string;
+  barrioId: number | null;
+  direccion: string;
+  telefonoCelular: string;
+  estrato: number;
+  miembrosHogar: number;
+  acceptaNotificaciones: boolean;
+  consentimientoHabeasData: boolean;
 }
 
 const INITIAL: IngresarDraft = {
-  celular: '',
-  nombre: '',
-  barrio: '',
-  notificaciones: true,
+  email: '',
+  cedula: '',
+  nombres: '',
+  apellidos: '',
+  fechaNacimiento: '',
+  barrioId: null,
+  direccion: '',
+  telefonoCelular: '',
+  estrato: 1,
+  miembrosHogar: 1,
+  acceptaNotificaciones: true,
+  consentimientoHabeasData: false,
 };
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const CEDULA_RE = /^\d{6,12}$/;
+
 export function FlowIngresar() {
-  const { closeFlow } = useFlowDrawer();
+  const { closeFlow, meta } = useFlowDrawer();
   const [draft, setDraft, clearDraft] = useFlowDraft<IngresarDraft>('ingresar', INITIAL);
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+
+  useEffect(() => {
+    if (meta.prefillEmail && !draft.email) {
+      setDraft((d) => ({ ...d, email: meta.prefillEmail!.toLowerCase() }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [meta.prefillEmail]);
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [otpDigits, setOtpDigits] = useState<string[]>(['', '', '', '', '', '']);
-  const [secsLeft, setSecsLeft] = useState(60);
+  const [secsLeft, setSecsLeft] = useState(0);
+  const [sending, setSending] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
   const [sesionLista, setSesionLista] = useState(false);
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
 
+  const { data: barrios = [] } = useBarrios();
+
+  // Cooldown del reenvío
   useEffect(() => {
-    if (step !== 2) return;
-    setSecsLeft(60);
+    if (step !== 2 || secsLeft <= 0) return;
     const t = window.setInterval(() => {
       setSecsLeft((s) => (s > 0 ? s - 1 : 0));
     }, 1000);
     return () => window.clearInterval(t);
-  }, [step]);
+  }, [step, secsLeft]);
 
-  const sendOtp = () => {
-    // TODO: Sprint C — reemplazar mock OTP con edge function otp-send/otp-verify
-    // cuando Twilio esté configurado. Por ahora: cualquier código de 6 dígitos válido en dev.
-    setStep(2);
-    setOtpDigits(['', '', '', '', '', '']);
-    setTimeout(() => inputsRef.current[0]?.focus(), 100);
+  const sendOtp = async () => {
+    setErr(null);
+    if (!EMAIL_RE.test(draft.email.trim())) {
+      setErr('Revisa tu correo. Algo no cuadra con el formato.');
+      return;
+    }
+    if (!CEDULA_RE.test(draft.cedula.trim())) {
+      setErr('La cédula debe tener entre 6 y 12 dígitos.');
+      return;
+    }
+    setSending(true);
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: draft.email.trim().toLowerCase(),
+        options: { shouldCreateUser: true },
+      });
+      if (error) throw error;
+      setOtpDigits(['', '', '', '', '', '']);
+      setSecsLeft(60);
+      setStep(2);
+      setTimeout(() => inputsRef.current[0]?.focus(), 100);
+    } catch (e: unknown) {
+      const msg = String((e as { message?: string })?.message ?? e);
+      if (/rate/i.test(msg)) setErr('Demasiados intentos. Espera unos minutos.');
+      else if (/Email signups/i.test(msg)) setErr('El registro por email está deshabilitado. Avísale al admin.');
+      else setErr('No pudimos enviar el código. Vuelve a intentarlo.');
+    } finally {
+      setSending(false);
+    }
   };
 
-  const verifyOtp = () => {
-    // TODO: Sprint C — verificar contra Twilio + crear/buscar ciudadano vía edge function
-    // service_role; setSession en supabase.auth. Por ahora simula usuario nuevo y va al paso 3.
-    setStep(3);
+  const resendOtp = async () => {
+    if (secsLeft > 0) return;
+    await sendOtp();
   };
 
-  const finishLogin = () => {
-    // TODO: Sprint C — INSERT en ciudadanos + auth.users vía edge function otp-verify,
-    // luego supabase.auth.setSession. Por ahora limpia draft y muestra confirmación.
-    clearDraft();
-    setSesionLista(true);
+  const verifyOtp = async () => {
+    setErr(null);
+    const token = otpDigits.join('');
+    if (token.length !== 6) return;
+    setVerifying(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email: draft.email.trim().toLowerCase(),
+        token,
+        type: 'email',
+      });
+      if (error) throw error;
+      // Sesión activa. El trigger sync_email_verified marca verificado_email=true
+      // cuando Supabase setea email_confirmed_at.
+      // Verificar si ya existe ciudadano (caso de re-login).
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: existente } = await supabase
+          .from('ciudadanos')
+          .select('id')
+          .eq('auth_user_id', user.id)
+          .maybeSingle();
+        if (existente) {
+          // Usuario que vuelve. No pedimos datos otra vez.
+          clearDraft();
+          setSesionLista(true);
+          return;
+        }
+      }
+      setStep(3);
+    } catch (e: unknown) {
+      const msg = String((e as { message?: string })?.message ?? e);
+      if (/expired/i.test(msg) || /invalid/i.test(msg)) {
+        setErr('El código no coincide o expiró. Pide uno nuevo.');
+      } else {
+        setErr('No pudimos verificar el código. Vuelve a intentarlo.');
+      }
+    } finally {
+      setVerifying(false);
+    }
   };
 
   const onOtpChange = (idx: number, v: string) => {
@@ -72,9 +164,7 @@ export function FlowIngresar() {
       next[idx] = digit;
       return next;
     });
-    if (digit && idx < 5) {
-      inputsRef.current[idx + 1]?.focus();
-    }
+    if (digit && idx < 5) inputsRef.current[idx + 1]?.focus();
   };
 
   const onOtpKey = (idx: number, e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -85,43 +175,90 @@ export function FlowIngresar() {
 
   const otpComplete = otpDigits.every((d) => d.length === 1);
 
+  const guardarCiudadano = async () => {
+    setErr(null);
+    if (!draft.barrioId) {
+      setErr('Elige tu barrio.');
+      return;
+    }
+    if (!draft.consentimientoHabeasData) {
+      setErr('Necesitamos tu autorización para tratar tus datos.');
+      return;
+    }
+    setSaving(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Sesión perdida. Vuelve a empezar.');
+
+      const { error } = await supabase.from('ciudadanos').insert({
+        auth_user_id: user.id,
+        cedula: draft.cedula.trim(),
+        nombres: draft.nombres.trim(),
+        apellidos: draft.apellidos.trim(),
+        fecha_nacimiento: draft.fechaNacimiento,
+        barrio_id: draft.barrioId,
+        direccion: draft.direccion.trim(),
+        email: draft.email.trim().toLowerCase(),
+        telefono_celular: draft.telefonoCelular.trim() || null,
+        miembros_hogar: draft.miembrosHogar,
+        estrato: draft.estrato,
+        consentimiento_habeas_data: draft.consentimientoHabeasData,
+        acepta_notificaciones: draft.acceptaNotificaciones,
+        verificado_email: true,
+      });
+      if (error) throw error;
+      clearDraft();
+      setSesionLista(true);
+    } catch (e: unknown) {
+      const msg = String((e as { message?: string })?.message ?? e);
+      if (/duplicate key/i.test(msg) && /cedula/i.test(msg)) {
+        setErr('Esa cédula ya está registrada. Si eres tú, inicia sesión con tu email anterior.');
+      } else if (/duplicate key/i.test(msg) && /email/i.test(msg)) {
+        setErr('Este correo ya tiene una cuenta. Inicia sesión normalmente.');
+      } else if (/row-level security|policy/i.test(msg)) {
+        setErr('No tienes permiso para registrarte. Avísale al admin.');
+      } else {
+        setErr('No pudimos guardar tus datos. Vuelve a intentarlo.');
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Step 1 — email + cédula
   const renderStep1 = () => (
     <FlowShell
       step={1}
       totalSteps={3}
-      title="Tu celular para enviarte el código"
-      lead="Solo lo usamos para verificar que eres tú. Nunca lo mostramos público."
+      title="Tu correo para enviarte el código"
+      lead="Lo usamos solo para verificar que eres tú. Nunca lo mostramos público."
       onClose={closeFlow}
       body={
         <>
           <div className="mini-field">
-            <label htmlFor="i-phone">Celular</label>
-            <div style={{ display: 'flex', gap: 6 }}>
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  padding: '0 12px',
-                  border: '1.5px solid var(--border)',
-                  borderRadius: 'var(--radius)',
-                  fontSize: 13,
-                  fontWeight: 700,
-                  color: 'var(--biss-teal-900)',
-                  background: 'var(--surface)',
-                }}
-              >
-                +57
-              </span>
-              <input
-                id="i-phone"
-                type="tel"
-                value={draft.celular}
-                onChange={(e) => setDraft((d) => ({ ...d, celular: e.target.value }))}
-                placeholder="300 000 0000"
-                style={{ flex: 1 }}
-              />
-            </div>
-            <span className="hint">El SMS puede tardar hasta 60 segundos.</span>
+            <label htmlFor="i-email">Correo electrónico</label>
+            <input
+              id="i-email"
+              type="email"
+              autoComplete="email"
+              value={draft.email}
+              onChange={(e) => setDraft((d) => ({ ...d, email: e.target.value }))}
+              placeholder="tu@correo.com"
+            />
+            <span className="hint">El email puede tardar hasta 60 segundos.</span>
+          </div>
+          <div className="mini-field">
+            <label htmlFor="i-cedula">Cédula</label>
+            <input
+              id="i-cedula"
+              type="text"
+              inputMode="numeric"
+              autoComplete="off"
+              value={draft.cedula}
+              onChange={(e) => setDraft((d) => ({ ...d, cedula: e.target.value.replace(/\D/g, '') }))}
+              placeholder="1.045.678.912"
+            />
+            <span className="hint">Identificador legal en Colombia. Solo lo ven el equipo y tú.</span>
           </div>
           <div
             className="alert"
@@ -137,25 +274,33 @@ export function FlowIngresar() {
             />
             <div className="alert-body">
               <div className="alert-text" style={{ fontSize: 12, color: 'var(--biss-teal-900)' }}>
-                Si ya tienes cuenta, el código te ingresa. Si no, te creamos una en el paso 3.
+                Si ya tienes cuenta, el código te ingresa. Si no, te creamos una al toque.
               </div>
             </div>
           </div>
+          {err && (
+            <div className="alert alert-critical" style={{ padding: '10px 12px' }} role="alert">
+              <div className="alert-body">
+                <div className="alert-text" style={{ fontSize: 12 }}>{err}</div>
+              </div>
+            </div>
+          )}
         </>
       }
       footer={
         <button
           type="button"
           className="btn btn-primary btn-block"
-          disabled={draft.celular.replace(/\D/g, '').length < 7}
+          disabled={sending || !EMAIL_RE.test(draft.email.trim()) || !CEDULA_RE.test(draft.cedula.trim())}
           onClick={sendOtp}
         >
-          Enviar código <ArrowRight />
+          <Mail />{sending ? 'Enviando…' : 'Enviar código'} <ArrowRight />
         </button>
       }
     />
   );
 
+  // Step 2 — verificar OTP
   const renderStep2 = () => (
     <FlowShell
       step={2}
@@ -163,9 +308,9 @@ export function FlowIngresar() {
       title="Pon el código que te llegó"
       lead={
         <>
-          Enviamos un SMS a{' '}
-          <strong style={{ color: 'var(--ink-strong)' }}>+57 {draft.celular}</strong>. Auto-llena
-          si tu teclado lo detecta.
+          Enviamos un correo a{' '}
+          <strong style={{ color: 'var(--ink-strong)' }}>{draft.email}</strong>. Revisa la
+          bandeja (y spam por si acaso).
         </>
       }
       onClose={closeFlow}
@@ -195,11 +340,8 @@ export function FlowIngresar() {
               type="button"
               className="btn btn-ghost btn-sm"
               style={{ padding: '6px 8px' }}
-              disabled={secsLeft > 0}
-              onClick={() => {
-                // TODO: re-invocar edge function otp-send
-                setSecsLeft(60);
-              }}
+              disabled={secsLeft > 0 || sending}
+              onClick={resendOtp}
             >
               <RefreshCw style={{ width: 14, height: 14 }} />
               {secsLeft > 0
@@ -213,62 +355,149 @@ export function FlowIngresar() {
               Auto-avance entre casillas · Backspace borra y retrocede
             </span>
           </div>
+          {err && (
+            <div className="alert alert-critical" style={{ padding: '10px 12px' }} role="alert">
+              <div className="alert-body">
+                <div className="alert-text" style={{ fontSize: 12 }}>{err}</div>
+              </div>
+            </div>
+          )}
         </>
       }
       footer={
         <button
           type="button"
           className="btn btn-primary btn-block"
-          disabled={!otpComplete}
+          disabled={!otpComplete || verifying}
           style={{ opacity: otpComplete ? 1 : 0.55 }}
           onClick={verifyOtp}
         >
-          Verificar <ArrowRight />
+          {verifying ? 'Verificando…' : 'Verificar'} <ArrowRight />
         </button>
       }
     />
   );
 
+  // Step 3 — datos personales (nombres + cumpleaños + celular opcional)
   const renderStep3 = () => (
     <FlowShell
       step={3}
       totalSteps={3}
       stepLabel="3 / 3 · nuevo"
       title="Cuéntanos un poquito de ti"
-      lead="Solo dos cosas. Lo demás puedes llenarlo después en Mi cuenta."
+      lead="Lo justo para registrarte. Lo demás puedes llenarlo después en Mi cuenta."
       onClose={closeFlow}
+      onBack={() => setStep(2)}
       body={
         <>
+          <div className="row row-2" style={{ gap: 10 }}>
+            <div className="mini-field grow">
+              <label htmlFor="i-nombres">Nombres</label>
+              <input
+                id="i-nombres"
+                type="text"
+                autoComplete="given-name"
+                value={draft.nombres}
+                onChange={(e) => setDraft((d) => ({ ...d, nombres: e.target.value }))}
+              />
+            </div>
+            <div className="mini-field grow">
+              <label htmlFor="i-apellidos">Apellidos</label>
+              <input
+                id="i-apellidos"
+                type="text"
+                autoComplete="family-name"
+                value={draft.apellidos}
+                onChange={(e) => setDraft((d) => ({ ...d, apellidos: e.target.value }))}
+              />
+            </div>
+          </div>
           <div className="mini-field">
-            <label htmlFor="i-name">¿Cómo te llamas?</label>
+            <label htmlFor="i-fnac">Fecha de nacimiento</label>
             <input
-              id="i-name"
-              type="text"
-              value={draft.nombre}
-              onChange={(e) => setDraft((d) => ({ ...d, nombre: e.target.value }))}
+              id="i-fnac"
+              type="date"
+              value={draft.fechaNacimiento}
+              onChange={(e) => setDraft((d) => ({ ...d, fechaNacimiento: e.target.value }))}
             />
           </div>
           <div className="mini-field">
             <label htmlFor="i-barrio">¿En qué barrio vives?</label>
-            <input
+            <select
               id="i-barrio"
-              type="text"
-              value={draft.barrio}
-              onChange={(e) => setDraft((d) => ({ ...d, barrio: e.target.value }))}
-            />
+              value={draft.barrioId ?? ''}
+              onChange={(e) =>
+                setDraft((d) => ({ ...d, barrioId: e.target.value ? Number(e.target.value) : null }))
+              }
+            >
+              <option value="">Elige tu barrio</option>
+              {barrios.map((b) => (
+                <option key={b.id} value={b.id}>{b.nombre}</option>
+              ))}
+            </select>
             <span className="hint">Te mostramos primero los casos de tu zona.</span>
+          </div>
+          <div className="mini-field">
+            <label htmlFor="i-dir">Dirección</label>
+            <input
+              id="i-dir"
+              type="text"
+              autoComplete="street-address"
+              value={draft.direccion}
+              onChange={(e) => setDraft((d) => ({ ...d, direccion: e.target.value }))}
+              placeholder="Calle 30 # 13-45"
+            />
+          </div>
+          <div className="row row-2" style={{ gap: 10 }}>
+            <div className="mini-field grow">
+              <label htmlFor="i-estrato">Estrato</label>
+              <select
+                id="i-estrato"
+                value={draft.estrato}
+                onChange={(e) => setDraft((d) => ({ ...d, estrato: Number(e.target.value) }))}
+              >
+                {[1, 2, 3, 4, 5, 6].map((n) => (
+                  <option key={n} value={n}>{n}</option>
+                ))}
+              </select>
+            </div>
+            <div className="mini-field grow">
+              <label htmlFor="i-hogar">Personas en el hogar</label>
+              <input
+                id="i-hogar"
+                type="number"
+                min={1}
+                max={30}
+                value={draft.miembrosHogar}
+                onChange={(e) =>
+                  setDraft((d) => ({ ...d, miembrosHogar: Math.max(1, Math.min(30, Number(e.target.value) || 1)) }))
+                }
+              />
+            </div>
+          </div>
+          <div className="mini-field">
+            <label htmlFor="i-cel">Celular (opcional)</label>
+            <input
+              id="i-cel"
+              type="tel"
+              autoComplete="tel"
+              value={draft.telefonoCelular}
+              onChange={(e) => setDraft((d) => ({ ...d, telefonoCelular: e.target.value }))}
+              placeholder="+57 300 000 0000"
+            />
+            <span className="hint">Para llamarte si tu caso lo amerita. No es obligatorio.</span>
           </div>
           <div
             className="toggle"
-            data-on={draft.notificaciones ? 'true' : 'false'}
+            data-on={draft.acceptaNotificaciones ? 'true' : 'false'}
             role="switch"
-            aria-checked={draft.notificaciones}
+            aria-checked={draft.acceptaNotificaciones}
             tabIndex={0}
-            onClick={() => setDraft((d) => ({ ...d, notificaciones: !d.notificaciones }))}
+            onClick={() => setDraft((d) => ({ ...d, acceptaNotificaciones: !d.acceptaNotificaciones }))}
             onKeyDown={(e) => {
               if (e.key === ' ' || e.key === 'Enter') {
                 e.preventDefault();
-                setDraft((d) => ({ ...d, notificaciones: !d.notificaciones }));
+                setDraft((d) => ({ ...d, acceptaNotificaciones: !d.acceptaNotificaciones }));
               }
             }}
             style={{ cursor: 'pointer' }}
@@ -276,21 +505,58 @@ export function FlowIngresar() {
             <div>
               <div className="toggle-text">Notifícame de mis casos</div>
               <div style={{ fontSize: 11, color: 'var(--ink-soft)', marginTop: 2 }}>
-                Por SMS cuando algo cambie.
+                Por email cuando algo cambie.
               </div>
             </div>
             <div className="toggle-track" />
           </div>
+          <label
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: 8,
+              fontSize: 12,
+              color: 'var(--ink-soft)',
+              padding: '8px 0',
+              cursor: 'pointer',
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={draft.consentimientoHabeasData}
+              onChange={(e) => setDraft((d) => ({ ...d, consentimientoHabeasData: e.target.checked }))}
+              style={{ accentColor: 'var(--biss-teal)', marginTop: 2 }}
+            />
+            <span>
+              Autorizo el tratamiento de mis datos personales conforme a la política de
+              privacidad de BISS (Ley 1581 de 2012, Colombia).
+            </span>
+          </label>
+          {err && (
+            <div className="alert alert-critical" style={{ padding: '10px 12px' }} role="alert">
+              <div className="alert-body">
+                <div className="alert-text" style={{ fontSize: 12 }}>{err}</div>
+              </div>
+            </div>
+          )}
         </>
       }
       footer={
         <button
           type="button"
           className="btn btn-primary btn-block"
-          disabled={draft.nombre.trim().length < 2}
-          onClick={finishLogin}
+          disabled={
+            saving ||
+            draft.nombres.trim().length < 2 ||
+            draft.apellidos.trim().length < 2 ||
+            !draft.fechaNacimiento ||
+            !draft.barrioId ||
+            draft.direccion.trim().length < 4 ||
+            !draft.consentimientoHabeasData
+          }
+          onClick={guardarCiudadano}
         >
-          Entrar a BISS <Check />
+          {saving ? 'Guardando…' : 'Entrar a BISS'} <Check />
         </button>
       }
     />
@@ -316,11 +582,12 @@ export function FlowIngresar() {
             >
               <Hand />
             </div>
-            <div className="confirm-title">Hola, {draft.nombre || 'vecino'}</div>
+            <div className="confirm-title">
+              Hola, {draft.nombres || 'vecino'}
+            </div>
             <div className="confirm-text">
-              Te llevamos a casos cerca de{' '}
-              <strong style={{ color: 'var(--ink-strong)' }}>{draft.barrio || 'Soledad'}</strong>.
-              Si quieres contar algo, toca <strong style={{ color: 'var(--ink-strong)' }}>Cuenta tu caso</strong> arriba.
+              Ya estás dentro de BISS. Si quieres contar algo, toca{' '}
+              <strong style={{ color: 'var(--ink-strong)' }}>Cuenta tu caso</strong>.
             </div>
           </div>
         </div>

@@ -170,7 +170,7 @@ export function FlowTestimonio() {
       setSubmitError(null);
       try {
         if (!miPerfil) {
-          throw new Error('Necesitas iniciar sesión y verificar tu celular antes de sumar tu voz.');
+          throw new Error('Necesitas iniciar sesión y verificar tu email antes de sumar tu voz.');
         }
         if (!draft.rol) throw new Error('Falta rol');
 
@@ -190,8 +190,8 @@ export function FlowTestimonio() {
         setEnviado(true);
       } catch (e: unknown) {
         const msg = String((e as { message?: string })?.message ?? e);
-        if (/row-level security/i.test(msg) || /verificado_sms/i.test(msg)) {
-          setSubmitError('Necesitas verificar tu celular antes de continuar.');
+        if (/row-level security/i.test(msg) || /verificado_email/i.test(msg)) {
+          setSubmitError('Necesitas verificar tu email antes de continuar.');
         } else if (/iniciar sesión/i.test(msg)) {
           setSubmitError(msg);
         } else if (/asociado a un caso o a un cap/i.test(msg)) {
