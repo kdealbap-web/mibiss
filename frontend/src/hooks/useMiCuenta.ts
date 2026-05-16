@@ -1,26 +1,12 @@
-import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import type { Session } from '@supabase/supabase-js';
 
 import { supabase } from '../lib/supabase';
+import { useSessionContext } from '../context/SessionContext';
 import type { CasoPublico, Ciudadano, Testimonio } from '../types/biss';
 
+/** Devuelve la sesión actual. Lee del SessionContext — una sola fuente de verdad. */
 export function useSession() {
-  const [session, setSession] = useState<Session | null>(null);
-  useEffect(() => {
-    let mounted = true;
-    supabase.auth.getSession().then(({ data }) => {
-      if (mounted) setSession(data.session);
-    });
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
-      setSession(s);
-    });
-    return () => {
-      mounted = false;
-      sub.subscription.unsubscribe();
-    };
-  }, []);
-  return session;
+  return useSessionContext().session;
 }
 
 /** Perfil del ciudadano autenticado, si existe. */

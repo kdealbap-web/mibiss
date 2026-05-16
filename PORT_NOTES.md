@@ -69,6 +69,24 @@ La RLS de `ciudadanos.insert` requiere `auth_user_id = auth.uid()`, que solo se 
 
 ---
 
+## Fix post Sprint B (commit fix(post-sprint-b))
+
+### F1. SessionContext centralizado
+Antes cada `useSession()` montaba su propio `getSession()` + `onAuthStateChange`. Con StrictMode y varios consumidores (Navbar, MiCuenta, FlowReportar, FlowTestimonio, CasoEdit), había N suscripciones independientes con state desincronizado → al cambiar de ruta, partes de la app veían `session=null` mientras otras seguían logueadas.
+
+**Fix:** `frontend/src/context/SessionContext.tsx` con `SessionProvider` que monta UNA sola suscripción y expone `{ session, user, loading }` por context. `main.tsx` envuelve la app. `useSession()` quedó como wrapper backward-compatible que lee de `useSessionContext().session` — los call sites de Sprint A/B no se tocan.
+
+### F2. useScrollToHash
+React Router 6 no hace scroll a `#anchor` automáticamente. Agregado hook `frontend/src/hooks/useScrollToHash.ts` y montado en `Home.tsx`. Navbar/NavMobile ya usaban `<Link to="/home#...">` y los `<section id="...">` ya estaban, no se tocaron.
+
+### F3. BissLogo · prop `width` adicional
+El prototipo `Design/login.html` define el logo del side panel con `width: 220px`, pero el componente solo aceptaba `height`. Agregada prop `width` (mutuamente exclusiva con `height`, fallback `height=40`). Footer sigue con `height={50}`, sin cambios.
+
+### F4. Demo casos (manual)
+Creado `db/11-demo-casos.sql` para que el equipo cargue casos visibles desde Supabase Studio. **NO ejecutado automáticamente** — el archivo es idempotente (`ON CONFLICT`) pero el usuario decide cuándo correrlo.
+
+---
+
 ## Por revisar en Sprint C (no toco ahora)
 
 - Bucket B2 legacy: backend/.env.secrets cambió a R2, pero `backend/edge-functions/b2-presign/` sigue como B2. Se elimina/renombra en Sprint C.

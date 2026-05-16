@@ -27,6 +27,7 @@ import { useZonas } from '../hooks/useZonas';
 import { useStatsGlobales } from '../hooks/useStats';
 import { useStatsPorCategoria } from '../hooks/useCategorias';
 import { useCapitulosPublicos } from '../hooks/useCapitulos';
+import { useScrollToHash } from '../hooks/useScrollToHash';
 import { formatNumber } from '../lib/format';
 import type { Barrio, CapituloPublico, CasoPublico, Zona } from '../types/biss';
 
@@ -131,6 +132,7 @@ const CAPITULO_FALLBACK: Array<{
 ];
 
 export function Home() {
+  useScrollToHash();
   const { openFlow } = useFlowDrawer();
   const navigate = useNavigate();
   const stats = useStatsGlobales();

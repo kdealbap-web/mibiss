@@ -52,7 +52,7 @@ export function Login() {
   return (
     <div className="auth-shell">
       <aside className="auth-side">
-        <BissLogo height={70} variant="white" />
+        <BissLogo width={220} variant="white" />
         <div>
           <h2>Donde Soledad cuenta lo que le pasa.</h2>
           <p

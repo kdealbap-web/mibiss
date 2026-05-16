@@ -11,6 +11,7 @@ const FILTERS: Record<Variant, string | undefined> = {
 interface BissLogoProps {
   variant?: Variant;
   height?: number | string;
+  width?: number | string;
   className?: string;
   style?: CSSProperties;
   alt?: string;
@@ -18,19 +19,24 @@ interface BissLogoProps {
 
 export function BissLogo({
   variant = 'default',
-  height = 40,
+  height,
+  width,
   className,
   style,
   alt = 'BISS — Banco de Ideas y Soluciones de Soledad',
 }: BissLogoProps) {
+  // Si llega width, manda el ancho (alto auto). Si llega height, alto fijo (ancho auto).
+  // Si no llega ninguno, fallback al height=40 anterior.
+  const sized: CSSProperties = width
+    ? { width, height: 'auto' }
+    : { height: height ?? 40, width: 'auto' };
   return (
     <img
       src="/biss-logo.png"
       alt={alt}
       className={className}
       style={{
-        height,
-        width: 'auto',
+        ...sized,
         display: 'block',
         filter: FILTERS[variant],
         ...style,
