@@ -157,3 +157,23 @@ Pega este JSON en Cloudflare Dashboard → R2 → mibissbucket → Settings → 
 ```
 
 Sin CORS, el navegador rechaza el PUT firmado desde la SPA.
+
+---
+
+## Sprint D — En curso (2026-05-16)
+
+Sesión autónoma · 13 bloques en orden. Fuente visual: `Design/HANDOFFv2.0.md` (con punto, no underscore).
+
+### Bloques completados
+
+- **Bloque 1 · `db/14-fix-v-capitulos-publicos.sql`** — DROP + CREATE de la vista con `casos_progreso` (era `casos_gestion` en prod por drift de migración 10). No toca MV ni otras vistas.
+
+### Migraciones DB pendientes de aplicación humana (en orden)
+
+| # | Archivo | Razón | Tiempo |
+|---|---|---|---|
+| 1 | `db/14-fix-v-capitulos-publicos.sql` | BUG-C1 · vista en prod expone `casos_gestion`, frontend pide `casos_progreso` → 400. Desbloquea Home. | 2 min |
+
+### ⚠️ Decisiones pendientes Sprint D
+
+_(vacío por ahora — se irá llenando cuando aparezcan decisiones con 2 caminos razonables)_
