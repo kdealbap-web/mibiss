@@ -13,9 +13,20 @@ export function Splash() {
     document.body.classList.add('splash-body');
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const delay = reduce ? 2500 : REDIRECT_MS;
-    const t = window.setTimeout(() => navigate('/home', { replace: true }), delay);
-    return () => {
+    let cancelled = false;
+    const t = window.setTimeout(() => {
+      if (!cancelled) navigate('/home', { replace: true });
+    }, delay);
+    const cancel = () => {
+      cancelled = true;
       window.clearTimeout(t);
+    };
+    window.addEventListener('scroll', cancel, { once: true, passive: true });
+    window.addEventListener('touchstart', cancel, { once: true, passive: true });
+    return () => {
+      cancel();
+      window.removeEventListener('scroll', cancel);
+      window.removeEventListener('touchstart', cancel);
       document.body.classList.remove('splash-body');
     };
   }, [navigate]);
@@ -144,7 +155,8 @@ export function Splash() {
 
       <div className="below">
         <p className="lema">
-          El primer libro vivo de Soledad — escrito en tiempo real por sus vecinos.
+          El <span className="accent">primer libro vivo</span> de Soledad — escrito en tiempo
+          real por sus vecinos.
         </p>
         <button type="button" className="splash-cta" onClick={enter}>
           Abrir el libro <ArrowRight size={18} />
