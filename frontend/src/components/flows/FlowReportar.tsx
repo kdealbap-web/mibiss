@@ -26,6 +26,7 @@ import { useReportarCaso } from '../../hooks/mutations/useReportarCaso';
 import { useCategorias } from '../../hooks/useCategorias';
 import { useBarrios } from '../../hooks/useBarrios';
 import { useMiPerfil } from '../../hooks/useMiCuenta';
+import { useR2Upload } from '../../hooks/useR2Upload';
 import { formatFolio } from '../../lib/format';
 
 type Categoria =
@@ -75,6 +76,7 @@ export function FlowReportar() {
   const { data: barrios = [] } = useBarrios();
   const { data: miPerfil } = useMiPerfil();
   const reportar = useReportarCaso();
+  const { upload: uploadFotos, uploading, progress } = useR2Upload('solicitudes-multimedia');
 
   const onClose = () => {
     closeFlow();
@@ -327,7 +329,7 @@ export function FlowReportar() {
             <div className="row row-2" style={{ marginTop: 4 }}>
               <Info style={{ width: 14, height: 14, color: 'var(--biss-teal-900)' }} />
               <span style={{ fontSize: 11.5, color: 'var(--ink-soft)' }}>
-                {fotos.length} de 6 · subidas se activan cuando conectemos el storage.
+                {fotos.length} de 6 · se suben al enviar el caso (máx 5 MB c/u).
               </span>
             </div>
             <button
@@ -373,12 +375,17 @@ export function FlowReportar() {
         const categoria = categorias.find((c) => c.codigo === draft.categoria);
         if (!categoria) throw new Error('Categoría no encontrada en el catálogo');
 
-        // Resolver barrio: por nombre (case-insensitive). Fallback al barrio del ciudadano.
         const nombreLower = draft.ubicacionLabel.trim().toLowerCase();
         let barrioId = miPerfil.barrio_id;
         if (nombreLower) {
           const found = barrios.find((b) => b.nombre.toLowerCase() === nombreLower);
           if (found) barrioId = found.id;
+        }
+
+        let fotosUrls: string[] = [];
+        if (fotos.length > 0) {
+          const uploaded = await uploadFotos(fotos);
+          fotosUrls = uploaded.map((u) => u.url);
         }
 
         const created = await reportar.mutateAsync({
@@ -387,9 +394,9 @@ export function FlowReportar() {
           categoria_id: categoria.id,
           titulo: draft.titulo.trim(),
           descripcion: draft.descripcion.trim(),
+          fotos_urls: fotosUrls,
         });
 
-        // El "folio" mostrado es el id corto + año. Slug definitivo se genera cuando se aprueba.
         const año = new Date(created.creado_en).getFullYear();
         const shortId = created.id.slice(0, 8).toUpperCase();
         setFolio(`SOL-${año}-${shortId}`);
@@ -399,6 +406,8 @@ export function FlowReportar() {
         if (/row-level security/i.test(msg) || /verificado_email/i.test(msg)) {
           setSubmitError('Necesitas verificar tu email antes de continuar.');
         } else if (/iniciar sesión/i.test(msg)) {
+          setSubmitError(msg);
+        } else if (/r2|firmar|subida|pesa más/i.test(msg)) {
           setSubmitError(msg);
         } else {
           setSubmitError('Algo salió raro. Vuelve a intentarlo.');
@@ -502,9 +511,14 @@ export function FlowReportar() {
                 ['--btn-ink' as never]: '#FFFFFF',
               }}
               onClick={enviar}
-              disabled={reportar.isPending}
+              disabled={reportar.isPending || uploading}
             >
-              {reportar.isPending ? 'Enviando…' : 'Enviar caso'} <Send />
+              {uploading
+                ? `Subiendo fotos ${progress.done}/${progress.total}…`
+                : reportar.isPending
+                  ? 'Enviando…'
+                  : 'Enviar caso'}
+              <Send />
             </button>
           </div>
         }

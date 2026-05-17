@@ -8,6 +8,7 @@ export interface CrearSolicitudInput {
   descripcion: string;
   lat?: number | null;
   lng?: number | null;
+  fotos_urls?: string[];
 }
 
 export const SolicitudesService = {
@@ -22,6 +23,7 @@ export const SolicitudesService = {
         descripcion: input.descripcion,
         lat: input.lat ?? null,
         lng: input.lng ?? null,
+        fotos_urls: input.fotos_urls ?? [],
       })
       .select('id, titulo, creado_en')
       .single();
