@@ -18,6 +18,8 @@ import { PadrinosAdmin } from './pages/admin/Padrinos';
 import { Usuarios } from './pages/admin/Usuarios';
 import { Metricas } from './pages/admin/Metricas';
 import { Ajustes } from './pages/admin/Ajustes';
+import { BarriosLista } from './pages/admin/BarriosLista';
+import { BarrioEditor } from './pages/admin/BarrioEditor';
 
 export function AppRouter() {
   return (
@@ -41,6 +43,9 @@ export function AppRouter() {
       <Route path="/admin/usuarios" element={<Usuarios />} />
       <Route path="/admin/metricas" element={<Metricas />} />
       <Route path="/admin/ajustes" element={<Ajustes />} />
+      <Route path="/admin/barrios" element={<BarriosLista />} />
+      <Route path="/admin/barrios/nuevo" element={<BarrioEditor />} />
+      <Route path="/admin/barrios/:slug/editar" element={<BarrioEditor />} />
 
       <Route path="*" element={<Navigate to="/home" replace />} />
     </Routes>

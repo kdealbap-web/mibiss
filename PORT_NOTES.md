@@ -176,6 +176,7 @@ Sesión autónoma · 13 bloques en orden. Fuente visual: `Design/HANDOFFv2.0.md`
 - **Bloque 10 · Accesibilidad básica** — `useFocusTrap` nuevo en `hooks/`. Aplicado a `Drawer` (FlowDrawer + cualquier modal futuro). aria-pressed ya en FilterChip (Bloque 3). axe-cli documentado abajo (no instalado).
 - **Bloque 11 · Coords desde DB** — `SOLEDAD_CENTER` y `SOLEDAD_BOUNDS` en `lib/config.ts`. BissMap lee constante. Resto del mapa (barrios, casos) ya leía de DB desde Sprint A. HITOS hardcoded de admin/MapaBarrios (aeropuerto, alcaldía, etc.) quedan: no son barrios y no hay tabla `hitos`.
 - **Bloque 6 · /admin/ajustes** — Página con 6 secciones (perfil, seguridad, notificaciones, flujos & moderación, integraciones, exportar). `<Toggle />` nuevo en `components/ui/`. Persistencia en tabla `config_app` (db/15) con upsert directo desde frontend. RLS bloquea anon y filtra writes a admin/superadmin. Export CSV cliente-side. Sin SMS/Twilio.
+- **Bloque 7 · /admin/barrios** CRUD — `BarriosLista` paginada (12/pág) con search + filtros zona/estado + KPIs. `BarrioEditor` con Leaflet (marker arrastrable, click en mapa, Nominatim rate-limited 1/s, vecinos atenuados). `BarrioMapPicker` reusable en `components/admin/`. Validación con Zod standalone (sin `@hookform/resolvers` para evitar nueva dep). Mutations create/update/delete en `hooks/useBarriosCrud.ts`. Slug auto-generado desde nombre. Bounding box `SOLEDAD_BOUNDS` valida lat/lng. Sin importar CSV (placeholder v1.1). Eliminar requiere escribir "ELIMINAR".
 
 ### Bloques diferidos a Sprint E (default conservador)
 
@@ -224,6 +225,18 @@ Resultado esperado: 0 errores WCAG 2 AA en home, login, recuperar, caso, capítu
 **Pregunta para Kevin:** ¿está bien que editores entren SIEMPRE por OTP (no password)? O quieres recuperar el login con password como secundario (un link "soy editor con contraseña") para entrada más rápida en uso diario?
 
 **Reversión si quieres password de vuelta:** restaurar el branch de tabs ciudadano/editor en Login.tsx (commit anterior a Bloque 2) y dejar OTP como default.
+
+#### D-Sprint-D-3 · Schema `barrios` no tiene `archivado_en`/`visible`/`capitulo_activo`/`descripcion`
+
+**Contexto:** la spec del Bloque 7 menciona toggles `capitulo_activo` y `visible` + textarea `descripcion` en el editor de barrio. Esos campos NO existen en `public.barrios` (solo en `public.capitulos` y como `descripcion text` allí). Tampoco existe `archivado_en` para soft-delete.
+
+**Lo que hice (default · reversible):**
+- Editor SOLO toca campos reales de `barrios`: nombre, slug, zona_id, coord_lat, coord_lng, codigo_oficial.
+- "Archivar" no implementado (no hay columna).
+- "Eliminar" hace hard-delete con confirmación textual "ELIMINAR". Si FK constraint falla, mensaje claro al usuario.
+- Descripción/imagen/capítulo_activo se editan en una pantalla aparte de capítulos (no creada todavía).
+
+**Pregunta para Kevin:** ¿migrar `archivado_en`/`visible`/`descripcion` a `barrios`, o dejarlos en `capitulos`?
 
 #### D-Sprint-D-2 · Columna "Teléfono" en admin/Usuarios
 
