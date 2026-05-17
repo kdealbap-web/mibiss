@@ -535,7 +535,7 @@ export function FlowReportar() {
             </div>
             <div className="confirm-title">Listo, llegó tu caso</div>
             <div className="confirm-text">
-              Te avisamos por SMS cuando lo revisemos. Suele tomar de 24 a 72 horas hábiles.
+              Te avisamos por email cuando lo revisemos. Suele tomar de 24 a 72 horas hábiles.
             </div>
             <div className="confirm-folio">{formatFolio(folio)}</div>
             <div style={{ fontSize: 11.5, color: 'var(--ink-soft)', marginTop: 4 }}>

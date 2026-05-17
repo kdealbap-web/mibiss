@@ -262,7 +262,7 @@ export function CasoEdit() {
                 <div className="admin-card-head">
                   <div>
                     <h2>Línea de tiempo</h2>
-                    <div className="card-sub">Cada cambio se notifica al ciudadano por SMS.</div>
+                    <div className="card-sub">Cada cambio se notifica al ciudadano por email.</div>
                   </div>
                   <button
                     type="button"
@@ -376,7 +376,7 @@ export function CasoEdit() {
               >
                 <h2 style={{ color: '#991B1B' }}>Zona peligrosa</h2>
                 <p style={{ fontSize: 13, color: '#991B1B', lineHeight: 1.5, marginBottom: 12 }}>
-                  Archivar o eliminar el caso es definitivo. Notifica al ciudadano por SMS.
+                  Archivar o eliminar el caso es definitivo. Notifica al ciudadano por email.
                 </p>
                 <div className="row row-2">
                   <button

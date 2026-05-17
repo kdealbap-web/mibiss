@@ -9,6 +9,43 @@ export function useSession() {
   return useSessionContext().session;
 }
 
+export type Rol = 'anon' | 'ciudadano' | 'editor' | 'admin' | 'superadmin';
+
+/**
+ * Resuelve el rol del usuario autenticado consultando usuarios_cms y ciudadanos.
+ * 'anon' si no hay sesión o no aparece en ninguna tabla.
+ *
+ * usuarios_cms.id = auth.users(id) directamente (no hay auth_user_id intermedio).
+ * ciudadanos.auth_user_id = auth.users(id) por FK.
+ */
+export function useMiRol() {
+  const session = useSession();
+  const uid = session?.user?.id ?? null;
+  return useQuery<Rol>({
+    queryKey: ['mi-rol', uid],
+    enabled: Boolean(uid),
+    queryFn: async () => {
+      if (!uid) return 'anon';
+      const { data: cms } = await supabase
+        .from('usuarios_cms')
+        .select('rol, activo')
+        .eq('id', uid)
+        .eq('activo', true)
+        .maybeSingle();
+      if (cms?.rol) return cms.rol as 'editor' | 'admin' | 'superadmin';
+      const { data: ciu } = await supabase
+        .from('ciudadanos')
+        .select('id')
+        .eq('auth_user_id', uid)
+        .is('eliminado_en', null)
+        .maybeSingle();
+      if (ciu) return 'ciudadano';
+      return 'anon';
+    },
+    staleTime: 60_000,
+  });
+}
+
 /** Perfil del ciudadano autenticado, si existe. */
 export function useMiPerfil() {
   const session = useSession();

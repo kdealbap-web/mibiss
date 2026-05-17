@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
   ArrowLeft,
@@ -50,6 +51,7 @@ const CEDULA_RE = /^\d{6,12}$/;
 
 export function FlowIngresar() {
   const { closeFlow, meta } = useFlowDrawer();
+  const navigate = useNavigate();
   const [draft, setDraft, clearDraft] = useFlowDraft<IngresarDraft>('ingresar', INITIAL);
 
   useEffect(() => {
@@ -58,7 +60,7 @@ export function FlowIngresar() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [meta.prefillEmail]);
-  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
   const [otpDigits, setOtpDigits] = useState<string[]>(['', '', '', '', '', '']);
   const [secsLeft, setSecsLeft] = useState(0);
   const [sending, setSending] = useState(false);
@@ -83,10 +85,6 @@ export function FlowIngresar() {
     setErr(null);
     if (!EMAIL_RE.test(draft.email.trim())) {
       setErr('Revisa tu correo. Algo no cuadra con el formato.');
-      return;
-    }
-    if (!CEDULA_RE.test(draft.cedula.trim())) {
-      setErr('La cédula debe tener entre 6 y 12 dígitos.');
       return;
     }
     setSending(true);
@@ -127,18 +125,27 @@ export function FlowIngresar() {
         type: 'email',
       });
       if (error) throw error;
-      // Sesión activa. El trigger sync_email_verified marca verificado_email=true
-      // cuando Supabase setea email_confirmed_at.
-      // Verificar si ya existe ciudadano (caso de re-login).
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        const { data: cms } = await supabase
+          .from('usuarios_cms')
+          .select('rol, activo')
+          .eq('id', user.id)
+          .eq('activo', true)
+          .maybeSingle();
+        if (cms?.rol) {
+          clearDraft();
+          closeFlow();
+          navigate('/admin', { replace: true });
+          return;
+        }
         const { data: existente } = await supabase
           .from('ciudadanos')
           .select('id')
           .eq('auth_user_id', user.id)
+          .is('eliminado_en', null)
           .maybeSingle();
         if (existente) {
-          // Usuario que vuelve. No pedimos datos otra vez.
           clearDraft();
           setSesionLista(true);
           return;
@@ -177,6 +184,10 @@ export function FlowIngresar() {
 
   const guardarCiudadano = async () => {
     setErr(null);
+    if (!CEDULA_RE.test(draft.cedula.trim())) {
+      setErr('La cédula debe tener entre 6 y 12 dígitos.');
+      return;
+    }
     if (!draft.barrioId) {
       setErr('Elige tu barrio.');
       return;
@@ -225,18 +236,18 @@ export function FlowIngresar() {
     }
   };
 
-  // Step 1 — email + cédula
+  // Step 1 — solo email (la cédula se pide en step 3 si es registro nuevo)
   const renderStep1 = () => (
     <FlowShell
       step={1}
       totalSteps={3}
-      title="Tu correo para enviarte el código"
-      lead="Lo usamos solo para verificar que eres tú. Nunca lo mostramos público."
+      title="Tu correo electrónico"
+      lead="Te mandamos un código de 6 dígitos para confirmar que eres tú. Nunca lo mostramos público."
       onClose={closeFlow}
       body={
         <>
           <div className="mini-field">
-            <label htmlFor="i-email">Correo electrónico</label>
+            <label htmlFor="i-email">Correo</label>
             <input
               id="i-email"
               type="email"
@@ -246,19 +257,6 @@ export function FlowIngresar() {
               placeholder="tu@correo.com"
             />
             <span className="hint">El email puede tardar hasta 60 segundos.</span>
-          </div>
-          <div className="mini-field">
-            <label htmlFor="i-cedula">Cédula</label>
-            <input
-              id="i-cedula"
-              type="text"
-              inputMode="numeric"
-              autoComplete="off"
-              value={draft.cedula}
-              onChange={(e) => setDraft((d) => ({ ...d, cedula: e.target.value.replace(/\D/g, '') }))}
-              placeholder="1.045.678.912"
-            />
-            <span className="hint">Identificador legal en Colombia. Solo lo ven el equipo y tú.</span>
           </div>
           <div
             className="alert"
@@ -291,7 +289,7 @@ export function FlowIngresar() {
         <button
           type="button"
           className="btn btn-primary btn-block"
-          disabled={sending || !EMAIL_RE.test(draft.email.trim()) || !CEDULA_RE.test(draft.cedula.trim())}
+          disabled={sending || !EMAIL_RE.test(draft.email.trim())}
           onClick={sendOtp}
         >
           <Mail />{sending ? 'Enviando…' : 'Enviar código'} <ArrowRight />
@@ -308,9 +306,9 @@ export function FlowIngresar() {
       title="Pon el código que te llegó"
       lead={
         <>
-          Enviamos un correo a{' '}
-          <strong style={{ color: 'var(--ink-strong)' }}>{draft.email}</strong>. Revisa la
-          bandeja (y spam por si acaso).
+          Revisa la bandeja de entrada de{' '}
+          <strong style={{ color: 'var(--ink-strong)' }}>{draft.email}</strong> (y spam por si
+          acaso).
         </>
       }
       onClose={closeFlow}
@@ -378,7 +376,7 @@ export function FlowIngresar() {
     />
   );
 
-  // Step 3 — datos personales (nombres + cumpleaños + celular opcional)
+  // Step 3 — registro nuevo (cédula + datos personales)
   const renderStep3 = () => (
     <FlowShell
       step={3}
@@ -390,6 +388,19 @@ export function FlowIngresar() {
       onBack={() => setStep(2)}
       body={
         <>
+          <div className="mini-field">
+            <label htmlFor="i-cedula">Cédula</label>
+            <input
+              id="i-cedula"
+              type="text"
+              inputMode="numeric"
+              autoComplete="off"
+              value={draft.cedula}
+              onChange={(e) => setDraft((d) => ({ ...d, cedula: e.target.value.replace(/\D/g, '') }))}
+              placeholder="1045678912"
+            />
+            <span className="hint">Identificador legal en Colombia. Solo lo ven el equipo y tú.</span>
+          </div>
           <div className="row row-2" style={{ gap: 10 }}>
             <div className="mini-field grow">
               <label htmlFor="i-nombres">Nombres</label>
@@ -476,7 +487,7 @@ export function FlowIngresar() {
             </div>
           </div>
           <div className="mini-field">
-            <label htmlFor="i-cel">Celular (opcional)</label>
+            <label htmlFor="i-cel">Teléfono (opcional)</label>
             <input
               id="i-cel"
               type="tel"
@@ -547,6 +558,7 @@ export function FlowIngresar() {
           className="btn btn-primary btn-block"
           disabled={
             saving ||
+            !CEDULA_RE.test(draft.cedula.trim()) ||
             draft.nombres.trim().length < 2 ||
             draft.apellidos.trim().length < 2 ||
             !draft.fechaNacimiento ||

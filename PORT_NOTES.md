@@ -167,6 +167,7 @@ Sesión autónoma · 13 bloques en orden. Fuente visual: `Design/HANDOFFv2.0.md`
 ### Bloques completados
 
 - **Bloque 1 · `db/14-fix-v-capitulos-publicos.sql`** — DROP + CREATE de la vista con `casos_progreso` (era `casos_gestion` en prod por drift de migración 10). No toca MV ni otras vistas.
+- **Bloque 2 · Auth UI email-only + /recuperar** — Login simplificado a una sola entrada email + OTP (sin tabs SMS vs editor). `useMiRol` nuevo en `useMiCuenta.ts` para detectar rol post-OTP. FlowIngresar refactor: step 1 solo email, cédula movida al step 3, verifyOtp redirige a `/admin` si es CMS. `/recuperar` + `/recuperar/nueva-contrasena` nuevos. Copy SMS → email en Home, MiCuenta, CasoEdit, FlowReportar. Admin/Usuarios mueve columna Teléfono al final.
 
 ### Migraciones DB pendientes de aplicación humana (en orden)
 
@@ -174,6 +175,27 @@ Sesión autónoma · 13 bloques en orden. Fuente visual: `Design/HANDOFFv2.0.md`
 |---|---|---|---|
 | 1 | `db/14-fix-v-capitulos-publicos.sql` | BUG-C1 · vista en prod expone `casos_gestion`, frontend pide `casos_progreso` → 400. Desbloquea Home. | 2 min |
 
+**Acciones humanas Bloque 2:**
+- Configurar `Site URL` y `Redirect URLs` en Supabase Auth para que `${APP_CONFIG.url}/recuperar/nueva-contrasena` sea permitido como redirect del email de reset. Dashboard → Authentication → URL Configuration.
+
 ### ⚠️ Decisiones pendientes Sprint D
 
-_(vacío por ahora — se irá llenando cuando aparezcan decisiones con 2 caminos razonables)_
+#### D-Sprint-D-1 · Password de editor: ¿login con password o solo OTP?
+
+**Contexto:** la spec del Bloque 2 dice "Una sola entrada por email · El rol se resuelve por DB después de validar OTP (ya está implementado en Sprint C; revisa useAuth / hooks/auth)". **No existía** `useMiRol` ni equivalente en Sprint C; lo creé en `frontend/src/hooks/useMiCuenta.ts` consultando `usuarios_cms` + `ciudadanos`.
+
+**Lo que hice (default · reversible):**
+- Login.tsx: una sola pantalla con input email → `signInWithOtp` → abre FlowIngresar drawer (paso 2 OTP).
+- FlowIngresar.verifyOtp: después de OTP éxito, busca `usuarios_cms.id = user.id`. Si match → `navigate('/admin')` + cierra drawer. Si no, busca en `ciudadanos`. Si match → sesión lista. Si no → step 3 registro.
+- Quité `signInWithPassword` del Login. Editores ahora entran SIEMPRE por OTP desde la UI.
+- El password de Supabase Auth sigue válido para herramientas externas (Supabase Studio, CLI). `/recuperar` permite resetearlo.
+
+**Pregunta para Kevin:** ¿está bien que editores entren SIEMPRE por OTP (no password)? O quieres recuperar el login con password como secundario (un link "soy editor con contraseña") para entrada más rápida en uso diario?
+
+**Reversión si quieres password de vuelta:** restaurar el branch de tabs ciudadano/editor en Login.tsx (commit anterior a Bloque 2) y dejar OTP como default.
+
+#### D-Sprint-D-2 · Columna "Teléfono" en admin/Usuarios
+
+**Contexto:** la spec dice "si está en uso real, mantenla pero al final; si era placeholder, bórrala". El campo `ciudadanos.telefono_celular` SE USA (FlowIngresar paso 3 lo pide opcional, FlowReportar/admin/Solicitudes lo leen).
+
+**Lo que hice:** la moví al final de la tabla (después de Registrado). Header renombrado de "Celular" a "Teléfono" para evitar confusión con SMS. Placeholder del search input también actualizado.

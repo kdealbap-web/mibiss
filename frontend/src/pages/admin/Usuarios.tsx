@@ -106,7 +106,7 @@ export function Usuarios() {
               <Search strokeWidth={2.2} />
               <input
                 type="search"
-                placeholder="Buscar por nombre, celular o email…"
+                placeholder="Buscar por nombre, email o teléfono…"
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
               />
@@ -155,9 +155,9 @@ export function Usuarios() {
                     <tr>
                       <th>Ciudadano</th>
                       <th>Barrio</th>
-                      <th>Celular</th>
                       <th>Verificado</th>
                       <th>Registrado</th>
+                      <th>Teléfono</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -232,7 +232,6 @@ function CiudadanoRow({ c, barrioNombre }: { c: Ciudadano; barrioNombre: string 
         </div>
       </td>
       <td>{barrioNombre}</td>
-      <td className="mono" style={{ fontSize: 12 }}>{c.telefono_celular}</td>
       <td>
         {c.verificado_email ? (
           <span className="badge badge-resolved"><span className="dot" />Sí</span>
@@ -242,6 +241,9 @@ function CiudadanoRow({ c, barrioNombre }: { c: Ciudadano; barrioNombre: string 
       </td>
       <td>
         <span className="mono" style={{ fontSize: 12 }}>{formatRelative(c.creado_en)}</span>
+      </td>
+      <td className="mono" style={{ fontSize: 12, color: 'var(--ink-soft)' }}>
+        {c.telefono_celular ?? '—'}
       </td>
     </tr>
   );

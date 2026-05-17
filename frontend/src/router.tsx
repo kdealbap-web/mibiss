@@ -3,6 +3,8 @@ import { Route, Routes, Navigate } from 'react-router-dom';
 import { Splash } from './pages/Splash';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
+import { Recuperar } from './pages/Recuperar';
+import { RecuperarNuevaContrasena } from './pages/RecuperarNuevaContrasena';
 import { Capitulo } from './pages/Capitulo';
 import { Caso } from './pages/Caso';
 import { MiCuenta } from './pages/MiCuenta';
@@ -22,6 +24,8 @@ export function AppRouter() {
       <Route path="/" element={<Splash />} />
       <Route path="/home" element={<Home />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/recuperar" element={<Recuperar />} />
+      <Route path="/recuperar/nueva-contrasena" element={<RecuperarNuevaContrasena />} />
       <Route path="/capitulo/:slug" element={<Capitulo />} />
       <Route path="/caso/:folio" element={<Caso />} />
       <Route path="/mi-cuenta" element={<MiCuenta />} />

@@ -195,7 +195,7 @@ export function MiCuenta() {
               )}
               {!perfil && (
                 <p className="caption">
-                  Tu perfil de ciudadano aún no está creado. Cuando completes el ingreso por celular, verás tus datos aquí.
+                  Tu perfil de ciudadano aún no está creado. Cuando completes el ingreso por email, verás tus datos aquí.
                 </p>
               )}
             </div>
@@ -207,7 +207,7 @@ export function MiCuenta() {
           <p className="caption" style={{ marginBottom: 16 }}>Cómo te avisamos cuando algo cambie.</p>
           <div className="stack stack-3">
             <label className="row row-3" style={{ justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid var(--border)' }}>
-              <span>SMS cuando mi caso cambie de estado</span>
+              <span>Email cuando mi caso cambie de estado</span>
               <input
                 type="checkbox"
                 defaultChecked={perfil?.acepta_notificaciones ?? true}
@@ -215,7 +215,7 @@ export function MiCuenta() {
               />
             </label>
             <label className="row row-3" style={{ justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid var(--border)' }}>
-              <span>SMS cuando alguien suma testimonio a mi caso</span>
+              <span>Email cuando alguien suma testimonio a mi caso</span>
               <input
                 type="checkbox"
                 defaultChecked

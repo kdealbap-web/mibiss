@@ -1,53 +1,32 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowRight, LogIn } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Mail } from 'lucide-react';
 
 import { BissLogo } from '../components/brand/BissLogo';
 import { BissMark } from '../components/brand/BissMark';
 import { useFlowDrawer } from '../context/FlowDrawer';
-import { supabase } from '../lib/supabase';
 
 import '../styles/login.css';
 
-type Tab = 'ciudadano' | 'editor';
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function Login() {
-  const navigate = useNavigate();
   const { openFlow } = useFlowDrawer();
-
-  const [tab, setTab] = useState<Tab>('ciudadano');
-  const [ciudadanoEmail, setCiudadanoEmail] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [recordar, setRecordar] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     document.body.classList.add('auth-body');
     return () => document.body.classList.remove('auth-body');
   }, []);
 
-  const onCiudadanoSubmit = (e: React.FormEvent) => {
+  const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    openFlow('ingresar', { prefillEmail: ciudadanoEmail.trim() });
+    const clean = email.trim().toLowerCase();
+    if (!EMAIL_RE.test(clean)) return;
+    openFlow('ingresar', { prefillEmail: clean });
   };
 
-  const onEditorSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    setLoading(false);
-    if (authError) {
-      setError('Correo o contraseña no coinciden. Vuelve a intentarlo.');
-      return;
-    }
-    navigate('/admin', { replace: true });
-  };
+  const validEmail = EMAIL_RE.test(email.trim());
 
   return (
     <div className="auth-shell">
@@ -63,8 +42,8 @@ export function Login() {
               lineHeight: 1.5,
             }}
           >
-            Panel para el equipo de moderación. Atendemos cada caso, leemos cada testimonio,
-            coordinamos cada padrinazgo.
+            Entra con tu correo. Te enviamos un código de 6 dígitos. Si eres del equipo,
+            el panel te detecta automáticamente.
           </p>
         </div>
         <div className="quote">
@@ -79,135 +58,57 @@ export function Login() {
             <BissMark size={64} />
           </div>
           <h1>Entra a BISS</h1>
-          <p className="sub">
-            Entra con tu correo. Si eres del equipo, cambia abajo a "Editor".
-          </p>
+          <p className="sub">Te mandamos un código por email.</p>
 
-          <div className="auth-tabs">
-            <button
-              type="button"
-              data-active={tab === 'ciudadano' ? 'true' : undefined}
-              onClick={() => setTab('ciudadano')}
-            >
-              Soy ciudadano
-            </button>
-            <button
-              type="button"
-              data-active={tab === 'editor' ? 'true' : undefined}
-              onClick={() => setTab('editor')}
-            >
-              Soy editor
-            </button>
-          </div>
-
-          {tab === 'ciudadano' ? (
-            <form className="stack" onSubmit={onCiudadanoSubmit}>
-              <div className="field">
-                <label className="field-label" htmlFor="ci-email">
-                  Tu correo
-                </label>
-                <input
-                  id="ci-email"
-                  className="field-input"
-                  type="email"
-                  autoComplete="email"
-                  placeholder="tu@correo.com"
-                  value={ciudadanoEmail}
-                  onChange={(e) => setCiudadanoEmail(e.target.value)}
-                  required
-                />
-                <span className="field-helper">
-                  Te enviamos un código de 6 dígitos por email · sin contraseña.
-                </span>
-              </div>
-              <button
-                className="btn btn-primary btn-block btn-lg"
-                type="submit"
-                disabled={!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ciudadanoEmail.trim())}
-              >
-                <ArrowRight />Continuar
-              </button>
-            </form>
-          ) : (
-            <form className="stack" onSubmit={onEditorSubmit}>
-              <div className="field">
-                <label className="field-label" htmlFor="email">
-                  Correo
-                </label>
-                <input
-                  id="email"
-                  className="field-input"
-                  type="email"
-                  placeholder="tu@biss.gov.co"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="field">
-                <label className="field-label" htmlFor="pass">
-                  Contraseña
-                </label>
-                <input
-                  id="pass"
-                  className="field-input"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-                <a
-                  href="#"
-                  style={{
-                    fontSize: 13,
-                    color: 'var(--biss-teal-900)',
-                    fontWeight: 700,
-                    alignSelf: 'flex-end',
-                  }}
-                >
-                  ¿La olvidaste?
-                </a>
-              </div>
-              <label
+          <form className="stack" onSubmit={onSubmit}>
+            <div className="field">
+              <label className="field-label" htmlFor="login-email">
+                Tu correo
+              </label>
+              <div
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: 8,
-                  fontSize: 13,
-                  color: 'var(--ink-soft)',
-                  marginTop: 4,
+                  border: '1.5px solid var(--border)',
+                  borderRadius: 'var(--radius)',
+                  padding: '0 12px',
+                  background: 'var(--surface)',
                 }}
               >
+                <Mail size={18} style={{ color: 'var(--biss-teal-900)' }} aria-hidden />
                 <input
-                  type="checkbox"
-                  checked={recordar}
-                  onChange={(e) => setRecordar(e.target.checked)}
-                  style={{ accentColor: 'var(--biss-teal)' }}
+                  id="login-email"
+                  className="field-input"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="tu@correo.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  style={{ border: 0, padding: '12px 0', flex: 1 }}
                 />
-                Mantener sesión en este equipo
-              </label>
-              {error && (
-                <div
-                  className="alert alert-critical"
-                  style={{ padding: '10px 12px', fontSize: 12 }}
-                >
-                  {error}
-                </div>
-              )}
-              <button
-                className="btn btn-primary btn-block btn-lg"
-                type="submit"
-                disabled={loading}
-              >
-                <LogIn />
-                {loading ? 'Entrando…' : 'Entrar al panel'}
-              </button>
-            </form>
-          )}
+              </div>
+              <span className="field-helper">
+                Sin contraseña. Te llega un código de 6 dígitos.
+              </span>
+            </div>
+            <button
+              className="btn btn-primary btn-block btn-lg"
+              type="submit"
+              disabled={!validEmail}
+            >
+              <ArrowRight />Continuar
+            </button>
+          </form>
 
-          <div className="alt">
-            ¿Eres concejal o líder social? <a href="#">Solicita acceso</a>
+          <div className="alt" style={{ marginTop: 18 }}>
+            <Link
+              to="/recuperar"
+              style={{ color: 'var(--biss-teal-900)', fontWeight: 700 }}
+            >
+              ¿Eres del equipo y olvidaste tu contraseña?
+            </Link>
           </div>
         </div>
       </main>

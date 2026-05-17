@@ -600,7 +600,7 @@ export function Home() {
               <span className="n">04</span>
               <h4>Kevin lo mueve</h4>
               <p>
-                El concejal radica oficios, coordina cuadrillas, te avisa por SMS cada vez que
+                El concejal radica oficios, coordina cuadrillas, te avisa por email cada vez que
                 cambia.
               </p>
             </div>
