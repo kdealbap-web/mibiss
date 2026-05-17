@@ -11,7 +11,7 @@ const SECRET_ACCESS_KEY = Deno.env.get('R2_SECRET_ACCESS_KEY')!;
 const BUCKET            = Deno.env.get('R2_BUCKET')!;            // ej. mibissbucket
 const ENDPOINT          = Deno.env.get('R2_ENDPOINT')!;          // https://<accountid>.r2.cloudflarestorage.com
 const REGION            = 'auto';                                // R2 siempre usa "auto"
-const PUBLIC_BASE       = Deno.env.get('R2_PUBLIC_BASE_URL')!;   // https://media.mibiss.com.co
+const PUBLIC_BASE       = Deno.env.get('R2_PUBLIC_URL')!;   // https://media.mibiss.com.co
 
 // SigV4 mínimo para PUT presigned URL. R2 expone exactamente el mismo protocolo
 // S3-SigV4 que B2/AWS S3 cambiando host y región a "auto".
