@@ -33,10 +33,90 @@
     position: sticky; top: 0;
     height: 100vh;
   }
+
+  .admin-burger {
+    display: none;
+    margin-left: auto;
+    background: rgba(255,255,255,0.10);
+    color: #FFFFFF;
+    border: 0;
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background var(--t-base);
+  }
+  .admin-burger:hover { background: rgba(255,255,255,0.20); }
+
+  .admin-overlay {
+    display: none;
+  }
+
+  /* === Mobile drawer pattern (HANDOFF v2.0 §9.2) === */
   @media (max-width: 899px) {
-    .admin-sidebar { height: auto; position: relative; padding: 16px 18px; flex-direction: row; align-items: center; }
-    .admin-sidebar .side-nav { display: none; }
-    .admin-sidebar .side-user { margin-left: auto; }
+    .admin-shell { display: block; }
+    .admin-sidebar {
+      position: sticky;
+      top: 0;
+      height: 56px;
+      padding: 8px 14px;
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+      overflow: hidden;
+      z-index: 60;
+    }
+    .admin-sidebar .admin-brand {
+      border-bottom: 0;
+      padding-bottom: 0;
+      flex: 1;
+      gap: 8px;
+    }
+    .admin-sidebar .side-nav,
+    .admin-sidebar .side-user { display: none; }
+    .admin-burger {
+      display: inline-flex;
+      flex-shrink: 0;
+    }
+
+    [data-sidebar-open='true'] .admin-sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: min(300px, 86vw);
+      height: 100dvh;
+      padding: 24px 18px 18px;
+      flex-direction: column;
+      align-items: stretch;
+      overflow-y: auto;
+      transform: translateX(0);
+      box-shadow: 6px 0 24px rgba(0, 0, 0, 0.32);
+      z-index: 80;
+    }
+    [data-sidebar-open='true'] .admin-sidebar .admin-brand {
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      padding-bottom: 16px;
+    }
+    [data-sidebar-open='true'] .admin-sidebar .side-nav,
+    [data-sidebar-open='true'] .admin-sidebar .side-user { display: flex; }
+
+    .admin-overlay {
+      display: block;
+      position: fixed;
+      inset: 0;
+      background: rgba(6, 119, 124, 0.45);
+      backdrop-filter: blur(2px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--t-base);
+      z-index: 70;
+    }
+    [data-sidebar-open='true'] .admin-overlay {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+  @media (min-width: 900px) {
+    .admin-burger, .admin-overlay { display: none !important; }
   }
 
   .admin-brand {
