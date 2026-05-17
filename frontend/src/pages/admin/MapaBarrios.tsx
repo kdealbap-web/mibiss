@@ -5,7 +5,6 @@ import {
   Plus,
   Info,
   Maximize2,
-  Search,
   Edit,
   BookOpen,
   Plane,
@@ -17,6 +16,7 @@ import {
 
 import { AdminLayout } from '../../components/layout/AdminLayout';
 import { AdminTopbar } from '../../components/layout/AdminTopbar';
+import { SearchInput } from '../../components/ui';
 import { useBarrios } from '../../hooks/useBarrios';
 import { useZonas } from '../../hooks/useZonas';
 import type { Barrio, Zona } from '../../types/biss';
@@ -145,15 +145,12 @@ export function MapaBarrios() {
               <div className="card-sub" style={{ marginBottom: 10 }}>
                 Edita nombre, zona y coordenadas. Activa o desactiva bitácora.
               </div>
-              <div className="map-search-wrap">
-                <Search strokeWidth={2.2} />
-                <input
-                  type="search"
-                  placeholder="Buscar barrio…"
-                  value={q}
-                  onChange={(e) => setQ(e.target.value)}
-                />
-              </div>
+              <SearchInput
+                placeholder="Buscar barrio…"
+                aria-label="Buscar barrio"
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+              />
             </div>
 
             {filtered.slice(0, 50).map((b, i) => {

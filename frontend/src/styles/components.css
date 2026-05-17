@@ -240,6 +240,45 @@
   .chip-active .chip-count { background: rgba(7, 56, 99, 0.2); }
 
   /* ============================================================
+     SEARCH INPUT · lupa fija + input redondeado (v2.0 §1)
+     ============================================================ */
+  .search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .search-wrap > svg {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: var(--biss-teal-900);
+    pointer-events: none;
+  }
+  .search-wrap input {
+    width: 100%;
+    padding: 12px 14px 12px 38px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-pill);
+    font-size: 14px;
+    background: var(--surface);
+    font-weight: 600;
+    color: var(--ink-strong);
+    transition: all var(--t-base);
+  }
+  .search-wrap input:focus {
+    outline: none;
+    border-color: var(--biss-teal);
+    box-shadow: var(--shadow-focus);
+  }
+  .search-wrap input::placeholder {
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+
+  /* ============================================================
      BADGES · estado, categoría, folio
      ============================================================ */
   .badge {

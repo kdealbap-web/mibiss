@@ -8,11 +8,11 @@ import {
   Crown,
   Eye,
   Edit,
-  Search,
 } from 'lucide-react';
 
 import { AdminLayout } from '../../components/layout/AdminLayout';
 import { AdminTopbar } from '../../components/layout/AdminTopbar';
+import { SearchInput, FilterChip } from '../../components/ui';
 import { useUsuariosCms, useCiudadanos } from '../../hooks/useUsuarios';
 import { useBarrios } from '../../hooks/useBarrios';
 import { formatRelative, initials } from '../../lib/format';
@@ -73,22 +73,20 @@ export function Usuarios() {
 
       <div className="admin-page">
         <div className="row row-3 wrap" style={{ gap: 8 }}>
-          <button
-            type="button"
-            className={tab === 'cms' ? 'chip chip-active' : 'chip'}
+          <FilterChip
+            active={tab === 'cms'}
+            count={cmsUsers.length}
+            icon={<Shield style={{ color: 'var(--cat-social)' }} />}
+            label="Equipo CMS"
             onClick={() => setTab('cms')}
-          >
-            <Shield style={{ color: 'var(--cat-social)' }} />Equipo CMS{' '}
-            <span className="chip-count">{cmsUsers.length}</span>
-          </button>
-          <button
-            type="button"
-            className={tab === 'ciudadanos' ? 'chip chip-active' : 'chip'}
+          />
+          <FilterChip
+            active={tab === 'ciudadanos'}
+            count={ciudadanos.length}
+            icon={<Users style={{ color: 'var(--biss-teal)' }} />}
+            label="Ciudadanos"
             onClick={() => setTab('ciudadanos')}
-          >
-            <Users style={{ color: 'var(--biss-teal)' }} />Ciudadanos{' '}
-            <span className="chip-count">{ciudadanos.length}</span>
-          </button>
+          />
         </div>
 
         <div className="admin-card" style={{ padding: 0, overflow: 'hidden' }}>
@@ -102,15 +100,14 @@ export function Usuarios() {
               flexWrap: 'wrap',
             }}
           >
-            <div className="map-search-wrap" style={{ flex: 1, maxWidth: 360 }}>
-              <Search strokeWidth={2.2} />
-              <input
-                type="search"
-                placeholder="Buscar por nombre, email o teléfono…"
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-              />
-            </div>
+            <SearchInput
+              className="grow"
+              style={{ maxWidth: 360 }}
+              placeholder="Buscar por nombre, email o teléfono…"
+              aria-label="Buscar usuarios"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+            />
           </div>
 
           {tab === 'cms' && (
