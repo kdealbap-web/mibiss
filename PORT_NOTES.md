@@ -168,6 +168,13 @@ Sesión autónoma · 13 bloques en orden. Fuente visual: `Design/HANDOFFv2.0.md`
 
 - **Bloque 1 · `db/14-fix-v-capitulos-publicos.sql`** — DROP + CREATE de la vista con `casos_progreso` (era `casos_gestion` en prod por drift de migración 10). No toca MV ni otras vistas.
 - **Bloque 2 · Auth UI email-only + /recuperar** — Login simplificado a una sola entrada email + OTP (sin tabs SMS vs editor). `useMiRol` nuevo en `useMiCuenta.ts` para detectar rol post-OTP. FlowIngresar refactor: step 1 solo email, cédula movida al step 3, verifyOtp redirige a `/admin` si es CMS. `/recuperar` + `/recuperar/nueva-contrasena` nuevos. Copy SMS → email en Home, MiCuenta, CasoEdit, FlowReportar. Admin/Usuarios mueve columna Teléfono al final.
+- **Bloque 3 · UI primitives** — `<SearchInput />`, `<FilterChip />`, `<Select />` en `components/ui/`. CSS `.search-wrap` en `components.css`. Reemplazos en admin/Usuarios y admin/MapaBarrios. Mapa público filtros intactos (zona segura).
+- **Bloque 4 · Splash mobile + tagline** — Breakpoints `(max-width: 700px) or (max-height: 720px)`. Auto-redirect 7s cancelable con scroll/touch. Tagline `.lema` con `.accent` highlight amarillo sobre "primer libro vivo".
+- **Bloque 5 · Admin sidebar drawer <900px** — AdminLayout con estado sidebarOpen + Esc + focus trap. Burger button, overlay teal 45%, onNavigate cierra drawer. Orden de secciones intacto (zona segura §11.2).
+- **Bloque 8 · Iconos lucide** — NO requirió cambios. `grep "data-lucide" frontend/src` devolvió 0 matches: el código React ya usaba componentes desde Sprint A.
+- **Bloque 9 · Flows padding mobile ≤640px** — `.flow-shell` 16/14/56, `.flow-header` 20/18, h1 compacto.
+- **Bloque 10 · Accesibilidad básica** — `useFocusTrap` nuevo en `hooks/`. Aplicado a `Drawer` (FlowDrawer + cualquier modal futuro). aria-pressed ya en FilterChip (Bloque 3). axe-cli documentado abajo (no instalado).
+- **Bloque 11 · Coords desde DB** — `SOLEDAD_CENTER` y `SOLEDAD_BOUNDS` en `lib/config.ts`. BissMap lee constante. Resto del mapa (barrios, casos) ya leía de DB desde Sprint A. HITOS hardcoded de admin/MapaBarrios (aeropuerto, alcaldía, etc.) quedan: no son barrios y no hay tabla `hitos`.
 
 ### Migraciones DB pendientes de aplicación humana (en orden)
 
@@ -177,6 +184,24 @@ Sesión autónoma · 13 bloques en orden. Fuente visual: `Design/HANDOFFv2.0.md`
 
 **Acciones humanas Bloque 2:**
 - Configurar `Site URL` y `Redirect URLs` en Supabase Auth para que `${APP_CONFIG.url}/recuperar/nueva-contrasena` sea permitido como redirect del email de reset. Dashboard → Authentication → URL Configuration.
+
+**Bloque 10 · Accesibilidad — correr axe-cli antes de release (no bloqueante):**
+
+```bash
+# Una vez por máquina:
+npm install -D @axe-core/cli
+
+# Cada release:
+cd frontend
+npm run build
+npx vite preview --port 4173 &
+sleep 2
+npx axe http://localhost:4173/inicio http://localhost:4173/login http://localhost:4173/recuperar
+# Si admin tiene credenciales en .env de test, también:
+# npx axe http://localhost:4173/admin
+```
+
+Resultado esperado: 0 errores WCAG 2 AA en home, login, recuperar, caso, capítulo, splash. Avisos `incomplete` o `best-practice` no bloquean release.
 
 ### ⚠️ Decisiones pendientes Sprint D
 

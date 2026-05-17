@@ -1,5 +1,7 @@
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 
 interface DrawerProps {
   open: boolean;
@@ -9,6 +11,9 @@ interface DrawerProps {
 }
 
 export function Drawer({ open, onClose, children, ariaLabel }: DrawerProps) {
+  const panelRef = useRef<HTMLElement>(null);
+  useFocusTrap(panelRef, open);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -34,6 +39,7 @@ export function Drawer({ open, onClose, children, ariaLabel }: DrawerProps) {
         aria-hidden="true"
       />
       <aside
+        ref={panelRef}
         className="biss-drawer"
         data-open={open ? 'true' : undefined}
         role="dialog"
