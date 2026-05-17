@@ -236,10 +236,10 @@ Sesión autónoma · 13 bloques en orden. Fuente visual: `Design/HANDOFFv2.0.md`
 
 ### Migraciones DB pendientes de aplicación humana (en orden)
 
-| # | Archivo | Razón | Tiempo |
-|---|---|---|---|
-| 1 | `db/14-fix-v-capitulos-publicos.sql` | BUG-C1 · vista en prod expone `casos_gestion`, frontend pide `casos_progreso` → 400. Desbloquea Home. | 2 min |
-| 2 | `db/15-config-app.sql` | Tabla `config_app` key/value para `/admin/ajustes` + RLS editor/admin + 9 seeds. | 2 min |
+| # | Archivo | Razón | Tiempo | Estado |
+|---|---|---|---|---|
+| 1 | `db/14-fix-v-capitulos-publicos.sql` | BUG-C1 · vista en prod expone `casos_gestion`, frontend pide `casos_progreso` → 400. Desbloquea Home. | 2 min | ✅ Aplicada 2026-05-17 (Claude via `supabase db query --linked`) |
+| 2 | `db/15-config-app.sql` | Tabla `config_app` key/value para `/admin/ajustes` + RLS editor/admin + 9 seeds. | 2 min | ✅ Aplicada 2026-05-17 (Claude via `supabase db query --linked`) |
 
 **Acciones humanas Bloque 2:**
 - Configurar `Site URL` y `Redirect URLs` en Supabase Auth para que `${APP_CONFIG.url}/recuperar/nueva-contrasena` sea permitido como redirect del email de reset. Dashboard → Authentication → URL Configuration.
