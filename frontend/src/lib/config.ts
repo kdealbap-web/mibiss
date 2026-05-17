@@ -16,3 +16,12 @@ export const APP_CONFIG = {
   locale: 'es-CO',
   region: 'Soledad, Atlántico, Colombia',
 } as const;
+
+/** Centroide del municipio de Soledad — fallback cuando el barrio no tiene coords. */
+export const SOLEDAD_CENTER: readonly [number, number] = [10.917, -74.762];
+
+/** Bounding box geográfico del municipio (validación de inputs lat/lng en admin). */
+export const SOLEDAD_BOUNDS = {
+  lat: [10.85, 10.96] as const,
+  lng: [-74.81, -74.72] as const,
+} as const;

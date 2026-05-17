@@ -3,9 +3,10 @@ import L from 'leaflet';
 
 import { useBarriosConCoords } from '../../hooks/useBarrios';
 import { useCasosPublicos } from '../../hooks/useCasos';
+import { SOLEDAD_CENTER } from '../../lib/config';
 import type { Barrio, CasoPublico, EstadoCaso } from '../../types/biss';
 
-const CENTER: L.LatLngTuple = [10.917, -74.762];
+const CENTER: L.LatLngTuple = [SOLEDAD_CENTER[0], SOLEDAD_CENTER[1]];
 const ZOOM = 13;
 
 const TILES = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
