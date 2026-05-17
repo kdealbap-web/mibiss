@@ -64,6 +64,21 @@
   .flow-breadcrumb a:hover { color: #FFFFFF; }
   .flow-breadcrumb .sep { color: rgba(255,255,255,0.5); }
 
+  /* === Mobile flow padding compact (HANDOFF v2.0 §9.3) === */
+  @media (max-width: 640px) {
+    .flow-shell { padding: 16px 14px 56px; }
+    .flow-header {
+      padding: 20px 18px;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+    .flow-header h1 {
+      font-size: clamp(1.4rem, 5vw, 1.875rem);
+      line-height: 1.1;
+    }
+    .flow-header .lead { font-size: 13px; margin-top: 2px; }
+  }
+
   /* Storyboard horizontal · scroll-snap mobile, grid lado a lado desktop */
   .storyboard {
     display: flex;
