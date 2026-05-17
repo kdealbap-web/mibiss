@@ -78,3 +78,12 @@ Design/
 # --- Archivos temporales de exploración -------------------------------------
 **/inventario_biss.txt
 **/manual_marca_extracted.txt
+
+# --- Supabase CLI artifacts -------------------------------------------------
+# El código real de edge functions vive en backend/edge-functions/.
+# supabase/ es el stage que usa el CLI para deploy y no se versiona.
+supabase/
+backend/supabase/
+
+# --- Smoke test outputs (logs, no checked in) ------------------------------
+scripts/smoke-output.txt

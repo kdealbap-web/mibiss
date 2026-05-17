@@ -160,7 +160,7 @@ Sin CORS, el navegador rechaza el PUT firmado desde la SPA.
 
 ---
 
-## Sprint D — En curso (2026-05-16)
+## Sprint D — Cierre (2026-05-17)
 
 Sesión autónoma · 13 bloques en orden. Fuente visual: `Design/HANDOFFv2.0.md` (con punto, no underscore).
 
@@ -181,6 +181,58 @@ Sesión autónoma · 13 bloques en orden. Fuente visual: `Design/HANDOFFv2.0.md`
 ### Bloques diferidos a Sprint E (default conservador)
 
 - **Bloque 12 · Auditoría admin** — diferido. La spec marca este bloque como CONDICIONAL ("si Kevin marca duda, DEJA esto para Sprint E"). En sesión autónoma no hay señal explícita, default = NO implementar. Si Kevin lo quiere para Sprint D, basta con aplicar `db/16-auditoria.sql` (no creado) + crear `pages/admin/Auditoria.tsx`. Patrón sugerido en spec original.
+
+### Resumen ejecutivo Sprint D
+
+**Commits** (de `c0491b9` → HEAD):
+
+| Bloque | Commit | Resumen |
+|--------|--------|---------|
+| 1 | `ef63793` | DB fix v_capitulos_publicos (drift `casos_gestion`) |
+| 2 | `97cc2c4` | Auth email-only + /recuperar |
+| 3 | `6a2283d` | UI primitives SearchInput/FilterChip/Select |
+| 4 | `cb06230` | Splash mobile + tagline highlight |
+| 5 | `06830be` | Admin sidebar drawer <900px |
+| 9 | `e5c651c` | Flows padding mobile ≤640px |
+| 11 | `629655b` | Hoist Soledad coords a lib/config |
+| 10 | `1bfb48a` | useFocusTrap + Drawer + axe docs |
+| 6 | `6bf67ce` | /admin/ajustes (6 secciones) |
+| 7 | `efe9580` | /admin/barrios CRUD + Leaflet |
+| 12 | (diferido a Sprint E) | Auditoría admin |
+| R2 | `ad03bc1` | rename `R2_PUBLIC_BASE_URL → R2_PUBLIC_URL` |
+| 13 | (este commit) | Cierre + cleanup |
+
+**Bloque 8 (lucide migration)** — NO requirió cambios (0 matches de `data-lucide` en `frontend/src`; el código ya estaba migrado desde Sprint A).
+
+### Acciones humanas post-deploy (en orden)
+
+1. **🔥 Aplicar `db/14-fix-v-capitulos-publicos.sql`** en Supabase SQL Editor → desbloquea Home (BUG-C1 del smoke test).
+2. **Aplicar `db/15-config-app.sql`** → habilita `/admin/ajustes` (sin esto la página carga pero los upserts fallan con 404 de tabla).
+3. **Configurar Supabase Auth → URL Configuration**: añadir `https://mibiss.com.co/recuperar/nueva-contrasena` a Redirect URLs.
+4. **Smoke test desde red sin FortiClient** validando:
+   - `/` carga splash, lema con "primer libro vivo" resaltado, redirect a `/home` cancela con scroll/touch.
+   - `/login` muestra una sola entrada email (sin tabs).
+   - `/recuperar` envía email (alguna cuenta de prueba editor).
+   - `/admin` desde 360×640: burger abre drawer con menú; click en link cierra drawer.
+   - `/admin/ajustes` muestra 6 secciones sin SMS/Twilio.
+   - `/admin/barrios` lista los 211 barrios paginados; click en fila abre editor con mapa Leaflet.
+   - `/admin/barrios/nuevo` permite crear con mapa.
+5. **Opcional · axe-cli**: correr `npx axe http://localhost:4173/inicio /login /recuperar` antes del release.
+6. **TI SuperGiros** (sin código): solicitar recategorizar `mibiss.com.co` en FortiClient.
+
+### Lo que NO entró en Sprint D (Sprint E backlog)
+
+- Upload real de fotos en FlowReportar paso 4 (necesita CORS R2 + token testing).
+- Sitemap.xml dinámico (robots.txt ya lo apunta).
+- Métricas Plausible/Umami.
+- OG image dinámica (edge function `og-image`).
+- 2FA TOTP.
+- Importar CSV de barrios.
+- Eliminar columna `verificado_sms` legacy.
+- Suspender/reactivar ciudadano con modal.
+- Reabrir caso archivado + notas internas por caso.
+- Auditoría admin (`/admin/auditoria` + triggers DB · ver decisión D-Sprint-D-3).
+- Editor de capítulo: `descripcion`, `imagen_portada_url`, `activo`, `geocerca` (campos viven en `public.capitulos`).
 
 ### Migraciones DB pendientes de aplicación humana (en orden)
 
