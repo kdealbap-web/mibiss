@@ -51,4 +51,16 @@ export const SolicitudesService = {
       .eq('id', solicitudId);
     if (error) throw error;
   },
+
+  async marcarDuplicada(solicitudId: string, motivo: string) {
+    const { error } = await supabase
+      .from('solicitudes_caso')
+      .update({
+        estado: 'duplicada',
+        motivo_rechazo: motivo,
+        revisado_en: new Date().toISOString(),
+      })
+      .eq('id', solicitudId);
+    if (error) throw error;
+  },
 };

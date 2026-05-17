@@ -222,9 +222,11 @@ export interface SolicitudPendiente {
   lng: number | null;
   creado_en: string;
   estado: EstadoSolicitud;
+  fotos_urls: string[];
   ciudadano_id: string;
   ciudadano: string;
-  telefono_celular: string;
+  telefono_celular: string | null;
+  ciudadano_email: string | null;
   barrio_id: number;
   barrio: string;
   categoria_codigo: string;

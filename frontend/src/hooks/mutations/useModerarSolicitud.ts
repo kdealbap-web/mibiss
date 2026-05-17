@@ -24,3 +24,14 @@ export function useRechazarSolicitud() {
     },
   });
 }
+
+export function useDuplicarSolicitud() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, motivo }: { id: string; motivo: string }) =>
+      SolicitudesService.marcarDuplicada(id, motivo),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['solicitudes'] });
+    },
+  });
+}
