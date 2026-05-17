@@ -175,12 +175,18 @@ Sesión autónoma · 13 bloques en orden. Fuente visual: `Design/HANDOFFv2.0.md`
 - **Bloque 9 · Flows padding mobile ≤640px** — `.flow-shell` 16/14/56, `.flow-header` 20/18, h1 compacto.
 - **Bloque 10 · Accesibilidad básica** — `useFocusTrap` nuevo en `hooks/`. Aplicado a `Drawer` (FlowDrawer + cualquier modal futuro). aria-pressed ya en FilterChip (Bloque 3). axe-cli documentado abajo (no instalado).
 - **Bloque 11 · Coords desde DB** — `SOLEDAD_CENTER` y `SOLEDAD_BOUNDS` en `lib/config.ts`. BissMap lee constante. Resto del mapa (barrios, casos) ya leía de DB desde Sprint A. HITOS hardcoded de admin/MapaBarrios (aeropuerto, alcaldía, etc.) quedan: no son barrios y no hay tabla `hitos`.
+- **Bloque 6 · /admin/ajustes** — Página con 6 secciones (perfil, seguridad, notificaciones, flujos & moderación, integraciones, exportar). `<Toggle />` nuevo en `components/ui/`. Persistencia en tabla `config_app` (db/15) con upsert directo desde frontend. RLS bloquea anon y filtra writes a admin/superadmin. Export CSV cliente-side. Sin SMS/Twilio.
+
+### Bloques diferidos a Sprint E (default conservador)
+
+- **Bloque 12 · Auditoría admin** — diferido. La spec marca este bloque como CONDICIONAL ("si Kevin marca duda, DEJA esto para Sprint E"). En sesión autónoma no hay señal explícita, default = NO implementar. Si Kevin lo quiere para Sprint D, basta con aplicar `db/16-auditoria.sql` (no creado) + crear `pages/admin/Auditoria.tsx`. Patrón sugerido en spec original.
 
 ### Migraciones DB pendientes de aplicación humana (en orden)
 
 | # | Archivo | Razón | Tiempo |
 |---|---|---|---|
 | 1 | `db/14-fix-v-capitulos-publicos.sql` | BUG-C1 · vista en prod expone `casos_gestion`, frontend pide `casos_progreso` → 400. Desbloquea Home. | 2 min |
+| 2 | `db/15-config-app.sql` | Tabla `config_app` key/value para `/admin/ajustes` + RLS editor/admin + 9 seeds. | 2 min |
 
 **Acciones humanas Bloque 2:**
 - Configurar `Site URL` y `Redirect URLs` en Supabase Auth para que `${APP_CONFIG.url}/recuperar/nueva-contrasena` sea permitido como redirect del email de reset. Dashboard → Authentication → URL Configuration.

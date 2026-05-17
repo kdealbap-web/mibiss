@@ -17,6 +17,7 @@ import { MapaBarrios } from './pages/admin/MapaBarrios';
 import { PadrinosAdmin } from './pages/admin/Padrinos';
 import { Usuarios } from './pages/admin/Usuarios';
 import { Metricas } from './pages/admin/Metricas';
+import { Ajustes } from './pages/admin/Ajustes';
 
 export function AppRouter() {
   return (
@@ -39,6 +40,7 @@ export function AppRouter() {
       <Route path="/admin/padrinos" element={<PadrinosAdmin />} />
       <Route path="/admin/usuarios" element={<Usuarios />} />
       <Route path="/admin/metricas" element={<Metricas />} />
+      <Route path="/admin/ajustes" element={<Ajustes />} />
 
       <Route path="*" element={<Navigate to="/home" replace />} />
     </Routes>
