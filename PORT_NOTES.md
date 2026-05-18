@@ -251,6 +251,52 @@ Sesión continua después del cierre Sprint D. Migraciones aplicadas por Claude 
    - Editar capítulo del barrio → subir imagen portada → activar.
    - Verificar capítulo activo aparece en Home + mapa público.
 
+---
+
+## Sprint F — Cierre (2026-05-18)
+
+Smoke audit del HANDOFF v2.0 + 4 bloques + fix de bugs mobile reportados por Kevin.
+
+### Smoke audit · resultados
+
+**🔴 Bugs encontrados y corregidos:**
+
+- **Filtros del mapa no filtraban pines** (commit `42d3f5c`, HANDOFF §5). `BissMap` no recibía `catFilter`/`stateFilter`. Chips cambiaban visualmente pero todos los casos seguían visibles.
+- **Click en barrio del panel lateral muerto** (commit `42d3f5c`). `<a>` + `preventDefault()` sin navegación → reemplazado por `<Link>`.
+- **Mapa con tiles grises en mobile** (commit `25efb56`). Leaflet medía altura=0 al montar antes del primer paint. Fix: 3 `invalidateSize()` (0/250/700ms) + listeners de `resize`/`orientationchange`.
+- **Pines aparentemente en ciénaga/aeropuerto/río** (commit `25efb56`). Fallback: si `caso.lat/lng` está fuera del bounding box del municipio o es `null`, usa `barrios.coord_lat/coord_lng` del barrio asociado. Si tampoco hay, omite el pin (no salta el mapa).
+- **"Un segundo…" colgado encima del mapa en mobile** (commit `25efb56`). El loading del panel lateral aparecía justo bajo el mapa y se leía como overlay. Reemplazado por skeleton sutil de 4 barras gris-claro.
+- **Mapa 600px en mobile lo dominaba todo** (commit `25efb56`). Ahora 420px mobile, 520 tablet, 600 desktop. Panel lateral mobile max-height 360px.
+- **Chips de filtro saltaban en mobile** (commit `25efb56`). Padding/gap reducidos en `≤640px`.
+
+### Bloques completados
+
+- **F1 · /admin/casos lista CRUD** (commit `51b9653`) — Tabla paginada con filtros estado/categoría/zona, KPIs de 6 valores, edad color-coded (≤7d verde, ≤30d amarillo, >30d rojo). Click en fila abre editor. Export CSV.
+- **F2 · Notas internas + reabrir caso** (commit `1a7c659`) — db/18: tabla `caso_notas_internas` + RLS editor/admin + RPC `reabrir_caso`. Sección nueva en `CasoEdit` con form + lista. "Zona peligrosa" se reemplaza por "Caso archivado" con botón "Reabrir" cuando `estado=archivado`.
+- **F3 · Modales invitar editor + suspender ciudadano** (commit `31083a3`) — db/19: RPC `suspender_ciudadano` / `reactivar_ciudadano`. Edge function `invitar-editor` desplegada (auth.admin.inviteUserByEmail + insert usuarios_cms). Modal primitivo `<Modal />`. UI en `/admin/usuarios` con 3 modales y badge "Suspendido" rojo con line-through.
+- **F4 · Sitemap.xml + notify-email** (commit `5832dd7`) — Edge function `sitemap-xml` desplegada y validada (curl OK). `_redirects` rewrite `/sitemap.xml`. `notify-email` re-desplegada con SITE_URL. Secrets configurados: RESEND_API_KEY, EMAIL_FROM, SITE_URL.
+
+### Migraciones DB aplicadas a prod en Sprint F
+
+| # | Archivo | Razón | Estado |
+|---|---|---|---|
+| 18 | `db/18-notas-internas-y-reabrir.sql` | Tabla `caso_notas_internas` + RPC `reabrir_caso` | ✅ Aplicada 2026-05-17 |
+| 19 | `db/19-suspender-ciudadano.sql` | RPCs `suspender_ciudadano` y `reactivar_ciudadano` | ✅ Aplicada 2026-05-17 |
+
+### Edge functions desplegadas en Sprint F
+
+| Function | URL | Estado |
+|---|---|---|
+| `invitar-editor` | `https://uicpkqwmjjrywojhwctq.supabase.co/functions/v1/invitar-editor` | ✅ Desplegada 2026-05-17 (Docker no requerido) |
+| `sitemap-xml` | `https://uicpkqwmjjrywojhwctq.supabase.co/functions/v1/sitemap-xml` | ✅ Desplegada 2026-05-18 |
+| `notify-email` | `https://uicpkqwmjjrywojhwctq.supabase.co/functions/v1/notify-email` | ✅ Desplegada 2026-05-18 (re-deploy con SITE_URL) |
+
+### Acciones humanas pendientes Sprint F
+
+- **🔥 CORS R2 en Cloudflare** (heredada de Sprint E): aún sin esto los uploads del FlowReportar fallan en prod.
+- **📋 Cablear `notify-email` desde RPCs DB**: actualmente la función vive pero nadie la llama automáticamente al aprobar solicitud o cambiar estado. Sprint G deberá hacer `PERFORM net.http_post(...)` desde dentro de `aprobar_solicitud`/`cambiar_estado_caso`, o un trigger después-de-update sobre `casos.estado`. Necesita extensión `pg_net` activada en Supabase.
+- **🌐 Verificar `/sitemap.xml`** una vez que Pages publique los cambios de `_redirects`. URL pública: `https://mibiss.com.co/sitemap.xml`. Debería responder XML del endpoint Supabase.
+
 ### Lo que NO entró en Sprint D (Sprint E backlog)
 
 - Upload real de fotos en FlowReportar paso 4 (necesita CORS R2 + token testing).
