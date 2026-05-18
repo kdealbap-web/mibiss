@@ -318,7 +318,33 @@ Foco: cerrar el ciclo del ciudadano en `/mi-cuenta`. Editable, vinculado y con h
 ### Acciones humanas heredadas
 
 - **✅ CORS R2 en Cloudflare** — aplicado por Kevin el 2026-05-18. Pendiente solo: smoke test end-to-end (reportar caso con foto desde móvil → ver llegada al bucket → aprobar → caso público con foto).
-- **📋 Cablear `notify-email` desde RPCs** (heredada de Sprint F): la edge function vive y está testeada, pero nadie la dispara automáticamente. Requiere extensión `pg_net` + triggers después-de-update sobre `casos.estado` y dentro de `aprobar_solicitud`/`cambiar_estado_caso`. **Sprint H en curso.**
+- **✅ Cablear `notify-email` desde RPCs** — cerrado en Sprint H · H1 (db/21, 2026-05-18). `pg_net` habilitado, triggers en `solicitudes_caso`, RPCs `aprobar_solicitud` y `cambiar_estado_caso` modificadas.
+
+---
+
+## Sprint H — Cierre (2026-05-18)
+
+Foco: cerrar el loop de notificaciones DB → email y modernizar paneles de moderación admin.
+
+### Bloques completados
+
+- **H1 · notify-email cableado** (commit `49e7dd0`, db/21) — Extensión `pg_net` habilitada. Helper `enviar_notificacion(tipo, ciudadano_id, payload)` fire-and-forget. Triggers `AFTER INSERT` y `AFTER UPDATE OF estado` sobre `solicitudes_caso` para `solicitud_recibida` y `solicitud_rechazada`. RPCs `aprobar_solicitud` y `cambiar_estado_caso` re-escritas para disparar `solicitud_aprobada` y `caso_avanzo` al ciudadano de la solicitud origen.
+- **H2 · `/admin/testimonios`** (commit `7b6eec4`) — Hook `useTestimoniosAdmin(filtro)` lee directo de `testimonios` con join client-side a `ciudadanos`. 5 filtros (pendiente/aprobado/rechazado/oculto/todos) + SearchInput. Skeleton loader. Estado badge + alert con motivo cuando aplica. "Aprobar visibles" con `useAprobarLote` (serie, tolerante a fallos). Link "Ver caso" cuando hay `caso_id`.
+- **H3 · `/admin/padrinos`** (commit pendiente abajo) — 3 FilterChips por estado + Select por tipo de apoyo + SearchInput. Modal detalle migrado al primitivo `<Modal />` con focus trap. Skeleton loader. Botón "Exportar" funcional (CSV cliente). "Registrar padrino" deshabilitado para Sprint I.
+
+### Migraciones DB aplicadas a prod en Sprint H
+
+| # | Archivo | Razón | Estado |
+|---|---|---|---|
+| 21 | `db/21-notify-cableado.sql` | `pg_net` + helper `enviar_notificacion` + triggers + RPCs aprobar/cambiar | ✅ Aplicada 2026-05-18 |
+
+### Smoke test post Sprint H sugerido
+
+1. Reportar un caso desde la app (cualquier email) → debe llegar correo "Recibimos tu solicitud".
+2. Aprobar desde `/admin/solicitudes` → debe llegar "Tu solicitud fue aprobada" + URL del caso.
+3. Cambiar estado del caso a "resuelto" en `/admin/caso/:slug` → debe llegar "Hay novedades en un caso que sigues".
+4. Rechazar otra solicitud → debe llegar "Tu solicitud no pudo ser aprobada" + motivo.
+5. Si algún email no llega, revisar logs de `net._http_response` en Postgres y Resend dashboard.
 
 ### Lo que NO entró en Sprint D (Sprint E backlog)
 

@@ -21,6 +21,7 @@ import {
 
 import { AdminLayout } from '../../components/layout/AdminLayout';
 import { AdminTopbar } from '../../components/layout/AdminTopbar';
+import { SearchInput, FilterChip, Modal } from '../../components/ui';
 import { usePadrinos } from '../../hooks/usePadrinos';
 import {
   usePublicarPadrino,
@@ -46,21 +47,56 @@ const APORTE_LABEL: Record<TipoApoyo, string> = {
   otro: 'Otro',
 };
 
+type Filtro = 'pendientes' | 'publicados' | 'todos';
+type FiltroTipo = 'todos' | TipoApoyo;
+
 export function PadrinosAdmin() {
   const { data: padrinos = [], isLoading } = usePadrinos();
   const [detalleId, setDetalleId] = useState<string | null>(null);
+  const [filtro, setFiltro] = useState<Filtro>('pendientes');
+  const [filtroTipo, setFiltroTipo] = useState<FiltroTipo>('todos');
+  const [q, setQ] = useState('');
 
-  const { pendientes, publicados, stats } = useMemo(() => {
-    const pend = padrinos.filter((p) => !p.publicado);
-    const pub = padrinos.filter((p) => p.publicado);
-    return {
-      pendientes: pend,
-      publicados: pub,
-      stats: { total: padrinos.length, activos: pub.length, pendientes: pend.length },
-    };
+  const stats = useMemo(() => {
+    const pend = padrinos.filter((p) => !p.publicado).length;
+    const pub = padrinos.filter((p) => p.publicado).length;
+    return { total: padrinos.length, activos: pub, pendientes: pend };
   }, [padrinos]);
 
+  const filtered = useMemo(() => {
+    const t = q.trim().toLowerCase();
+    return padrinos.filter((p) => {
+      if (filtro === 'pendientes' && p.publicado) return false;
+      if (filtro === 'publicados' && !p.publicado) return false;
+      if (filtroTipo !== 'todos' && p.tipo_apoyo !== filtroTipo) return false;
+      if (t && !`${p.nombre} ${p.contacto_privado_email} ${p.descripcion}`.toLowerCase().includes(t)) return false;
+      return true;
+    });
+  }, [padrinos, filtro, filtroTipo, q]);
+
   const detalle = detalleId ? padrinos.find((p) => p.id === detalleId) ?? null : null;
+
+  const exportarCsv = () => {
+    if (filtered.length === 0) return;
+    const headers = ['id', 'nombre', 'tipo_apoyo', 'email', 'tel', 'publicado', 'creado_en'];
+    const rows = filtered.map((p) => [
+      p.id,
+      p.nombre,
+      p.tipo_apoyo,
+      p.contacto_privado_email,
+      p.contacto_privado_tel ?? '',
+      p.publicado ? 'sí' : 'no',
+      p.creado_en,
+    ]);
+    const csv = [headers, ...rows].map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `padrinos-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <AdminLayout>
@@ -74,10 +110,15 @@ export function PadrinosAdmin() {
         title={`Padrinos · ${stats.pendientes} pendiente${stats.pendientes === 1 ? '' : 's'}`}
         actions={
           <>
-            <button type="button" className="btn btn-secondary btn-sm">
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              onClick={exportarCsv}
+              disabled={filtered.length === 0}
+            >
               <Download />Exportar
             </button>
-            <button type="button" className="btn btn-primary btn-sm">
+            <button type="button" className="btn btn-ghost btn-sm" disabled title="Disponible en Sprint I">
               <Plus />Registrar padrino
             </button>
           </>
@@ -103,31 +144,83 @@ export function PadrinosAdmin() {
           </div>
         </div>
 
-        {/* Pendientes primero */}
-        {pendientes.length > 0 && (
-          <div className="admin-card" style={{ padding: '18px 20px' }}>
-            <h2 style={{ marginBottom: 14 }}>Pendientes de moderación</h2>
-            {pendientes.map((p) => (
-              <PadrinoRow
-                key={p.id}
-                padrino={p}
-                onVerDatos={() => setDetalleId(p.id)}
-              />
+        <div className="row row-3 wrap" style={{ gap: 8 }}>
+          <FilterChip
+            active={filtro === 'pendientes'}
+            label="Pendientes"
+            count={stats.pendientes}
+            onClick={() => setFiltro('pendientes')}
+          />
+          <FilterChip
+            active={filtro === 'publicados'}
+            label="Publicados"
+            count={stats.activos}
+            onClick={() => setFiltro('publicados')}
+          />
+          <FilterChip
+            active={filtro === 'todos'}
+            label="Todos"
+            count={stats.total}
+            onClick={() => setFiltro('todos')}
+          />
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            gap: 12,
+            alignItems: 'center',
+            margin: '12px 0',
+            flexWrap: 'wrap',
+          }}
+        >
+          <SearchInput
+            className="grow"
+            style={{ minWidth: 240, maxWidth: 360 }}
+            placeholder="Buscar por nombre, email o descripción…"
+            aria-label="Buscar padrinos"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+          />
+          <select
+            className="field-select"
+            value={filtroTipo}
+            onChange={(e) => setFiltroTipo(e.target.value as FiltroTipo)}
+            aria-label="Filtrar por tipo de apoyo"
+          >
+            <option value="todos">Todos los tipos</option>
+            {Object.entries(APORTE_LABEL).map(([k, v]) => (
+              <option key={k} value={k}>{v}</option>
             ))}
-          </div>
-        )}
+          </select>
+        </div>
 
         <div className="admin-card" style={{ padding: '18px 20px' }}>
-          <h2 style={{ marginBottom: 14 }}>
-            {pendientes.length > 0 ? 'Publicados' : 'Padrinos registrados'}
-          </h2>
-          {isLoading && <p className="caption">Un segundo…</p>}
-          {!isLoading && padrinos.length === 0 && (
+          {isLoading && (
+            <div style={{ display: 'grid', gap: 8 }} aria-hidden>
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  style={{
+                    height: 88,
+                    borderRadius: 12,
+                    background: 'var(--surface-sunken)',
+                    opacity: 0.7 - i * 0.15,
+                  }}
+                />
+              ))}
+            </div>
+          )}
+          {!isLoading && filtered.length === 0 && (
             <p className="caption">
-              Aún no hay padrinos. Cuando llegue una inscripción por el flow Apadrinar, aparece aquí.
+              {q.trim() || filtroTipo !== 'todos'
+                ? 'Sin resultados con esos filtros.'
+                : filtro === 'pendientes'
+                  ? 'Nada pendiente. Cuando llegue una inscripción nueva, aparece aquí.'
+                  : 'Aún no hay padrinos en este filtro.'}
             </p>
           )}
-          {publicados.map((p) => (
+          {filtered.map((p) => (
             <PadrinoRow
               key={p.id}
               padrino={p}
@@ -254,96 +347,65 @@ function PadrinoDetalleModal({
   onClose: () => void;
 }) {
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      onClick={onClose}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(15, 23, 42, 0.55)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 200,
-        padding: 20,
-      }}
+    <Modal
+      open
+      onClose={onClose}
+      title={padrino.nombre}
+      description={`${APORTE_LABEL[padrino.tipo_apoyo]} · inscrito ${formatRelative(padrino.creado_en)}`}
+      size="md"
+      footer={
+        <button type="button" className="btn btn-secondary btn-sm" onClick={onClose}>
+          Cerrar
+        </button>
+      }
     >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          background: 'var(--surface)',
-          borderRadius: 'var(--radius-lg)',
-          maxWidth: 480,
-          width: '100%',
-          padding: '24px 26px',
-          boxShadow: 'var(--shadow-card)',
-        }}
-      >
-        <div className="row row-3" style={{ justifyContent: 'space-between', marginBottom: 14 }}>
-          <h3 style={{ margin: 0 }}>{padrino.nombre}</h3>
-          <button
-            type="button"
-            aria-label="Cerrar"
-            onClick={onClose}
+      <div className="stack stack-3" style={{ fontSize: 13, lineHeight: 1.6 }}>
+        <div className="data-row">
+          <span className="k">Tipo de apoyo</span>
+          <span className="v">{APORTE_LABEL[padrino.tipo_apoyo]}</span>
+        </div>
+        <div className="data-row">
+          <span className="k">Email</span>
+          <span className="v">
+            <Mail style={{ width: 13, height: 13, verticalAlign: -2 }} /> {padrino.contacto_privado_email}
+          </span>
+        </div>
+        {padrino.contacto_privado_tel && (
+          <div className="data-row">
+            <span className="k">Teléfono</span>
+            <span className="v">
+              <Phone style={{ width: 13, height: 13, verticalAlign: -2 }} /> {padrino.contacto_privado_tel}
+            </span>
+          </div>
+        )}
+        <div className="data-row">
+          <span className="k">Inscrito</span>
+          <span className="v">{formatRelative(padrino.creado_en)}</span>
+        </div>
+        <div className="data-row">
+          <span className="k">Estado</span>
+          <span className="v">
+            {padrino.publicado ? (
+              <span className="badge badge-resolved"><span className="dot" />Publicado</span>
+            ) : (
+              <span className="badge"><span className="dot" />Pendiente</span>
+            )}
+          </span>
+        </div>
+        <div>
+          <div className="k" style={{ marginBottom: 6 }}>Descripción del aporte</div>
+          <div
             style={{
-              border: 0,
-              background: 'transparent',
-              cursor: 'pointer',
-              color: 'var(--ink-soft)',
+              padding: '10px 12px',
+              background: 'var(--surface-sunken)',
+              borderRadius: 'var(--radius)',
+              whiteSpace: 'pre-wrap',
             }}
           >
-            <X />
-          </button>
-        </div>
-        <div className="stack stack-3" style={{ fontSize: 13, lineHeight: 1.6 }}>
-          <div className="data-row">
-            <span className="k">Tipo de apoyo</span>
-            <span className="v">{APORTE_LABEL[padrino.tipo_apoyo]}</span>
-          </div>
-          <div className="data-row">
-            <span className="k">Email</span>
-            <span className="v">
-              <Mail style={{ width: 13, height: 13, verticalAlign: -2 }} /> {padrino.contacto_privado_email}
-            </span>
-          </div>
-          {padrino.contacto_privado_tel && (
-            <div className="data-row">
-              <span className="k">Teléfono</span>
-              <span className="v">
-                <Phone style={{ width: 13, height: 13, verticalAlign: -2 }} /> {padrino.contacto_privado_tel}
-              </span>
-            </div>
-          )}
-          <div className="data-row">
-            <span className="k">Inscrito</span>
-            <span className="v">{formatRelative(padrino.creado_en)}</span>
-          </div>
-          <div className="data-row">
-            <span className="k">Estado</span>
-            <span className="v">
-              {padrino.publicado ? (
-                <span className="badge badge-resolved"><span className="dot" />Publicado</span>
-              ) : (
-                <span className="badge"><span className="dot" />Pendiente</span>
-              )}
-            </span>
-          </div>
-          <div>
-            <div className="k" style={{ marginBottom: 6 }}>Descripción del aporte</div>
-            <div
-              style={{
-                padding: '10px 12px',
-                background: 'var(--surface-sunken)',
-                borderRadius: 'var(--radius)',
-                whiteSpace: 'pre-wrap',
-              }}
-            >
-              {padrino.descripcion}
-            </div>
+            {padrino.descripcion}
           </div>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 }
