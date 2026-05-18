@@ -7,6 +7,9 @@ import {
   Edit,
   Archive,
   Trash2,
+  Lock,
+  RotateCcw,
+  X,
 } from 'lucide-react';
 
 import { AdminLayout } from '../../components/layout/AdminLayout';
@@ -20,7 +23,14 @@ import {
   useEditarCaso,
   useAgregarActualizacion,
 } from '../../hooks/mutations/useCasoMutations';
+import {
+  useNotasInternas,
+  useAgregarNota,
+  useEliminarNota,
+  useReabrirCaso,
+} from '../../hooks/useNotasInternas';
 import { useSession } from '../../hooks/useMiCuenta';
+import { formatRelative } from '../../lib/format';
 import { formatFolio } from '../../lib/format';
 import type { EstadoCaso } from '../../types/biss';
 
@@ -58,6 +68,11 @@ export function CasoEdit() {
   const editar = useEditarCaso(slug);
   const cambiarEstado = useCambiarEstadoCaso(slug);
   const agregarActualizacion = useAgregarActualizacion(slug);
+  const { data: notas = [] } = useNotasInternas(caso?.id ?? null);
+  const agregarNotaInterna = useAgregarNota();
+  const eliminarNotaInterna = useEliminarNota();
+  const reabrirCaso = useReabrirCaso();
+  const [notaDraft, setNotaDraft] = useState('');
 
   const folioVisible = caso ? formatFolio(caso.slug) : formatFolio(slug);
 
@@ -274,6 +289,7 @@ export function CasoEdit() {
                   </button>
                 </div>
 
+                {/* Línea de tiempo es contenido público — no confundir con notas internas */}
                 {actualizaciones.length === 0 ? (
                   <p className="caption">
                     Aún no hay movimientos. Cuando registres uno, queda inmutable en la bitácora.
@@ -325,6 +341,130 @@ export function CasoEdit() {
                   ))
                 )}
               </div>
+
+              <div className="admin-card">
+                <div className="admin-card-head">
+                  <div>
+                    <h2 style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                      <Lock size={16} style={{ color: 'var(--ink-soft)' }} />
+                      Notas internas
+                    </h2>
+                    <div className="card-sub">
+                      Privadas del equipo CMS. Nunca visibles al ciudadano ni en la página pública.
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginBottom: 12 }}>
+                  <textarea
+                    value={notaDraft}
+                    onChange={(e) => setNotaDraft(e.target.value)}
+                    placeholder="Ej. Hablé con el JAC, dice que ya hay un oficio radicado…"
+                    style={{
+                      flex: 1,
+                      minHeight: 64,
+                      padding: '10px 12px',
+                      border: '1.5px solid var(--border)',
+                      borderRadius: 8,
+                      fontSize: 13,
+                      fontFamily: 'var(--font-display)',
+                      resize: 'vertical',
+                    }}
+                    aria-label="Nueva nota interna"
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm"
+                    style={{ alignSelf: 'flex-end' }}
+                    disabled={
+                      agregarNotaInterna.isPending ||
+                      !session?.user ||
+                      notaDraft.trim().length < 1
+                    }
+                    onClick={async () => {
+                      if (!caso) return;
+                      try {
+                        await agregarNotaInterna.mutateAsync({
+                          caso_id: caso.id,
+                          texto: notaDraft,
+                        });
+                        setNotaDraft('');
+                      } catch {
+                        // error queda en mutation state; UX simple por ahora
+                      }
+                    }}
+                  >
+                    <Plus size={14} />
+                    {agregarNotaInterna.isPending ? 'Agregando…' : 'Agregar'}
+                  </button>
+                </div>
+
+                {notas.length === 0 ? (
+                  <p className="caption" style={{ fontSize: 12 }}>
+                    Sin notas todavía. Las que agregues aquí son privadas.
+                  </p>
+                ) : (
+                  <ul style={{ listStyle: 'none', padding: 0, display: 'grid', gap: 8 }}>
+                    {notas.map((n) => (
+                      <li
+                        key={n.id}
+                        style={{
+                          padding: '10px 12px',
+                          background: 'var(--surface-sunken)',
+                          borderRadius: 8,
+                          border: '1px solid var(--border)',
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'flex-start',
+                            gap: 8,
+                            marginBottom: 4,
+                          }}
+                        >
+                          <div style={{ fontSize: 11, color: 'var(--ink-soft)' }}>
+                            <strong style={{ color: 'var(--ink-strong)' }}>{n.autor_nombre}</strong>{' '}
+                            · <span className="mono">{formatRelative(n.creado_en)}</span>
+                          </div>
+                          {n.autor_cms_id === session?.user?.id && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (window.confirm('¿Eliminar esta nota?')) {
+                                  eliminarNotaInterna.mutate({ id: n.id, caso_id: n.caso_id });
+                                }
+                              }}
+                              aria-label="Eliminar nota"
+                              style={{
+                                background: 'transparent',
+                                border: 0,
+                                color: 'var(--ink-soft)',
+                                cursor: 'pointer',
+                                padding: 2,
+                              }}
+                            >
+                              <X size={12} />
+                            </button>
+                          )}
+                        </div>
+                        <p
+                          style={{
+                            fontSize: 13,
+                            color: 'var(--ink-strong)',
+                            lineHeight: 1.5,
+                            whiteSpace: 'pre-wrap',
+                            margin: 0,
+                          }}
+                        >
+                          {n.texto}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
 
             <aside>
@@ -370,35 +510,64 @@ export function CasoEdit() {
                 </p>
               </div>
 
-              <div
-                className="admin-card"
-                style={{ background: 'var(--state-critical-bg)', borderColor: 'var(--state-critical-border)' }}
-              >
-                <h2 style={{ color: '#991B1B' }}>Zona peligrosa</h2>
-                <p style={{ fontSize: 13, color: '#991B1B', lineHeight: 1.5, marginBottom: 12 }}>
-                  Archivar o eliminar el caso es definitivo. Notifica al ciudadano por email.
-                </p>
-                <div className="row row-2">
+              {caso.estado === 'archivado' ? (
+                <div
+                  className="admin-card"
+                  style={{ background: 'var(--state-info-bg)', borderColor: 'var(--state-info-border)' }}
+                >
+                  <h2 style={{ color: 'var(--biss-teal-900)' }}>Caso archivado</h2>
+                  <p style={{ fontSize: 13, color: 'var(--biss-teal-900)', lineHeight: 1.5, marginBottom: 12 }}>
+                    Este caso está archivado. Si necesitas re-evaluarlo, reábrelo y volverá a estado pendiente.
+                  </p>
                   <button
                     type="button"
-                    className="btn btn-ghost btn-sm"
-                    style={{
-                      ['--btn-ink' as never]: '#991B1B',
-                      ['--btn-bg-hover' as never]: 'rgba(228,4,44,0.08)',
-                    }}
-                    onClick={() => {
+                    className="btn btn-primary btn-sm"
+                    onClick={async () => {
                       if (!caso) return;
-                      cambiarEstado.mutate({ casoId: caso.id, nuevo: 'archivado' });
+                      if (!window.confirm('¿Reabrir el caso? Volverá a estado pendiente.')) return;
+                      try {
+                        await reabrirCaso.mutateAsync(caso.id);
+                      } catch {
+                        // mutation state tiene el error
+                      }
                     }}
-                    disabled={cambiarEstado.isPending}
+                    disabled={reabrirCaso.isPending}
                   >
-                    <Archive />Archivar
-                  </button>
-                  <button type="button" className="btn btn-danger btn-sm" disabled>
-                    <Trash2 />Eliminar
+                    <RotateCcw size={14} />
+                    {reabrirCaso.isPending ? 'Reabriendo…' : 'Reabrir caso'}
                   </button>
                 </div>
-              </div>
+              ) : (
+                <div
+                  className="admin-card"
+                  style={{ background: 'var(--state-critical-bg)', borderColor: 'var(--state-critical-border)' }}
+                >
+                  <h2 style={{ color: '#991B1B' }}>Zona peligrosa</h2>
+                  <p style={{ fontSize: 13, color: '#991B1B', lineHeight: 1.5, marginBottom: 12 }}>
+                    Archivar o eliminar el caso es definitivo. Notifica al ciudadano por email.
+                  </p>
+                  <div className="row row-2">
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-sm"
+                      style={{
+                        ['--btn-ink' as never]: '#991B1B',
+                        ['--btn-bg-hover' as never]: 'rgba(228,4,44,0.08)',
+                      }}
+                      onClick={() => {
+                        if (!caso) return;
+                        cambiarEstado.mutate({ casoId: caso.id, nuevo: 'archivado' });
+                      }}
+                      disabled={cambiarEstado.isPending}
+                    >
+                      <Archive />Archivar
+                    </button>
+                    <button type="button" className="btn btn-danger btn-sm" disabled>
+                      <Trash2 />Eliminar
+                    </button>
+                  </div>
+                </div>
+              )}
             </aside>
           </div>
         )}
