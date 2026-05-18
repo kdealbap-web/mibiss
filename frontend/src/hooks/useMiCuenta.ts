@@ -115,3 +115,33 @@ export function useMisTestimonios() {
     staleTime: 30_000,
   });
 }
+
+export interface MiPadrinazgo {
+  padrino_id: string;
+  padrino_nombre: string;
+  tipo_apoyo: string;
+  descripcion: string;
+  contacto_email: string;
+  contacto_tel: string | null;
+  publicado: boolean;
+  padrino_creado_en: string;
+  caso_id: string | null;
+  caso_titulo: string | null;
+  caso_slug: string | null;
+  caso_estado: string | null;
+  aporte_descripcion: string | null;
+}
+
+export function useMisPadrinazgos() {
+  const session = useSession();
+  return useQuery<MiPadrinazgo[]>({
+    queryKey: ['mis-padrinazgos', session?.user?.id ?? null],
+    enabled: Boolean(session?.user?.id),
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('mis_padrinazgos');
+      if (error) throw error;
+      return (data ?? []) as MiPadrinazgo[];
+    },
+    staleTime: 30_000,
+  });
+}
