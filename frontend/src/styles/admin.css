@@ -13,6 +13,101 @@
   color: var(--biss-teal-900);
 }
 
+/* ============================================================
+   MOBILE DRAWER · alta prioridad fuera de @layer para que
+   nada lo sobre-escriba (HANDOFF v2.0 §9.2).
+   ============================================================ */
+@media (max-width: 899px) {
+  .admin-shell { display: block !important; }
+  .admin-sidebar {
+    position: sticky !important;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 56px !important;
+    padding: 8px 14px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 12px !important;
+    overflow: visible !important;
+    z-index: 60;
+    transition: width 220ms ease, height 220ms ease, padding 220ms ease;
+  }
+  .admin-sidebar .admin-brand {
+    border-bottom: 0 !important;
+    padding-bottom: 0 !important;
+    flex: 1 !important;
+    gap: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  .admin-sidebar .side-nav,
+  .admin-sidebar .side-user { display: none !important; }
+
+  .admin-burger {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-left: auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 0;
+    background: rgba(255,255,255,0.16);
+    color: #FFFFFF;
+    cursor: pointer;
+    z-index: 90;
+  }
+  .admin-burger:hover, .admin-burger:focus-visible {
+    background: rgba(255,255,255,0.28);
+    outline: none;
+  }
+
+  [data-sidebar-open='true'] .admin-sidebar {
+    position: fixed !important;
+    top: 0; left: 0;
+    width: min(300px, 86vw) !important;
+    height: 100dvh !important;
+    padding: 24px 18px 18px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    overflow-y: auto !important;
+    box-shadow: 6px 0 24px rgba(0, 0, 0, 0.32);
+    z-index: 80;
+  }
+  [data-sidebar-open='true'] .admin-sidebar .admin-brand {
+    border-bottom: 1px solid rgba(255,255,255,0.12) !important;
+    padding-bottom: 16px !important;
+  }
+  [data-sidebar-open='true'] .admin-sidebar .side-nav,
+  [data-sidebar-open='true'] .admin-sidebar .side-user {
+    display: flex !important;
+  }
+
+  .admin-overlay {
+    display: block !important;
+    position: fixed;
+    inset: 0;
+    background: rgba(6, 119, 124, 0.45);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms ease;
+    z-index: 70;
+  }
+  [data-sidebar-open='true'] .admin-overlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@media (min-width: 900px) {
+  .admin-burger { display: none !important; }
+  .admin-overlay { display: none !important; }
+}
+
 @layer components {
   .admin-shell {
     display: grid;
@@ -34,90 +129,8 @@
     height: 100vh;
   }
 
-  .admin-burger {
-    display: none;
-    margin-left: auto;
-    background: rgba(255,255,255,0.10);
-    color: #FFFFFF;
-    border: 0;
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    align-items: center; justify-content: center;
-    cursor: pointer;
-    transition: background var(--t-base);
-  }
-  .admin-burger:hover { background: rgba(255,255,255,0.20); }
-
-  .admin-overlay {
-    display: none;
-  }
-
-  /* === Mobile drawer pattern (HANDOFF v2.0 §9.2) === */
-  @media (max-width: 899px) {
-    .admin-shell { display: block; }
-    .admin-sidebar {
-      position: sticky;
-      top: 0;
-      height: 56px;
-      padding: 8px 14px;
-      flex-direction: row;
-      align-items: center;
-      gap: 12px;
-      overflow: hidden;
-      z-index: 60;
-    }
-    .admin-sidebar .admin-brand {
-      border-bottom: 0;
-      padding-bottom: 0;
-      flex: 1;
-      gap: 8px;
-    }
-    .admin-sidebar .side-nav,
-    .admin-sidebar .side-user { display: none; }
-    .admin-burger {
-      display: inline-flex;
-      flex-shrink: 0;
-    }
-
-    [data-sidebar-open='true'] .admin-sidebar {
-      position: fixed;
-      top: 0; left: 0;
-      width: min(300px, 86vw);
-      height: 100dvh;
-      padding: 24px 18px 18px;
-      flex-direction: column;
-      align-items: stretch;
-      overflow-y: auto;
-      transform: translateX(0);
-      box-shadow: 6px 0 24px rgba(0, 0, 0, 0.32);
-      z-index: 80;
-    }
-    [data-sidebar-open='true'] .admin-sidebar .admin-brand {
-      border-bottom: 1px solid rgba(255,255,255,0.12);
-      padding-bottom: 16px;
-    }
-    [data-sidebar-open='true'] .admin-sidebar .side-nav,
-    [data-sidebar-open='true'] .admin-sidebar .side-user { display: flex; }
-
-    .admin-overlay {
-      display: block;
-      position: fixed;
-      inset: 0;
-      background: rgba(6, 119, 124, 0.45);
-      backdrop-filter: blur(2px);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity var(--t-base);
-      z-index: 70;
-    }
-    [data-sidebar-open='true'] .admin-overlay {
-      opacity: 1;
-      pointer-events: auto;
-    }
-  }
-  @media (min-width: 900px) {
-    .admin-burger, .admin-overlay { display: none !important; }
-  }
+  /* admin-burger y admin-overlay viven en bloque mobile fuera de @layer
+     (arriba en este archivo) para evitar problemas de cascada. */
 
   .admin-brand {
     display: flex; align-items: center; gap: 10px;

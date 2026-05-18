@@ -68,6 +68,7 @@ export function FlowIngresar() {
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [sesionLista, setSesionLista] = useState(false);
+  const [welcomeName, setWelcomeName] = useState<string | null>(null);
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
 
   const { data: barrios = [] } = useBarrios();
@@ -141,11 +142,12 @@ export function FlowIngresar() {
         }
         const { data: existente } = await supabase
           .from('ciudadanos')
-          .select('id')
+          .select('id, nombres, apellidos')
           .eq('auth_user_id', user.id)
           .is('eliminado_en', null)
           .maybeSingle();
         if (existente) {
+          setWelcomeName((existente.nombres ?? '').trim() || null);
           clearDraft();
           setSesionLista(true);
           return;
@@ -219,6 +221,7 @@ export function FlowIngresar() {
       });
       if (error) throw error;
       clearDraft();
+      setWelcomeName(draft.nombres.trim() || null);
       setSesionLista(true);
     } catch (e: unknown) {
       const msg = String((e as { message?: string })?.message ?? e);
@@ -595,7 +598,7 @@ export function FlowIngresar() {
               <Hand />
             </div>
             <div className="confirm-title">
-              Hola, {draft.nombres || 'vecino'}
+              Hola, {welcomeName ?? draft.nombres ?? 'vecino'}
             </div>
             <div className="confirm-text">
               Ya estás dentro de BISS. Si quieres contar algo, toca{' '}

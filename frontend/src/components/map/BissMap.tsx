@@ -19,6 +19,19 @@ function inSoledad(lat: number | null | undefined, lng: number | null | undefine
   );
 }
 
+/**
+ * Jitter pequeño determinista (±~80m) derivado del id del caso. Mantiene
+ * varios casos del mismo barrio visualmente separados sin sacarlos del
+ * polígono real del barrio.
+ */
+function jitterFromId(id: string): [number, number] {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = ((h << 5) - h + id.charCodeAt(i)) | 0;
+  const a = ((h & 0xffff) / 0xffff - 0.5) * 0.0014;
+  const b = (((h >>> 16) & 0xffff) / 0xffff - 0.5) * 0.0014;
+  return [a, b];
+}
+
 const TILES = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
 const ATTR = '&copy; OpenStreetMap &copy; CARTO';
 
@@ -149,20 +162,14 @@ export function BissMap({
     layer.clearLayers();
 
     casos.forEach((c) => {
-      // Fallback: si el caso no tiene coords o está fuera del bounding box
-      // de Soledad, usa la coord del barrio asociado. Garantiza que los pines
-      // siempre caigan dentro del municipio aunque la data del caso sea floja.
-      let lat = c.lat;
-      let lng = c.lng;
-      if (!inSoledad(lat, lng)) {
-        const b = barrioById.get(c.barrio_id);
-        if (b?.coord_lat != null && b?.coord_lng != null && inSoledad(b.coord_lat, b.coord_lng)) {
-          lat = b.coord_lat;
-          lng = b.coord_lng;
-        } else {
-          return;
-        }
-      }
+      // Siempre anclar al barrio real (las coords del caso son aproximadas
+      // o vienen mal de la solicitud). Jitter determinista por id evita
+      // pines amontonados cuando varios casos comparten barrio.
+      const b = barrioById.get(c.barrio_id);
+      if (!b?.coord_lat || !b?.coord_lng || !inSoledad(b.coord_lat, b.coord_lng)) return;
+      const [dx, dy] = jitterFromId(c.id);
+      const lat = b.coord_lat + dx;
+      const lng = b.coord_lng + dy;
 
       const catColor = c.categoria_color || '#06777C';
       const stateColor = ESTADO_COLOR[c.estado];
@@ -182,7 +189,7 @@ export function BissMap({
         iconSize: [38, 46],
         iconAnchor: [19, 46],
       });
-      const marker = L.marker([lat as number, lng as number], { icon, title: c.titulo });
+      const marker = L.marker([lat, lng], { icon, title: c.titulo });
       marker.bindTooltip(
         `<strong>${escapeHtml(c.titulo)}</strong><br/><span style="opacity:.85">${escapeHtml(c.barrio_nombre)} · ${escapeHtml(c.categoria_nombre)}</span>`,
         { direction: 'top', offset: [0, -30], className: 'biss-map-tooltip', sticky: false },
@@ -194,14 +201,45 @@ export function BissMap({
 
   return (
     <div id="biss-map" ref={containerRef}>
-      {barriosLoading && (
-        <div className="biss-map-overlay" role="status">
-          Un segundo…
+      {barriosError && (
+        <div
+          role="alert"
+          style={{
+            position: 'absolute',
+            bottom: 12,
+            left: 12,
+            padding: '6px 10px',
+            background: 'var(--state-critical-bg)',
+            border: '1px solid var(--state-critical-border)',
+            color: 'var(--state-critical)',
+            borderRadius: 8,
+            fontSize: 12,
+            fontWeight: 600,
+            zIndex: 500,
+            boxShadow: 'var(--shadow-card)',
+          }}
+        >
+          No pudimos cargar los barrios. Recarga la página.
         </div>
       )}
-      {barriosError && (
-        <div className="biss-map-overlay biss-map-overlay-error" role="alert">
-          No pudimos cargar los barrios. Vuelve a intentarlo.
+      {!barriosError && barriosLoading && (
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            bottom: 12,
+            left: 12,
+            padding: '6px 10px',
+            background: 'rgba(255,255,255,0.92)',
+            border: '1px solid var(--border)',
+            borderRadius: 8,
+            fontSize: 11,
+            color: 'var(--ink-soft)',
+            zIndex: 500,
+            boxShadow: 'var(--shadow-card)',
+          }}
+        >
+          Cargando barrios…
         </div>
       )}
     </div>
