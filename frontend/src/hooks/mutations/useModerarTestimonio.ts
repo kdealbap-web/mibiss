@@ -4,9 +4,29 @@ import { TestimoniosService } from '../../services/TestimoniosService';
 function makeInvalidator(qc: ReturnType<typeof useQueryClient>) {
   return () => {
     qc.invalidateQueries({ queryKey: ['testimonios-pendientes'] });
+    qc.invalidateQueries({ queryKey: ['testimonios-admin'] });
     qc.invalidateQueries({ queryKey: ['testimonios-cap'] });
     qc.invalidateQueries({ queryKey: ['testimonios-caso'] });
   };
+}
+
+export function useAprobarLote() {
+  const qc = useQueryClient();
+  return useMutation<{ approved: number }, Error, string[]>({
+    mutationFn: async (ids) => {
+      let approved = 0;
+      for (const id of ids) {
+        try {
+          await TestimoniosService.aprobar(id);
+          approved += 1;
+        } catch {
+          // ignore individual failures, continue lote
+        }
+      }
+      return { approved };
+    },
+    onSuccess: makeInvalidator(qc),
+  });
 }
 
 export function useAprobarTestimonio() {
