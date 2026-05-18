@@ -220,6 +220,37 @@ Sesión autónoma · 13 bloques en orden. Fuente visual: `Design/HANDOFFv2.0.md`
 5. **Opcional · axe-cli**: correr `npx axe http://localhost:4173/inicio /login /recuperar` antes del release.
 6. **TI SuperGiros** (sin código): solicitar recategorizar `mibiss.com.co` en FortiClient.
 
+---
+
+## Sprint E — Cierre (2026-05-17)
+
+Sesión continua después del cierre Sprint D. Migraciones aplicadas por Claude directo via `npx supabase db query --linked`.
+
+### Bloques completados
+
+- **E1 · Upload R2 real en FlowReportar** (commit `b2f980d`) — db/16 añade `solicitudes_caso.fotos_urls text[]`. Hook `useR2Upload` (presigned PUT via edge function `r2-presign`). FlowReportar paso 5 sube fotos a `solicitudes-multimedia/<uid>/...` antes de crear la solicitud. Botón muestra `Subiendo fotos N/M…`.
+- **E2 · Solicitudes → caso publicado** (commit `9faab59`) — db/17 actualiza RPC `aprobar_solicitud()` para copiar `fotos_urls` a `multimedia_casos` con `subido_por=NULL`. Vista `v_solicitudes_pendientes` ahora incluye `fotos_urls` + `ciudadano_email`. Panel `/admin/solicitudes` con preview de fotos en accordion, botones aprobar/duplicada/rechazar, navega a `/admin/caso/:id` post-aprobar.
+- **E3 · Editor de capítulo** (commit `0c14757`) — `/admin/capitulos` lista con filtros, KPIs, checklist de contenido. `/admin/capitulos/:id/editar` con upload de imagen a R2 (bucket `barrios-portadas`), textarea geocerca GeoJSON con validación inline, toggle activo bloqueado por `chk_capitulos_activo_completo`. Sidebar admin reorganizado: Editor de caso → Capítulos → Barrios → Mapa global → Padrinos.
+
+### Migraciones DB aplicadas a prod en Sprint E
+
+| # | Archivo | Razón | Estado |
+|---|---|---|---|
+| 16 | `db/16-fotos-solicitudes.sql` | Columna `fotos_urls text[]` en `solicitudes_caso` | ✅ Aplicada 2026-05-17 |
+| 17 | `db/17-aprobar-solicitud-fotos.sql` | RPC `aprobar_solicitud` copia fotos + vista `v_solicitudes_pendientes` enriquecida | ✅ Aplicada 2026-05-17 |
+
+### Acciones humanas pendientes post Sprint E
+
+1. **🔥 Configurar CORS R2 en Cloudflare Dashboard** → R2 bucket → CORS (JSON ya documentado en sección Sprint C "Acción humana — CORS del bucket R2"). Sin esto, el navegador rechaza el PUT firmado y los uploads del Sprint E NO funcionan en prod.
+2. **🔥 Configurar custom domain `media.mibiss.com.co` en R2** apuntando al bucket. Sin esto, `R2_PUBLIC_URL` no resuelve y las fotos no se ven después de subir.
+3. Smoke test end-to-end del ciclo ciudadano → admin:
+   - Reportar caso con 1-2 fotos desde móvil.
+   - Verificar en R2 dashboard que los archivos llegaron a `solicitudes-multimedia/<uid>/yyyymm/...`.
+   - En `/admin/solicitudes`: ver preview de fotos.
+   - Aprobar la solicitud → caso aparece en `/caso/:slug` con las mismas fotos en `multimedia_casos`.
+   - Editar capítulo del barrio → subir imagen portada → activar.
+   - Verificar capítulo activo aparece en Home + mapa público.
+
 ### Lo que NO entró en Sprint D (Sprint E backlog)
 
 - Upload real de fotos en FlowReportar paso 4 (necesita CORS R2 + token testing).
