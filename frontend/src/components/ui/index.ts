@@ -7,3 +7,4 @@ export { Field } from './Field';
 export { SearchInput } from './SearchInput';
 export { Select } from './Select';
 export { Toggle } from './Toggle';
+export { Modal } from './Modal';
