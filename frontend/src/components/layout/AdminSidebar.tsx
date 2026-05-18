@@ -82,7 +82,7 @@ export function AdminSidebar({ open, onToggle, onNavigate }: AdminSidebarProps) 
         <SideLink to="/admin/casos" Icon={FolderOpen} label="Casos abiertos" badge={142} onClick={onNavigate} />
 
         <div className="side-nav-section">Contenido</div>
-        <SideLink to="/admin/caso" Icon={FileEdit} label="Editor de caso" onClick={onNavigate} />
+        <SideLink to="/admin/casos" Icon={FileEdit} label="Casos" onClick={onNavigate} />
         <SideLink to="/admin/capitulos" Icon={BookOpen} label="Capítulos" onClick={onNavigate} />
         <SideLink to="/admin/barrios" Icon={MapPinned} label="Barrios" onClick={onNavigate} />
         <SideLink to="/admin/mapa-barrios" Icon={MapIcon} label="Mapa global" onClick={onNavigate} />

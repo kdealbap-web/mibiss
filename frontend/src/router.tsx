@@ -22,6 +22,7 @@ import { BarriosLista } from './pages/admin/BarriosLista';
 import { BarrioEditor } from './pages/admin/BarrioEditor';
 import { CapitulosLista } from './pages/admin/CapitulosLista';
 import { CapituloEditor } from './pages/admin/CapituloEditor';
+import { CasosLista } from './pages/admin/CasosLista';
 
 export function AppRouter() {
   return (
@@ -38,6 +39,7 @@ export function AppRouter() {
       <Route path="/admin" element={<Dashboard />} />
       <Route path="/admin/solicitudes" element={<Solicitudes />} />
       <Route path="/admin/testimonios" element={<TestimoniosAdmin />} />
+      <Route path="/admin/casos" element={<CasosLista />} />
       <Route path="/admin/caso" element={<CasoEdit />} />
       <Route path="/admin/caso/:folio" element={<CasoEdit />} />
       <Route path="/admin/mapa-barrios" element={<MapaBarrios />} />
