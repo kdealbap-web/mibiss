@@ -315,10 +315,10 @@ Foco: cerrar el ciclo del ciudadano en `/mi-cuenta`. Editable, vinculado y con h
 |---|---|---|---|
 | 20 | `db/20-mis-padrinazgos.sql` | RPC `mis_padrinazgos()` para ciudadano (RLS-bypass controlado) | ✅ Aplicada 2026-05-18 |
 
-### Acciones humanas heredadas (aún pendientes)
+### Acciones humanas heredadas
 
-- **🔥 CORS R2 en Cloudflare** (heredada de Sprint E): sin esto los uploads del FlowReportar fallan.
-- **📋 Cablear `notify-email` desde RPCs** (heredada de Sprint F): la edge function vive y está testeada, pero nadie la dispara automáticamente. Requiere extensión `pg_net` + triggers después-de-update sobre `casos.estado` y dentro de `aprobar_solicitud`/`cambiar_estado_caso`. Sprint H candidate.
+- **✅ CORS R2 en Cloudflare** — aplicado por Kevin el 2026-05-18. Pendiente solo: smoke test end-to-end (reportar caso con foto desde móvil → ver llegada al bucket → aprobar → caso público con foto).
+- **📋 Cablear `notify-email` desde RPCs** (heredada de Sprint F): la edge function vive y está testeada, pero nadie la dispara automáticamente. Requiere extensión `pg_net` + triggers después-de-update sobre `casos.estado` y dentro de `aprobar_solicitud`/`cambiar_estado_caso`. **Sprint H en curso.**
 
 ### Lo que NO entró en Sprint D (Sprint E backlog)
 
