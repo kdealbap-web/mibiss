@@ -20,6 +20,8 @@ import { Metricas } from './pages/admin/Metricas';
 import { Ajustes } from './pages/admin/Ajustes';
 import { BarriosLista } from './pages/admin/BarriosLista';
 import { BarrioEditor } from './pages/admin/BarrioEditor';
+import { CapitulosLista } from './pages/admin/CapitulosLista';
+import { CapituloEditor } from './pages/admin/CapituloEditor';
 
 export function AppRouter() {
   return (
@@ -46,6 +48,8 @@ export function AppRouter() {
       <Route path="/admin/barrios" element={<BarriosLista />} />
       <Route path="/admin/barrios/nuevo" element={<BarrioEditor />} />
       <Route path="/admin/barrios/:slug/editar" element={<BarrioEditor />} />
+      <Route path="/admin/capitulos" element={<CapitulosLista />} />
+      <Route path="/admin/capitulos/:id/editar" element={<CapituloEditor />} />
 
       <Route path="*" element={<Navigate to="/home" replace />} />
     </Routes>

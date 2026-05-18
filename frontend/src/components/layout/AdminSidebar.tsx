@@ -12,6 +12,8 @@ import {
   Settings,
   Menu,
   X,
+  BookOpen,
+  MapPinned,
 } from 'lucide-react';
 
 import { BissMark } from '../brand/BissMark';
@@ -81,7 +83,9 @@ export function AdminSidebar({ open, onToggle, onNavigate }: AdminSidebarProps) 
 
         <div className="side-nav-section">Contenido</div>
         <SideLink to="/admin/caso" Icon={FileEdit} label="Editor de caso" onClick={onNavigate} />
-        <SideLink to="/admin/mapa-barrios" Icon={MapIcon} label="Mapa & barrios" onClick={onNavigate} />
+        <SideLink to="/admin/capitulos" Icon={BookOpen} label="Capítulos" onClick={onNavigate} />
+        <SideLink to="/admin/barrios" Icon={MapPinned} label="Barrios" onClick={onNavigate} />
+        <SideLink to="/admin/mapa-barrios" Icon={MapIcon} label="Mapa global" onClick={onNavigate} />
         <SideLink to="/admin/padrinos" Icon={HandHeart} label="Padrinos" onClick={onNavigate} />
 
         <div className="side-nav-section">Sistema</div>
