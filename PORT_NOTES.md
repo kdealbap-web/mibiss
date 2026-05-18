@@ -297,6 +297,29 @@ Smoke audit del HANDOFF v2.0 + 4 bloques + fix de bugs mobile reportados por Kev
 - **📋 Cablear `notify-email` desde RPCs DB**: actualmente la función vive pero nadie la llama automáticamente al aprobar solicitud o cambiar estado. Sprint G deberá hacer `PERFORM net.http_post(...)` desde dentro de `aprobar_solicitud`/`cambiar_estado_caso`, o un trigger después-de-update sobre `casos.estado`. Necesita extensión `pg_net` activada en Supabase.
 - **🌐 Verificar `/sitemap.xml`** una vez que Pages publique los cambios de `_redirects`. URL pública: `https://mibiss.com.co/sitemap.xml`. Debería responder XML del endpoint Supabase.
 
+---
+
+## Sprint G — Cierre (2026-05-18)
+
+Foco: cerrar el ciclo del ciudadano en `/mi-cuenta`. Editable, vinculado y con historial.
+
+### Bloques completados (commit único `b0c27e4`)
+
+- **G1 · Perfil editable** — Tab "Datos" ahora es form con nombres, apellidos, teléfono, dirección, barrio, estrato, miembros del hogar + toggle de notificaciones funcional. Persiste con `UPDATE ciudadanos` (RLS `update_self` ya existía). Bloque adicional "Cambiar correo electrónico" llama `auth.updateUser({ email })` con confirmación dual de email viejo + nuevo.
+- **G2 · Padrinazgos vinculados** — db/20 RPC `mis_padrinazgos()` SECURITY DEFINER hace match `padrinos.contacto_privado_email = auth.users.email` del caller. Saltea la RLS de `padrinos` que oculta filas no publicadas. UI muestra organización + tipo apoyo + caso vinculado (con link) + descripción + estado del caso + badge "pendiente de moderación" si aplica.
+- **G3 · Historial inline por caso** — Click en una fila de caso en "Mis casos" expande mini-timeline con últimas 3 actualizaciones. Lee `useActualizaciones` on-demand. Footer "Ver caso completo →" navega al timeline público entero.
+
+### Migraciones DB aplicadas a prod en Sprint G
+
+| # | Archivo | Razón | Estado |
+|---|---|---|---|
+| 20 | `db/20-mis-padrinazgos.sql` | RPC `mis_padrinazgos()` para ciudadano (RLS-bypass controlado) | ✅ Aplicada 2026-05-18 |
+
+### Acciones humanas heredadas (aún pendientes)
+
+- **🔥 CORS R2 en Cloudflare** (heredada de Sprint E): sin esto los uploads del FlowReportar fallan.
+- **📋 Cablear `notify-email` desde RPCs** (heredada de Sprint F): la edge function vive y está testeada, pero nadie la dispara automáticamente. Requiere extensión `pg_net` + triggers después-de-update sobre `casos.estado` y dentro de `aprobar_solicitud`/`cambiar_estado_caso`. Sprint H candidate.
+
 ### Lo que NO entró en Sprint D (Sprint E backlog)
 
 - Upload real de fotos en FlowReportar paso 4 (necesita CORS R2 + token testing).
