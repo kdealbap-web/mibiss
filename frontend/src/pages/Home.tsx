@@ -14,6 +14,7 @@ import {
   MoreHorizontal,
   Search,
   WifiOff,
+  Eye,
 } from 'lucide-react';
 
 import { Navbar } from '../components/layout/Navbar';
@@ -28,6 +29,7 @@ import { useStatsGlobales } from '../hooks/useStats';
 import { useStatsPorCategoria } from '../hooks/useCategorias';
 import { useCapitulosPublicos } from '../hooks/useCapitulos';
 import { useScrollToHash } from '../hooks/useScrollToHash';
+import { useVisitasPublicasMes } from '../hooks/useVisitasPublicas';
 import { formatNumber } from '../lib/format';
 import type { Barrio, CapituloPublico, CasoPublico, Zona } from '../types/biss';
 
@@ -140,6 +142,7 @@ export function Home() {
   const barrios = useBarrios();
   const zonas = useZonas();
   const capitulos = useCapitulosPublicos();
+  const { data: visitasMes } = useVisitasPublicasMes();
 
   const [search, setSearch] = useState('');
   const [catFilter, setCatFilter] = useState<string>('all');
@@ -260,6 +263,43 @@ export function Home() {
             <div className="l">Resueltos</div>
           </div>
         </div>
+        {typeof visitasMes === 'number' && visitasMes > 0 && (
+          <div
+            style={{
+              maxWidth: 1100,
+              margin: '14px auto 0',
+              padding: '0 24px',
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
+            <div
+              role="status"
+              aria-label={`${visitasMes} visitas en los últimos 30 días`}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '8px 16px',
+                background: 'rgba(255,255,255,0.14)',
+                border: '1px solid rgba(255,255,255,0.22)',
+                borderRadius: 9999,
+                color: '#FFFFFF',
+                fontSize: 13,
+                fontWeight: 600,
+                backdropFilter: 'blur(8px)',
+              }}
+            >
+              <Eye size={14} strokeWidth={2.2} />
+              <span>
+                <strong style={{ fontFamily: 'var(--font-mono)' }}>
+                  {formatNumber(visitasMes)}
+                </strong>{' '}
+                vecinos leyeron BISS en los últimos 30 días
+              </span>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* MAPA */}
