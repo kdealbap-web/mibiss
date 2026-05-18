@@ -34,16 +34,30 @@ const CAT_ICON_PATH: Record<string, string> = {
 interface BissMapProps {
   onBarrioClick?: (barrio: Barrio) => void;
   onCasoClick?: (caso: CasoPublico) => void;
+  /** Filtra los pines por categoria_codigo. 'all' o undefined = sin filtro. */
+  categoryFilter?: string;
+  /** Filtra los pines por estado. null/undefined = sin filtro. */
+  stateFilter?: EstadoCaso | null;
 }
 
-export function BissMap({ onBarrioClick, onCasoClick }: BissMapProps) {
+export function BissMap({
+  onBarrioClick,
+  onCasoClick,
+  categoryFilter,
+  stateFilter,
+}: BissMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerBarriosRef = useRef<L.LayerGroup | null>(null);
   const layerCasosRef = useRef<L.LayerGroup | null>(null);
 
   const { data: barrios = [], isLoading: barriosLoading, error: barriosError } = useBarriosConCoords();
-  const { data: casos = [] } = useCasosPublicos();
+  const { data: allCasos = [] } = useCasosPublicos();
+  const casos = allCasos.filter((c) => {
+    if (categoryFilter && categoryFilter !== 'all' && c.categoria_codigo !== categoryFilter) return false;
+    if (stateFilter && c.estado !== stateFilter) return false;
+    return true;
+  });
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;

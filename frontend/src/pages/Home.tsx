@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Megaphone,
   Map as MapIcon,
@@ -322,6 +322,13 @@ export function Home() {
             <BissMap
               onBarrioClick={(b) => navigate(`/capitulo/${b.slug}`)}
               onCasoClick={(c) => setDrawerCaso(c)}
+              categoryFilter={catFilter}
+              stateFilter={
+                stateFilter === 'critical' ? 'critico' :
+                stateFilter === 'progress' ? 'progreso' :
+                stateFilter === 'resolved' ? 'resuelto' :
+                null
+              }
             />
             <MapDrawer
               open={drawerCaso !== null}
@@ -355,19 +362,20 @@ export function Home() {
                 )}
                 {barriosFiltrados.slice(0, 24).map((b) => {
                   const zona = zonaById[b.zona_id];
+                  const hasCoords = b.coord_lat != null && b.coord_lng != null;
                   return (
-                    <a
+                    <Link
                       key={b.id}
                       className="barrio-mini"
-                      href={`/capitulo/${b.slug}`}
-                      onClick={(e) => e.preventDefault()}
+                      to={`/capitulo/${b.slug}`}
+                      aria-label={`Abrir capítulo del barrio ${b.nombre}`}
                     >
                       <div>
                         <div className="name">{b.nombre}</div>
                         <div className="zone">{zona?.nombre ?? '—'}</div>
                       </div>
-                      <span className="cnt">{b.coord_lat != null ? '·' : '—'}</span>
-                    </a>
+                      <span className="cnt">{hasCoords ? '·' : '—'}</span>
+                    </Link>
                   );
                 })}
               </div>
