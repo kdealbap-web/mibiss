@@ -13,6 +13,7 @@ import {
 import { BissMark } from '../brand/BissMark';
 import { NavMobile } from './NavMobile';
 import { useFlowDrawer } from '../../context/FlowDrawer';
+import { useSession } from '../../hooks/useMiCuenta';
 
 interface NavbarProps {
   active?: 'mapa' | 'casos' | 'barrios' | 'concejal' | 'como-funciona';
@@ -21,6 +22,8 @@ interface NavbarProps {
 export function Navbar({ active = 'mapa' }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const { openFlow } = useFlowDrawer();
+  const session = useSession();
+  const isAuth = session !== null;
 
   const link = (id: NavbarProps['active'], to: string, Icon: typeof MapIcon, label: string) => (
     <NavLink
@@ -56,13 +59,13 @@ export function Navbar({ active = 'mapa' }: NavbarProps) {
           <div className="navbar-right">
             <Link
               className="navbar-entry"
-              to="/login"
-              title="Ingresa con tu celular · o como editor del equipo"
+              to={isAuth ? '/mi-cuenta' : '/login'}
+              title={isAuth ? 'Abrir mi cuenta' : 'Entrar con tu correo'}
             >
-              <span className="av">
+              <span className="av" style={isAuth ? { background: '#3DAF6C' } : undefined}>
                 <UserRound />
               </span>
-              Entrar
+              {isAuth ? 'Mi cuenta' : 'Entrar'}
             </Link>
             <button
               type="button"

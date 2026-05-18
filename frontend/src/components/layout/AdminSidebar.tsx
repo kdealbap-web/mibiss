@@ -14,9 +14,14 @@ import {
   X,
   BookOpen,
   MapPinned,
+  Crown,
+  Shield as ShieldIcon,
 } from 'lucide-react';
 
 import { BissMark } from '../brand/BissMark';
+import { useSession, useMiRol, useMiPerfil } from '../../hooks/useMiCuenta';
+import { initials } from '../../lib/format';
+import { supabase } from '../../lib/supabase';
 
 interface SideLinkProps {
   to: string;
@@ -55,6 +60,26 @@ interface AdminSidebarProps {
 }
 
 export function AdminSidebar({ open, onToggle, onNavigate }: AdminSidebarProps) {
+  const session = useSession();
+  const { data: rol } = useMiRol();
+  const { data: perfil } = useMiPerfil();
+
+  const nombreSesion = perfil
+    ? `${perfil.nombres} ${perfil.apellidos}`.trim()
+    : session?.user?.email ?? 'Usuario';
+  const rolLabel =
+    rol === 'superadmin' ? 'Superadmin' :
+    rol === 'admin' ? 'Admin' :
+    rol === 'editor' ? 'Editor' :
+    rol === 'ciudadano' ? 'Ciudadano' :
+    'Sesión activa';
+  const isCms = rol === 'admin' || rol === 'superadmin' || rol === 'editor';
+
+  const logout = async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/home';
+  };
+
   return (
     <aside className="admin-sidebar">
       <div className="admin-brand">
@@ -94,12 +119,65 @@ export function AdminSidebar({ open, onToggle, onNavigate }: AdminSidebarProps) 
         <SideLink to="/admin/ajustes" Icon={Settings} label="Ajustes" onClick={onNavigate} />
       </nav>
 
-      <div className="side-user">
-        <div className="av">KB</div>
-        <div>
-          <div className="name">Kevin Balvuena</div>
-          <div className="role">Admin · concejal</div>
+      <div className="side-user" style={{ position: 'relative' }}>
+        <div className="av">{initials(nombreSesion)}</div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div
+            className="name"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <span
+              aria-label="Sesión activa"
+              title="Sesión activa"
+              style={{
+                display: 'inline-block',
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                background: '#3DAF6C',
+                boxShadow: '0 0 0 2px rgba(61,175,108,0.25)',
+                flexShrink: 0,
+              }}
+            />
+            {nombreSesion}
+          </div>
+          <div className="role" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+            {rol === 'superadmin' || rol === 'admin' ? (
+              <Crown style={{ width: 11, height: 11 }} />
+            ) : isCms ? (
+              <ShieldIcon style={{ width: 11, height: 11 }} />
+            ) : null}
+            {rolLabel}
+          </div>
         </div>
+        <button
+          type="button"
+          onClick={logout}
+          aria-label="Cerrar sesión"
+          title="Cerrar sesión"
+          style={{
+            background: 'rgba(255,255,255,0.08)',
+            border: 0,
+            width: 30,
+            height: 30,
+            borderRadius: 8,
+            color: 'rgba(255,255,255,0.85)',
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+          }}
+        >
+          <X size={14} />
+        </button>
       </div>
     </aside>
   );

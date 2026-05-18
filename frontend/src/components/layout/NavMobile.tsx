@@ -12,6 +12,7 @@ import {
 
 import { BissMark } from '../brand/BissMark';
 import { useFlowDrawer } from '../../context/FlowDrawer';
+import { useSession } from '../../hooks/useMiCuenta';
 
 interface NavMobileProps {
   open: boolean;
@@ -21,6 +22,8 @@ interface NavMobileProps {
 
 export function NavMobile({ open, onClose, active }: NavMobileProps) {
   const { openFlow } = useFlowDrawer();
+  const session = useSession();
+  const isAuth = session !== null;
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -94,8 +97,13 @@ export function NavMobile({ open, onClose, active }: NavMobileProps) {
 
         <div style={{ borderTop: '1px solid var(--border)', margin: '10px 0' }} />
 
-        <Link className="nav-mobile-link" to="/login" onClick={onClose}>
-          <UserRound />Entrar / Mi cuenta
+        <Link
+          className="nav-mobile-link"
+          to={isAuth ? '/mi-cuenta' : '/login'}
+          onClick={onClose}
+        >
+          <UserRound />
+          {isAuth ? 'Mi cuenta' : 'Entrar'}
         </Link>
         <button
           type="button"

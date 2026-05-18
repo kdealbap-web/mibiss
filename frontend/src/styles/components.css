@@ -761,6 +761,9 @@
     .navbar-links { display: flex; }
     .navbar-burger { display: none; }
   }
+  @media (max-width: 899px) {
+    .navbar-right { display: none; }
+  }
 
   /* Mobile drawer menu — opens via [data-open="true"] on body */
   .nav-mobile {

@@ -26,22 +26,25 @@ const ESTADO_BADGE: Record<EstadoCaso, { cls: string; txt: string }> = {
 
 export function MapDrawer({ open, onClose, caso }: MapDrawerProps) {
   if (!caso) {
+    if (!open) return null;
     return (
       <>
         <div
           className="map-drawer-overlay"
-          data-open={open ? 'true' : undefined}
+          data-open="true"
           onClick={onClose}
           aria-hidden="true"
         />
         <div
           className="map-drawer"
-          data-open={open ? 'true' : undefined}
+          data-open="true"
           role="dialog"
           aria-modal="true"
         >
-          <div className="mdr-body">
-            <p className="caption">Un segundo…</p>
+          <div className="mdr-body" aria-hidden>
+            <div style={{ height: 140, background: 'var(--surface-sunken)', borderRadius: 12, marginBottom: 12 }} />
+            <div style={{ height: 14, background: 'var(--surface-sunken)', borderRadius: 4, marginBottom: 8 }} />
+            <div style={{ height: 14, background: 'var(--surface-sunken)', borderRadius: 4, width: '75%' }} />
           </div>
         </div>
       </>

@@ -607,7 +607,14 @@ export function FlowIngresar() {
           </div>
         </div>
         <div className="sheet-footer">
-          <button type="button" className="btn btn-primary btn-block" onClick={closeFlow}>
+          <button
+            type="button"
+            className="btn btn-primary btn-block"
+            onClick={() => {
+              closeFlow();
+              navigate('/mi-cuenta');
+            }}
+          >
             Empezar
           </button>
         </div>
