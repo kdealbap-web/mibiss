@@ -200,17 +200,62 @@ export function FlowApadrinar() {
           </div>
 
           <div className="mini-field">
-            <label htmlFor="a-tipo">¿Cómo puedes ayudar?</label>
-            <select
-              id="a-tipo"
-              value={draft.tipoApoyo}
-              onChange={(e) => setDraft((d) => ({ ...d, tipoApoyo: e.target.value as TipoApoyo | '' }))}
+            <label>¿Cómo puedes ayudar?</label>
+            <div
+              role="radiogroup"
+              aria-label="Tipo de apoyo"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
+                gap: 10,
+                marginTop: 4,
+              }}
             >
-              <option value="">Elige una opción</option>
-              {TIPOS.map((t) => (
-                <option key={t.codigo} value={t.codigo}>{t.label}</option>
-              ))}
-            </select>
+              {TIPOS.map((t) => {
+                const selected = draft.tipoApoyo === t.codigo;
+                return (
+                  <button
+                    key={t.codigo}
+                    type="button"
+                    role="radio"
+                    aria-checked={selected}
+                    onClick={() => setDraft((d) => ({ ...d, tipoApoyo: t.codigo }))}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'flex-start',
+                      gap: 8,
+                      padding: '12px 14px',
+                      borderRadius: 12,
+                      border: `2px solid ${selected ? 'var(--state-resolved)' : 'var(--border)'}`,
+                      background: selected ? 'var(--state-resolved-bg)' : 'var(--surface)',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      transition: 'transform 140ms ease, border-color 140ms ease',
+                      transform: selected ? 'translateY(-1px)' : 'translateY(0)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: 10,
+                        background: selected ? 'var(--state-resolved)' : 'var(--surface-sunken)',
+                        color: selected ? '#FFFFFF' : 'var(--biss-teal-900)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <t.Icon size={18} />
+                    </div>
+                    <span style={{ fontWeight: 700, fontSize: 13, color: 'var(--ink-strong)' }}>
+                      {t.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <div className="mini-field">

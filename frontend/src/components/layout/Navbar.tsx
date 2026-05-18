@@ -12,6 +12,7 @@ import {
 
 import { BissMark } from '../brand/BissMark';
 import { NavMobile } from './NavMobile';
+import { UserChip } from './UserChip';
 import { useFlowDrawer } from '../../context/FlowDrawer';
 import { useSession } from '../../hooks/useMiCuenta';
 
@@ -57,16 +58,16 @@ export function Navbar({ active = 'mapa' }: NavbarProps) {
           </div>
 
           <div className="navbar-right">
-            <Link
-              className="navbar-entry"
-              to={isAuth ? '/mi-cuenta' : '/login'}
-              title={isAuth ? 'Abrir mi cuenta' : 'Entrar con tu correo'}
-            >
-              <span className="av" style={isAuth ? { background: '#3DAF6C' } : undefined}>
-                <UserRound />
-              </span>
-              {isAuth ? 'Mi cuenta' : 'Entrar'}
-            </Link>
+            {isAuth ? (
+              <UserChip variant="compact" />
+            ) : (
+              <Link className="navbar-entry" to="/login" title="Entrar con tu correo">
+                <span className="av">
+                  <UserRound />
+                </span>
+                Entrar
+              </Link>
+            )}
             <button
               type="button"
               className="btn btn-primary btn-sm navbar-cta"
@@ -77,6 +78,13 @@ export function Navbar({ active = 'mapa' }: NavbarProps) {
             </button>
           </div>
 
+          {/* En mobile aparece UserChip antes del burger si está logueado.
+              Si no, solo burger (el Login está dentro del NavMobile). */}
+          {isAuth && (
+            <div className="navbar-user-mobile">
+              <UserChip variant="compact" />
+            </div>
+          )}
           <button
             className="navbar-burger"
             type="button"

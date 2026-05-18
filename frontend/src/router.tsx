@@ -7,6 +7,7 @@ import { Recuperar } from './pages/Recuperar';
 import { RecuperarNuevaContrasena } from './pages/RecuperarNuevaContrasena';
 import { Capitulo } from './pages/Capitulo';
 import { Caso } from './pages/Caso';
+import { Categoria } from './pages/Categoria';
 import { MiCuenta } from './pages/MiCuenta';
 
 import { Dashboard } from './pages/admin/Dashboard';
@@ -34,6 +35,7 @@ export function AppRouter() {
       <Route path="/recuperar/nueva-contrasena" element={<RecuperarNuevaContrasena />} />
       <Route path="/capitulo/:slug" element={<Capitulo />} />
       <Route path="/caso/:folio" element={<Caso />} />
+      <Route path="/categoria/:codigo" element={<Categoria />} />
       <Route path="/mi-cuenta" element={<MiCuenta />} />
 
       <Route path="/admin" element={<Dashboard />} />

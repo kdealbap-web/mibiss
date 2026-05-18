@@ -763,6 +763,15 @@
   }
   @media (max-width: 899px) {
     .navbar-right { display: none; }
+    .navbar-user-mobile {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+    }
+    .navbar-user-mobile + .navbar-burger { margin-left: 4px; }
+  }
+  @media (min-width: 900px) {
+    .navbar-user-mobile { display: none; }
   }
 
   /* Mobile drawer menu — opens via [data-open="true"] on body */

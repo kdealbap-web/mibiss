@@ -21,6 +21,7 @@ import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
 import { BissMap } from '../components/map/BissMap';
 import { MapDrawer } from '../components/map/MapDrawer';
+import { Modal } from '../components/ui';
 import { useFlowDrawer } from '../context/FlowDrawer';
 
 import { useBarrios } from '../hooks/useBarrios';
@@ -145,8 +146,8 @@ export function Home() {
   const { data: visitasMes } = useVisitasPublicasMes();
 
   const [search, setSearch] = useState('');
-  const [catFilter, setCatFilter] = useState<string>('all');
   const [stateFilter, setStateFilter] = useState<EstadoFilter | null>(null);
+  const [barrioSinCasos, setBarrioSinCasos] = useState<Barrio | null>(null);
   const [drawerCaso, setDrawerCaso] = useState<CasoPublico | null>(null);
 
   const totals = stats.data;
@@ -158,12 +159,23 @@ export function Home() {
     }, {});
   }, [zonas.data]);
 
+  // Conjunto de barrio_id que tienen al menos un capítulo público con casos.
+  const barriosConCasos = useMemo<Set<number>>(() => {
+    const s = new Set<number>();
+    (capitulos.data ?? []).forEach((c) => {
+      if (c.casos_total > 0) s.add(c.barrio_id);
+    });
+    return s;
+  }, [capitulos.data]);
+
+  // Default: lista solo los barrios CON casos. Si hay búsqueda, busca en
+  // todos para que el vecino encuentre el suyo aunque no tenga casos todavía.
   const barriosFiltrados = useMemo<Barrio[]>(() => {
     const list = barrios.data ?? [];
-    if (!search.trim()) return list;
     const q = search.trim().toLowerCase();
-    return list.filter((b) => b.nombre.toLowerCase().includes(q));
-  }, [barrios.data, search]);
+    if (q) return list.filter((b) => b.nombre.toLowerCase().includes(q));
+    return list.filter((b) => barriosConCasos.has(b.id));
+  }, [barrios.data, barriosConCasos, search]);
 
   const catCounts = useMemo<Record<string, number>>(() => {
     return (statsCat.data ?? []).reduce<Record<string, number>>((acc, c) => {
@@ -316,43 +328,26 @@ export function Home() {
             </p>
           </div>
 
-          {/* Filtros · categorías arriba (centradas) */}
+          {/* Categorías como links a /categoria/:codigo (página dedicada con todos los casos) */}
           <div className="map-toolbar">
-            <div className="map-filter-chips">
-              <button
-                type="button"
-                className={catFilter === 'all' ? 'chip chip-active' : 'chip'}
-                onClick={() => setCatFilter('all')}
-              >
-                Todas las categorías
-              </button>
+            <div className="cat-tiles">
               {CATEGORIA_VIEW.map((c) => {
                 const Icon = CATEGORIA_ICON[c.codigo] ?? MoreHorizontal;
-                const active = catFilter === c.codigo;
+                const count = catCounts[c.codigo] ?? 0;
                 return (
-                  <button
+                  <Link
                     key={c.codigo}
-                    type="button"
-                    className={active ? 'chip chip-active' : 'chip'}
-                    title={c.nombre}
-                    onClick={() => setCatFilter(active ? 'all' : c.codigo)}
+                    to={`/categoria/${c.codigo}`}
+                    className="cat-tile-link"
+                    title={`Ver casos de ${c.nombre}`}
+                    style={{ ['--cat-bg' as never]: c.color }}
                   >
-                    <span
-                      style={{
-                        display: 'inline-flex',
-                        width: 18,
-                        height: 18,
-                        borderRadius: 99,
-                        background: c.color,
-                        color: '#fff',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <Icon style={{ width: 10, height: 10 }} strokeWidth={2.5} />
+                    <span className="cat-tile-ic" style={{ background: c.color }}>
+                      <Icon strokeWidth={2.4} />
                     </span>
-                    {c.nombre}
-                  </button>
+                    <span className="cat-tile-name">{c.nombre}</span>
+                    <span className="cat-tile-count">{count}</span>
+                  </Link>
                 );
               })}
             </div>
@@ -362,7 +357,6 @@ export function Home() {
             <BissMap
               onBarrioClick={(b) => navigate(`/capitulo/${b.slug}`)}
               onCasoClick={(c) => setDrawerCaso(c)}
-              categoryFilter={catFilter}
               stateFilter={
                 stateFilter === 'critical' ? 'critico' :
                 stateFilter === 'progress' ? 'progreso' :
@@ -376,16 +370,20 @@ export function Home() {
               caso={drawerCaso}
             />
             <aside className="map-side">
-              <div className="map-search-wrap" style={{ marginBottom: 4 }}>
-                <Search strokeWidth={2.2} />
-                <input
-                  type="search"
-                  placeholder="Buscar tu barrio…"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
+              <div className="map-side-sticky">
+                <div className="map-search-wrap" style={{ marginBottom: 8 }}>
+                  <Search strokeWidth={2.2} />
+                  <input
+                    type="search"
+                    placeholder="Buscar tu barrio…"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </div>
+                <h3 style={{ margin: 0 }}>
+                  {search.trim() ? 'Coincidencias' : 'Barrios con bitácora'}
+                </h3>
               </div>
-              <h3>Barrios con bitácora</h3>
               <div>
                 {barrios.isLoading && (
                   <div style={{ display: 'grid', gap: 6, padding: '4px 2px' }} aria-hidden>
@@ -412,22 +410,46 @@ export function Home() {
                     Aquí no hay barrios todavía. Si vives en Soledad, cuéntalo.
                   </p>
                 )}
-                {barriosFiltrados.slice(0, 24).map((b) => {
+                {barriosFiltrados.slice(0, 60).map((b) => {
                   const zona = zonaById[b.zona_id];
-                  const hasCoords = b.coord_lat != null && b.coord_lng != null;
+                  const tieneCasos = barriosConCasos.has(b.id);
+                  if (tieneCasos) {
+                    return (
+                      <Link
+                        key={b.id}
+                        className="barrio-mini"
+                        to={`/capitulo/${b.slug}`}
+                        aria-label={`Abrir capítulo del barrio ${b.nombre}`}
+                      >
+                        <div>
+                          <div className="name">{b.nombre}</div>
+                          <div className="zone">{zona?.nombre ?? '—'}</div>
+                        </div>
+                        <span className="cnt">·</span>
+                      </Link>
+                    );
+                  }
                   return (
-                    <Link
+                    <button
                       key={b.id}
+                      type="button"
                       className="barrio-mini"
-                      to={`/capitulo/${b.slug}`}
-                      aria-label={`Abrir capítulo del barrio ${b.nombre}`}
+                      onClick={() => setBarrioSinCasos(b)}
+                      aria-label={`${b.nombre} aún no tiene casos`}
+                      style={{
+                        border: 0,
+                        background: 'transparent',
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        width: '100%',
+                      }}
                     >
                       <div>
                         <div className="name">{b.nombre}</div>
-                        <div className="zone">{zona?.nombre ?? '—'}</div>
+                        <div className="zone">{zona?.nombre ?? '—'} · sin casos</div>
                       </div>
-                      <span className="cnt">{hasCoords ? '·' : '—'}</span>
-                    </Link>
+                      <span className="cnt" style={{ color: 'var(--ink-faint)' }}>—</span>
+                    </button>
                   );
                 })}
               </div>
@@ -676,6 +698,41 @@ export function Home() {
           </div>
         </div>
       </section>
+
+      <Modal
+        open={barrioSinCasos !== null}
+        onClose={() => setBarrioSinCasos(null)}
+        title={`${barrioSinCasos?.nombre ?? ''} aún no tiene casos`}
+        description="Sé el primero en abrir un caso en tu barrio."
+        size="sm"
+        footer={
+          <>
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm"
+              onClick={() => setBarrioSinCasos(null)}
+            >
+              Cerrar
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary btn-sm"
+              onClick={() => {
+                setBarrioSinCasos(null);
+                openFlow('reportar');
+              }}
+            >
+              <Megaphone size={14} />
+              Reportar primer caso
+            </button>
+          </>
+        }
+      >
+        <p style={{ fontSize: 13, color: 'var(--ink-strong)', margin: 0, lineHeight: 1.5 }}>
+          Cuando alguien reporta el primer caso en este barrio, abrimos un capítulo público con
+          su bitácora. Cualquier vecino puede leer, comentar y sumar testimonios.
+        </p>
+      </Modal>
 
       <Footer />
     </>

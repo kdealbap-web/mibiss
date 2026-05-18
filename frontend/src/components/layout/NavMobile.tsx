@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 
 import { BissMark } from '../brand/BissMark';
+import { UserChip } from './UserChip';
 import { useFlowDrawer } from '../../context/FlowDrawer';
 import { useSession } from '../../hooks/useMiCuenta';
 
@@ -95,16 +96,21 @@ export function NavMobile({ open, onClose, active }: NavMobileProps) {
           <HelpCircle />Cómo funciona
         </Link>
 
-        <div style={{ borderTop: '1px solid var(--border)', margin: '10px 0' }} />
-
-        <Link
-          className="nav-mobile-link"
-          to={isAuth ? '/mi-cuenta' : '/login'}
-          onClick={onClose}
-        >
-          <UserRound />
-          {isAuth ? 'Mi cuenta' : 'Entrar'}
-        </Link>
+        {isAuth ? (
+          <UserChip variant="full" onAction={onClose} />
+        ) : (
+          <>
+            <div style={{ borderTop: '1px solid var(--border)', margin: '10px 0' }} />
+            <Link
+              className="nav-mobile-link"
+              to="/login"
+              onClick={onClose}
+            >
+              <UserRound />
+              Entrar
+            </Link>
+          </>
+        )}
         <button
           type="button"
           className="nav-mobile-link"

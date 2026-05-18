@@ -344,7 +344,28 @@ function CasoContent({ caso, media, actualizaciones, testimonios, padrinos, open
 
       <div className="action-bar">
         <div className="row row-2">
-          <button type="button" className="btn btn-secondary btn-sm">
+          <button
+            type="button"
+            className="btn btn-secondary btn-sm"
+            onClick={async () => {
+              const url = `${window.location.origin}/caso/${caso.slug}`;
+              const text = `${caso.titulo} · BISS`;
+              if (typeof navigator !== 'undefined' && navigator.share) {
+                try {
+                  await navigator.share({ title: text, text, url });
+                  return;
+                } catch {
+                  /* user cancelled or unsupported */
+                }
+              }
+              try {
+                await navigator.clipboard.writeText(url);
+                window.alert('Enlace copiado al portapapeles.');
+              } catch {
+                window.prompt('Copia este enlace:', url);
+              }
+            }}
+          >
             <Share2 />Compartir
           </button>
           <Link to="/home#mapa" className="btn btn-secondary btn-sm">
