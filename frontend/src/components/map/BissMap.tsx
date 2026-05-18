@@ -1,13 +1,23 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import L from 'leaflet';
 
-import { useBarriosConCoords } from '../../hooks/useBarrios';
+import { useBarriosConCoords, useBarrios } from '../../hooks/useBarrios';
 import { useCasosPublicos } from '../../hooks/useCasos';
-import { SOLEDAD_CENTER } from '../../lib/config';
+import { SOLEDAD_CENTER, SOLEDAD_BOUNDS } from '../../lib/config';
 import type { Barrio, CasoPublico, EstadoCaso } from '../../types/biss';
 
 const CENTER: L.LatLngTuple = [SOLEDAD_CENTER[0], SOLEDAD_CENTER[1]];
 const ZOOM = 13;
+
+function inSoledad(lat: number | null | undefined, lng: number | null | undefined): boolean {
+  if (lat == null || lng == null) return false;
+  return (
+    lat >= SOLEDAD_BOUNDS.lat[0] &&
+    lat <= SOLEDAD_BOUNDS.lat[1] &&
+    lng >= SOLEDAD_BOUNDS.lng[0] &&
+    lng <= SOLEDAD_BOUNDS.lng[1]
+  );
+}
 
 const TILES = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
 const ATTR = '&copy; OpenStreetMap &copy; CARTO';
@@ -52,7 +62,15 @@ export function BissMap({
   const layerCasosRef = useRef<L.LayerGroup | null>(null);
 
   const { data: barrios = [], isLoading: barriosLoading, error: barriosError } = useBarriosConCoords();
+  const { data: allBarrios = [] } = useBarrios();
   const { data: allCasos = [] } = useCasosPublicos();
+
+  const barrioById = useMemo(() => {
+    const m = new Map<number, Barrio>();
+    allBarrios.forEach((b) => m.set(b.id, b));
+    return m;
+  }, [allBarrios]);
+
   const casos = allCasos.filter((c) => {
     if (categoryFilter && categoryFilter !== 'all' && c.categoria_codigo !== categoryFilter) return false;
     if (stateFilter && c.estado !== stateFilter) return false;
@@ -77,7 +95,21 @@ export function BissMap({
     layerCasosRef.current = L.layerGroup().addTo(map);
     mapRef.current = map;
 
+    // Fix tiles grises en mobile: re-medir contenedor después del primer paint.
+    const reflowTimers = [
+      window.setTimeout(() => map.invalidateSize(), 0),
+      window.setTimeout(() => map.invalidateSize(), 250),
+      window.setTimeout(() => map.invalidateSize(), 700),
+    ];
+
+    const onResize = () => map.invalidateSize();
+    window.addEventListener('resize', onResize);
+    window.addEventListener('orientationchange', onResize);
+
     return () => {
+      reflowTimers.forEach((t) => window.clearTimeout(t));
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('orientationchange', onResize);
       map.remove();
       mapRef.current = null;
       layerBarriosRef.current = null;
@@ -117,7 +149,20 @@ export function BissMap({
     layer.clearLayers();
 
     casos.forEach((c) => {
-      if (c.lat == null || c.lng == null) return;
+      // Fallback: si el caso no tiene coords o está fuera del bounding box
+      // de Soledad, usa la coord del barrio asociado. Garantiza que los pines
+      // siempre caigan dentro del municipio aunque la data del caso sea floja.
+      let lat = c.lat;
+      let lng = c.lng;
+      if (!inSoledad(lat, lng)) {
+        const b = barrioById.get(c.barrio_id);
+        if (b?.coord_lat != null && b?.coord_lng != null && inSoledad(b.coord_lat, b.coord_lng)) {
+          lat = b.coord_lat;
+          lng = b.coord_lng;
+        } else {
+          return;
+        }
+      }
 
       const catColor = c.categoria_color || '#06777C';
       const stateColor = ESTADO_COLOR[c.estado];
@@ -137,7 +182,7 @@ export function BissMap({
         iconSize: [38, 46],
         iconAnchor: [19, 46],
       });
-      const marker = L.marker([c.lat, c.lng], { icon, title: c.titulo });
+      const marker = L.marker([lat as number, lng as number], { icon, title: c.titulo });
       marker.bindTooltip(
         `<strong>${escapeHtml(c.titulo)}</strong><br/><span style="opacity:.85">${escapeHtml(c.barrio_nombre)} · ${escapeHtml(c.categoria_nombre)}</span>`,
         { direction: 'top', offset: [0, -30], className: 'biss-map-tooltip', sticky: false },
@@ -145,7 +190,7 @@ export function BissMap({
       if (onCasoClick) marker.on('click', () => onCasoClick(c));
       marker.addTo(layer);
     });
-  }, [casos, onCasoClick]);
+  }, [casos, onCasoClick, barrioById]);
 
   return (
     <div id="biss-map" ref={containerRef}>

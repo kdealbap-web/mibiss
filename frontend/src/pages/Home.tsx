@@ -348,7 +348,19 @@ export function Home() {
               <h3>Barrios con bitácora</h3>
               <div>
                 {barrios.isLoading && (
-                  <p className="caption" style={{ padding: '6px 8px' }}>Un segundo…</p>
+                  <div style={{ display: 'grid', gap: 6, padding: '4px 2px' }} aria-hidden>
+                    {[0, 1, 2, 3].map((i) => (
+                      <div
+                        key={i}
+                        style={{
+                          height: 38,
+                          borderRadius: 8,
+                          background: 'var(--surface-sunken)',
+                          opacity: 0.7 - i * 0.12,
+                        }}
+                      />
+                    ))}
+                  </div>
                 )}
                 {barrios.isError && (
                   <p className="caption" style={{ padding: '6px 8px' }}>
