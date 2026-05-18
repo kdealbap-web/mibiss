@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
     return jsonResponse({ ok: true, skipped: true });
   }
 
-  const tpl = TPL[tipo]({ ...payload, nombres: cdn.nombres, base: Deno.env.get('PUBLIC_BASE_URL') });
+  const tpl = TPL[tipo]({ ...payload, nombres: cdn.nombres, base: Deno.env.get('SITE_URL') ?? 'https://mibiss.com.co' });
 
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST',
