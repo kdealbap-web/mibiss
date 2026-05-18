@@ -346,6 +346,29 @@ Foco: cerrar el loop de notificaciones DB → email y modernizar paneles de mode
 4. Rechazar otra solicitud → debe llegar "Tu solicitud no pudo ser aprobada" + motivo.
 5. Si algún email no llega, revisar logs de `net._http_response` en Postgres y Resend dashboard.
 
+---
+
+## Sprint I — Cierre (2026-05-18)
+
+Foco: métricas reales de visitas + reescribir `/admin/metricas` con queries en vivo (sin mocks).
+
+### Bloques completados (commit `d3535e1`)
+
+- **I1 · web_visits tracking** — db/22 con tabla `web_visits` (sin IP, sin cookies). RLS anon-INSERT + cms-SELECT. Vistas `v_visits_kpis`, `v_visits_top_paths`, `v_visits_semanal`. Hook `useTrackPageview` en App.tsx pingea por cambio de pathname (excluye `/admin/*`).
+- **I2 · /admin/metricas** — Reemplaza el mock. 4 KPIs visitas + chart barras semanal + tabla top paths + 7 KPIs operativos + chart doble casos abiertos vs resueltos por mes + top categorías + top barrios.
+- **I3 · Cloudflare Web Analytics opcional** — `main.tsx` inyecta el beacon si `VITE_CF_ANALYTICS_TOKEN` está set. Sin token, no carga.
+
+### Migraciones DB aplicadas a prod en Sprint I
+
+| # | Archivo | Razón | Estado |
+|---|---|---|---|
+| 22 | `db/22-web-visits.sql` | Tabla `web_visits` + 3 vistas KPI | ✅ Aplicada 2026-05-18 |
+
+### Acciones humanas Sprint I (opcionales)
+
+- **Activar Cloudflare Web Analytics**: Cloudflare Dashboard → Web Analytics → Add site `mibiss.com.co` → copiar token → Pages → Settings → Environment variables → `VITE_CF_ANALYTICS_TOKEN=<token>`. Re-deploy.
+- **Retención `web_visits`**: post-launch, agendar `DELETE FROM web_visits WHERE ts < now() - interval '90 days';` semanal (cron).
+
 ### Lo que NO entró en Sprint D (Sprint E backlog)
 
 - Upload real de fotos en FlowReportar paso 4 (necesita CORS R2 + token testing).
