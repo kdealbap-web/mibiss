@@ -20,6 +20,15 @@ import './styles/drawer.css';
 const container = document.getElementById('root');
 if (!container) throw new Error('Falta el <div id="root"> en index.html');
 
+const cfToken = import.meta.env.VITE_CF_ANALYTICS_TOKEN as string | undefined;
+if (cfToken && cfToken.length > 0 && typeof document !== 'undefined') {
+  const s = document.createElement('script');
+  s.defer = true;
+  s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+  s.dataset.cfBeacon = JSON.stringify({ token: cfToken });
+  document.head.appendChild(s);
+}
+
 createRoot(container).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
