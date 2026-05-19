@@ -78,13 +78,6 @@ export function Navbar({ active = 'mapa' }: NavbarProps) {
             </button>
           </div>
 
-          {/* En mobile aparece UserChip antes del burger si está logueado.
-              Si no, solo burger (el Login está dentro del NavMobile). */}
-          {isAuth && (
-            <div className="navbar-user-mobile">
-              <UserChip variant="compact" />
-            </div>
-          )}
           <button
             className="navbar-burger"
             type="button"

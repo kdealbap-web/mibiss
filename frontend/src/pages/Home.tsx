@@ -146,6 +146,7 @@ export function Home() {
   const { data: visitasMes } = useVisitasPublicasMes();
 
   const [search, setSearch] = useState('');
+  const [catFilter, setCatFilter] = useState<string>('all');
   const [stateFilter, setStateFilter] = useState<EstadoFilter | null>(null);
   const [barrioSinCasos, setBarrioSinCasos] = useState<Barrio | null>(null);
   const [drawerCaso, setDrawerCaso] = useState<CasoPublico | null>(null);
@@ -328,26 +329,43 @@ export function Home() {
             </p>
           </div>
 
-          {/* Categorías como links a /categoria/:codigo (página dedicada con todos los casos) */}
+          {/* Filtros de categoría · chips toggleables filtran los pines del mapa */}
           <div className="map-toolbar">
-            <div className="cat-tiles">
+            <div className="map-filter-chips">
+              <button
+                type="button"
+                className={catFilter === 'all' ? 'chip chip-active' : 'chip'}
+                onClick={() => setCatFilter('all')}
+              >
+                Todas las categorías
+              </button>
               {CATEGORIA_VIEW.map((c) => {
                 const Icon = CATEGORIA_ICON[c.codigo] ?? MoreHorizontal;
-                const count = catCounts[c.codigo] ?? 0;
+                const active = catFilter === c.codigo;
                 return (
-                  <Link
+                  <button
                     key={c.codigo}
-                    to={`/categoria/${c.codigo}`}
-                    className="cat-tile-link"
-                    title={`Ver casos de ${c.nombre}`}
-                    style={{ ['--cat-bg' as never]: c.color }}
+                    type="button"
+                    className={active ? 'chip chip-active' : 'chip'}
+                    title={c.nombre}
+                    onClick={() => setCatFilter(active ? 'all' : c.codigo)}
                   >
-                    <span className="cat-tile-ic" style={{ background: c.color }}>
-                      <Icon strokeWidth={2.4} />
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        width: 18,
+                        height: 18,
+                        borderRadius: 99,
+                        background: c.color,
+                        color: '#fff',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Icon style={{ width: 10, height: 10 }} strokeWidth={2.5} />
                     </span>
-                    <span className="cat-tile-name">{c.nombre}</span>
-                    <span className="cat-tile-count">{count}</span>
-                  </Link>
+                    {c.nombre}
+                  </button>
                 );
               })}
             </div>
@@ -357,6 +375,7 @@ export function Home() {
             <BissMap
               onBarrioClick={(b) => navigate(`/capitulo/${b.slug}`)}
               onCasoClick={(c) => setDrawerCaso(c)}
+              categoryFilter={catFilter}
               stateFilter={
                 stateFilter === 'critical' ? 'critico' :
                 stateFilter === 'progress' ? 'progreso' :
@@ -530,31 +549,34 @@ export function Home() {
         </div>
       </section>
 
-      {/* CATEGORÍAS */}
+      {/* CASOS POR CATEGORÍA · cada card lleva a /categoria/:codigo */}
       <section
         className="sec"
         id="casos"
-        style={{ background: 'var(--surface-sunken)', paddingTop: 72, paddingBottom: 72 }}
+        style={{ background: 'var(--surface-sunken)', paddingTop: 60, paddingBottom: 60 }}
       >
         <div className="sec-inner">
           <div className="sec-head">
             <div>
-              <div className="kicker">Por dónde empezar</div>
-              <h2>Filtra por lo que te preocupa.</h2>
+              <div className="kicker">Casos por categoría</div>
+              <h2>Explora por temática.</h2>
             </div>
+            <p>
+              Toca una categoría para ver todos los casos relacionados con ese tema en Soledad.
+            </p>
           </div>
           <div className="cat-grid">
             {CATEGORIA_VIEW.map((c) => {
               const Icon = CATEGORIA_ICON[c.codigo] ?? MoreHorizontal;
               const n = catCounts[c.codigo] ?? 0;
               return (
-                <a key={c.codigo} className="cat-card" href={`#cat-${c.codigo}`}>
+                <Link key={c.codigo} className="cat-card" to={`/categoria/${c.codigo}`}>
                   <div className="ic" style={{ background: c.color }}>
                     <Icon />
                   </div>
                   <div className="name">{c.nombre}</div>
                   <div className="cnt">{formatNumber(n)} casos abiertos</div>
-                </a>
+                </Link>
               );
             })}
           </div>

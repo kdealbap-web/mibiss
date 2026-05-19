@@ -194,10 +194,13 @@ export interface ActualizacionCaso {
   creado_en: string;
 }
 
+export type PadrinoTier = 'bronce' | 'plata' | 'oro';
+
 export interface Padrino {
   id: string;
   nombre: string;
   tipo_apoyo: TipoApoyo;
+  tier: PadrinoTier | null;
   descripcion: string;
   logo_url: string | null;
   contacto_privado_email: string;

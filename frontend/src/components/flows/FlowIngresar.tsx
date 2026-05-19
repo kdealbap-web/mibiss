@@ -14,7 +14,7 @@ import {
 import { FlowShell, useFlowDraft } from './FlowShell';
 import { useFlowDrawer } from '../../context/FlowDrawer';
 import { supabase } from '../../lib/supabase';
-import { useBarrios } from '../../hooks/useBarrios';
+import { BarrioAutocomplete } from '../ui';
 
 interface IngresarDraft {
   email: string;
@@ -70,8 +70,6 @@ export function FlowIngresar() {
   const [sesionLista, setSesionLista] = useState(false);
   const [welcomeName, setWelcomeName] = useState<string | null>(null);
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
-
-  const { data: barrios = [] } = useBarrios();
 
   // Cooldown del reenvío
   useEffect(() => {
@@ -435,22 +433,13 @@ export function FlowIngresar() {
               onChange={(e) => setDraft((d) => ({ ...d, fechaNacimiento: e.target.value }))}
             />
           </div>
-          <div className="mini-field">
-            <label htmlFor="i-barrio">¿En qué barrio vives?</label>
-            <select
-              id="i-barrio"
-              value={draft.barrioId ?? ''}
-              onChange={(e) =>
-                setDraft((d) => ({ ...d, barrioId: e.target.value ? Number(e.target.value) : null }))
-              }
-            >
-              <option value="">Elige tu barrio</option>
-              {barrios.map((b) => (
-                <option key={b.id} value={b.id}>{b.nombre}</option>
-              ))}
-            </select>
-            <span className="hint">Te mostramos primero los casos de tu zona.</span>
-          </div>
+          <BarrioAutocomplete
+            label="¿En qué barrio vives?"
+            value={draft.barrioId}
+            onChange={(id) => setDraft((d) => ({ ...d, barrioId: id }))}
+            placeholder="Escribe el nombre de tu barrio…"
+            required
+          />
           <div className="mini-field">
             <label htmlFor="i-dir">Dirección</label>
             <input

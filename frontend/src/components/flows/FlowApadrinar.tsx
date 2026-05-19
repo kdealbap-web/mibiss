@@ -18,9 +18,12 @@ import { useFlowDrawer } from '../../context/FlowDrawer';
 import { useApadrinar } from '../../hooks/mutations/useApadrinar';
 import type { TipoApoyo } from '../../types/biss';
 
+type PadrinoTier = 'bronce' | 'plata' | 'oro';
+
 interface ApadrinarDraft {
   nombre: string;
   tipoApoyo: TipoApoyo | '';
+  tier: PadrinoTier | '';
   descripcion: string;
   email: string;
   telefono: string;
@@ -31,11 +34,46 @@ interface ApadrinarDraft {
 const INITIAL: ApadrinarDraft = {
   nombre: '',
   tipoApoyo: '',
+  tier: '',
   descripcion: '',
   email: '',
   telefono: '',
   website: '',
 };
+
+const TIERS: Array<{
+  codigo: PadrinoTier;
+  label: string;
+  blurb: string;
+  bg: string;
+  border: string;
+  ink: string;
+}> = [
+  {
+    codigo: 'bronce',
+    label: 'Bronce',
+    blurb: 'Apoyo puntual: un aporte único o gestión específica.',
+    bg: '#FDF1E6',
+    border: '#CD7F32',
+    ink: '#7A4A14',
+  },
+  {
+    codigo: 'plata',
+    label: 'Plata',
+    blurb: 'Apoyo recurrente: aportes periódicos o cuadrilla regular.',
+    bg: '#F1F4F7',
+    border: '#A8B0B8',
+    ink: '#4A535C',
+  },
+  {
+    codigo: 'oro',
+    label: 'Oro',
+    blurb: 'Apoyo sostenido: alianza estratégica de largo plazo.',
+    bg: '#FBF3D0',
+    border: '#D4A017',
+    ink: '#6E5210',
+  },
+];
 
 const TIPOS: Array<{ codigo: TipoApoyo; label: string; Icon: typeof Package }> = [
   { codigo: 'financiero', label: 'Aporte financiero',   Icon: CircleDollarSign },
@@ -84,6 +122,7 @@ export function FlowApadrinar() {
       await apadrinar.mutateAsync({
         nombre: draft.nombre.trim(),
         tipo_apoyo: draft.tipoApoyo,
+        tier: draft.tier || null,
         descripcion: draft.descripcion.trim(),
         contacto_privado_email: draft.email.trim().toLowerCase(),
         contacto_privado_tel: draft.telefono.trim() || null,
@@ -256,6 +295,80 @@ export function FlowApadrinar() {
                 );
               })}
             </div>
+          </div>
+
+          <div className="mini-field">
+            <label>Nivel de compromiso (opcional)</label>
+            <div
+              role="radiogroup"
+              aria-label="Tier de aporte"
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: 8,
+                marginTop: 4,
+              }}
+            >
+              {TIERS.map((t) => {
+                const selected = draft.tier === t.codigo;
+                return (
+                  <button
+                    key={t.codigo}
+                    type="button"
+                    role="radio"
+                    aria-checked={selected}
+                    onClick={() => setDraft((d) => ({ ...d, tier: selected ? '' : t.codigo }))}
+                    title={t.blurb}
+                    style={{
+                      padding: '12px 8px',
+                      borderRadius: 12,
+                      border: `2px solid ${selected ? t.border : 'var(--border)'}`,
+                      background: selected ? t.bg : 'var(--surface)',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: 4,
+                      transition: 'transform 140ms ease, border-color 140ms ease',
+                      transform: selected ? 'translateY(-1px)' : 'translateY(0)',
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: 28,
+                        height: 28,
+                        borderRadius: '50%',
+                        background: t.border,
+                        color: '#FFFFFF',
+                        fontFamily: 'var(--font-display)',
+                        fontWeight: 900,
+                        fontSize: 13,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                      aria-hidden
+                    >
+                      {t.label[0]}
+                    </span>
+                    <span
+                      style={{
+                        fontWeight: 700,
+                        fontSize: 13,
+                        color: selected ? t.ink : 'var(--ink-strong)',
+                      }}
+                    >
+                      {t.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            {draft.tier && (
+              <span className="hint" style={{ fontSize: 11.5 }}>
+                {TIERS.find((t) => t.codigo === draft.tier)?.blurb}
+              </span>
+            )}
           </div>
 
           <div className="mini-field">

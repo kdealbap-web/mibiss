@@ -170,9 +170,12 @@ export function FlowTestimonio() {
       setSubmitError(null);
       try {
         if (!miPerfil) {
-          throw new Error('Necesitas iniciar sesión y verificar tu email antes de sumar tu voz.');
+          throw new Error('Necesitas iniciar sesión para sumar tu voz.');
         }
         if (!draft.rol) throw new Error('Falta rol');
+        if (draft.historia.trim().length < 20) {
+          throw new Error('Tu historia debe tener al menos 20 caracteres.');
+        }
 
         const firmarComo = draft.anonimo
           ? null
@@ -189,15 +192,21 @@ export function FlowTestimonio() {
         clearDraft();
         setEnviado(true);
       } catch (e: unknown) {
-        const msg = String((e as { message?: string })?.message ?? e);
-        if (/row-level security/i.test(msg) || /verificado_email/i.test(msg)) {
-          setSubmitError('Necesitas verificar tu email antes de continuar.');
-        } else if (/iniciar sesión/i.test(msg)) {
+        const err = e as { message?: string; code?: string; details?: string };
+        const msg = err.message ?? '';
+        const detail = err.details ?? '';
+        // eslint-disable-next-line no-console
+        console.error('[testimonio] INSERT error', { msg, code: err.code, detail });
+        if (/iniciar sesi/i.test(msg) || /al menos 20/i.test(msg)) {
           setSubmitError(msg);
         } else if (/asociado a un caso o a un cap/i.test(msg)) {
           setSubmitError('Sumamos testimonios desde un caso o un capítulo. Vuelve atrás y elige uno.');
+        } else if (/length|chk_testimonios/i.test(msg) || /chk_testimonios/i.test(detail)) {
+          setSubmitError('Tu mensaje debe tener entre 20 y 1500 caracteres.');
+        } else if (err.code === '42501' || /row-level|policy/i.test(msg)) {
+          setSubmitError('Sesión caducada. Cierra sesión y vuelve a entrar.');
         } else {
-          setSubmitError('Algo salió raro. Vuelve a intentarlo.');
+          setSubmitError(msg ? `No pudimos publicar: ${msg}` : 'Algo salió raro. Vuelve a intentarlo.');
         }
       }
     };

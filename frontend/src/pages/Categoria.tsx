@@ -65,7 +65,7 @@ export function Categoria() {
       <Navbar active="casos" />
       <section
         style={{
-          padding: '40px 24px 28px',
+          padding: '20px 20px 18px',
           background: `linear-gradient(135deg, ${color}22 0%, var(--surface) 100%)`,
           borderBottom: '1px solid var(--border)',
         }}
@@ -85,12 +85,12 @@ export function Categoria() {
           >
             <ArrowLeft size={14} />Volver al inicio
           </Link>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
             <div
               style={{
-                width: 56,
-                height: 56,
-                borderRadius: 14,
+                width: 44,
+                height: 44,
+                borderRadius: 12,
                 background: color,
                 color: '#FFFFFF',
                 display: 'inline-flex',
@@ -99,31 +99,32 @@ export function Categoria() {
                 flexShrink: 0,
               }}
             >
-              <Icon size={28} strokeWidth={2.2} />
+              <Icon size={22} strokeWidth={2.2} />
             </div>
             <div>
-              <div className="kicker" style={{ marginBottom: 4 }}>Categoría</div>
+              <div className="kicker" style={{ marginBottom: 2, fontSize: 10 }}>Categoría</div>
               <h1
                 style={{
                   fontFamily: 'var(--font-display)',
                   fontWeight: 900,
-                  fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
+                  fontSize: 'clamp(1.25rem, 4vw, 2rem)',
                   letterSpacing: '-0.025em',
                   margin: 0,
                   color: 'var(--ink-strong)',
+                  lineHeight: 1.1,
                 }}
               >
                 {categoria?.nombre ?? codigo}
               </h1>
-              <p style={{ color: 'var(--ink-soft)', fontSize: 14, marginTop: 4 }}>
-                {casosCat.length} caso{casosCat.length === 1 ? '' : 's'} público{casosCat.length === 1 ? '' : 's'}.
+              <p style={{ color: 'var(--ink-soft)', fontSize: 12.5, marginTop: 2 }}>
+                {casosCat.length} caso{casosCat.length === 1 ? '' : 's'} público{casosCat.length === 1 ? '' : 's'}
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <section style={{ padding: '32px 24px 64px' }}>
+      <section style={{ padding: '20px 16px 48px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           {casosCat.length === 0 ? (
             <div

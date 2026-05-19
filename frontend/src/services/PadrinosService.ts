@@ -1,9 +1,12 @@
 import { supabase } from '../lib/supabase';
 import type { TipoApoyo } from '../types/biss';
 
+export type PadrinoTier = 'bronce' | 'plata' | 'oro';
+
 export interface CrearPadrinoInput {
   nombre: string;
   tipo_apoyo: TipoApoyo;
+  tier?: PadrinoTier | null;
   descripcion: string;
   contacto_privado_email: string;
   contacto_privado_tel?: string | null;
@@ -24,6 +27,7 @@ export const PadrinosService = {
       .insert({
         nombre: input.nombre,
         tipo_apoyo: input.tipo_apoyo,
+        tier: input.tier ?? null,
         descripcion: input.descripcion,
         contacto_privado_email: input.contacto_privado_email,
         contacto_privado_tel: input.contacto_privado_tel ?? null,
