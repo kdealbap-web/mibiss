@@ -5,6 +5,7 @@ import { ArrowRight, Mail, KeyRound, AlertTriangle } from 'lucide-react';
 import { BissLogo } from '../components/brand/BissLogo';
 import { BissMark } from '../components/brand/BissMark';
 import { useFlowDrawer } from '../context/FlowDrawer';
+import { useMiRol, useSession } from '../hooks/useMiCuenta';
 import { supabase } from '../lib/supabase';
 
 import '../styles/login.css';
@@ -16,6 +17,8 @@ type Modo = 'otp' | 'password';
 export function Login() {
   const navigate = useNavigate();
   const { openFlow } = useFlowDrawer();
+  const session = useSession();
+  const { data: rol } = useMiRol();
   const [modo, setModo] = useState<Modo>('otp');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,6 +29,16 @@ export function Login() {
     document.body.classList.add('auth-body');
     return () => document.body.classList.remove('auth-body');
   }, []);
+
+  // Si ya hay sesión activa al entrar a /login, redirige según rol.
+  useEffect(() => {
+    if (!session || !rol) return;
+    if (rol === 'admin' || rol === 'superadmin' || rol === 'editor') {
+      navigate('/admin', { replace: true });
+    } else if (rol === 'ciudadano') {
+      navigate('/mi-cuenta', { replace: true });
+    }
+  }, [session, rol, navigate]);
 
   const validEmail = EMAIL_RE.test(email.trim());
 

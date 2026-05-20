@@ -8,12 +8,13 @@ import {
   HelpCircle,
   Megaphone,
   X,
+  ShieldCheck,
 } from 'lucide-react';
 
 import { BissMark } from '../brand/BissMark';
 import { UserChip } from './UserChip';
 import { useFlowDrawer } from '../../context/FlowDrawer';
-import { useSession } from '../../hooks/useMiCuenta';
+import { useMiRol, useSession } from '../../hooks/useMiCuenta';
 
 interface NavMobileProps {
   open: boolean;
@@ -24,7 +25,9 @@ interface NavMobileProps {
 export function NavMobile({ open, onClose, active }: NavMobileProps) {
   const { openFlow } = useFlowDrawer();
   const session = useSession();
+  const { data: rol } = useMiRol();
   const isAuth = session !== null;
+  const isCms = rol === 'admin' || rol === 'superadmin' || rol === 'editor';
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -95,6 +98,21 @@ export function NavMobile({ open, onClose, active }: NavMobileProps) {
         >
           <HelpCircle />Cómo funciona
         </Link>
+
+        {isAuth && isCms && (
+          <Link
+            className="nav-mobile-link"
+            to="/admin"
+            onClick={onClose}
+            style={{
+              background: 'var(--biss-teal-50)',
+              color: 'var(--biss-teal-900)',
+              fontWeight: 800,
+            }}
+          >
+            <ShieldCheck />Panel admin
+          </Link>
+        )}
 
         {isAuth ? (
           <UserChip variant="full" onAction={onClose} />

@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LogOut, UserRound } from 'lucide-react';
+import { LogOut, ShieldCheck } from 'lucide-react';
 
 import { Modal } from '../ui';
 import { supabase } from '../../lib/supabase';
-import { useMiPerfil, useSession } from '../../hooks/useMiCuenta';
+import { useMiPerfil, useMiRol, useSession } from '../../hooks/useMiCuenta';
 import { initials } from '../../lib/format';
 
 interface UserChipProps {
@@ -19,20 +19,24 @@ export function UserChip({ variant = 'compact', onAction }: UserChipProps) {
   const navigate = useNavigate();
   const session = useSession();
   const { data: perfil } = useMiPerfil();
+  const { data: rol } = useMiRol();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
 
   if (session === null) return null;
 
+  const isCms = rol === 'admin' || rol === 'superadmin' || rol === 'editor';
   const nombre = perfil
     ? `${perfil.nombres} ${perfil.apellidos}`.trim()
     : session.user?.email ?? '';
-  const initialsStr = nombre ? initials(nombre) : 'TU';
+  const initialsStr = nombre ? initials(nombre) : (session.user?.email?.slice(0, 2).toUpperCase() ?? 'TU');
 
-  const goCuenta = () => {
+  const goHome = () => {
     onAction?.();
-    navigate('/mi-cuenta');
+    navigate(isCms ? '/admin' : '/mi-cuenta');
   };
+  // alias para mantener compatibilidad de nombres
+  const goCuenta = goHome;
 
   const doSignOut = async () => {
     setSigningOut(true);
@@ -176,17 +180,55 @@ export function UserChip({ variant = 'compact', onAction }: UserChipProps) {
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
               }}
             >
               {nombre || 'Mi cuenta'}
+              {isCms && (
+                <span
+                  style={{
+                    background: 'var(--biss-teal-50)',
+                    color: 'var(--biss-teal-900)',
+                    fontSize: 10,
+                    fontWeight: 800,
+                    padding: '2px 6px',
+                    borderRadius: 99,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.04em',
+                  }}
+                >
+                  {rol === 'superadmin' ? 'Superadmin' : rol === 'admin' ? 'Admin' : 'Editor'}
+                </span>
+              )}
             </div>
-            <Link
-              to="/mi-cuenta"
-              onClick={() => onAction?.()}
-              style={{ fontSize: 12, color: 'var(--biss-teal-900)', fontWeight: 700 }}
-            >
-              <UserRound size={11} style={{ verticalAlign: -2 }} /> Ver mi cuenta
-            </Link>
+            <div style={{ display: 'flex', gap: 10, marginTop: 2 }}>
+              {isCms && (
+                <Link
+                  to="/admin"
+                  onClick={() => onAction?.()}
+                  style={{
+                    fontSize: 12,
+                    color: 'var(--biss-teal-900)',
+                    fontWeight: 700,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 4,
+                  }}
+                >
+                  <ShieldCheck size={12} />
+                  Panel admin
+                </Link>
+              )}
+              <Link
+                to="/mi-cuenta"
+                onClick={() => onAction?.()}
+                style={{ fontSize: 12, color: 'var(--ink-soft)', fontWeight: 600 }}
+              >
+                Mi cuenta
+              </Link>
+            </div>
           </div>
           <button
             type="button"

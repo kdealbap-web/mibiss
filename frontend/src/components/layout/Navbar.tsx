@@ -8,13 +8,14 @@ import {
   HelpCircle,
   Megaphone,
   Menu,
+  ShieldCheck,
 } from 'lucide-react';
 
 import { BissMark } from '../brand/BissMark';
 import { NavMobile } from './NavMobile';
 import { UserChip } from './UserChip';
 import { useFlowDrawer } from '../../context/FlowDrawer';
-import { useSession } from '../../hooks/useMiCuenta';
+import { useMiRol, useSession } from '../../hooks/useMiCuenta';
 
 interface NavbarProps {
   active?: 'mapa' | 'casos' | 'barrios' | 'concejal' | 'como-funciona';
@@ -24,7 +25,9 @@ export function Navbar({ active = 'mapa' }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const { openFlow } = useFlowDrawer();
   const session = useSession();
+  const { data: rol } = useMiRol();
   const isAuth = session !== null;
+  const isCms = rol === 'admin' || rol === 'superadmin' || rol === 'editor';
 
   const link = (id: NavbarProps['active'], to: string, Icon: typeof MapIcon, label: string) => (
     <NavLink
@@ -58,6 +61,24 @@ export function Navbar({ active = 'mapa' }: NavbarProps) {
           </div>
 
           <div className="navbar-right">
+            {isAuth && isCms && (
+              <Link
+                to="/admin"
+                className="navbar-link"
+                style={{
+                  background: 'var(--biss-teal-50)',
+                  color: 'var(--biss-teal-900)',
+                  fontWeight: 800,
+                  padding: '8px 12px',
+                  borderRadius: 'var(--radius-pill)',
+                  border: '1.5px solid var(--biss-teal-100)',
+                }}
+                title="Panel admin"
+              >
+                <ShieldCheck size={14} />
+                Admin
+              </Link>
+            )}
             {isAuth ? (
               <UserChip variant="compact" />
             ) : (
