@@ -43,3 +43,15 @@ export function useCambiarMiEmail() {
     },
   });
 }
+
+export function useDefinirMiPassword() {
+  return useMutation<void, Error, string>({
+    mutationFn: async (nuevaPassword) => {
+      if (nuevaPassword.length < 6) {
+        throw new Error('La contraseña debe tener al menos 6 caracteres.');
+      }
+      const { error } = await supabase.auth.updateUser({ password: nuevaPassword });
+      if (error) throw error;
+    },
+  });
+}

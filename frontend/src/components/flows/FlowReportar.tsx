@@ -368,7 +368,7 @@ export function FlowReportar() {
       setSubmitError(null);
       try {
         if (!miPerfil) {
-          throw new Error('Necesitas iniciar sesión y verificar tu email antes de reportar.');
+          throw new Error('Necesitas iniciar sesión para reportar un caso.');
         }
         if (!draft.categoria) throw new Error('Falta categoría');
 
@@ -402,15 +402,18 @@ export function FlowReportar() {
         setFolio(`SOL-${año}-${shortId}`);
         clearDraft();
       } catch (e: unknown) {
-        const msg = String((e as { message?: string })?.message ?? e);
-        if (/row-level security/i.test(msg) || /verificado_email/i.test(msg)) {
-          setSubmitError('Necesitas verificar tu email antes de continuar.');
-        } else if (/iniciar sesión/i.test(msg)) {
+        const err = e as { message?: string; code?: string; details?: string };
+        const msg = err.message ?? '';
+        // eslint-disable-next-line no-console
+        console.error('[reportar] INSERT error', { msg, code: err.code, details: err.details });
+        if (/iniciar sesi/i.test(msg)) {
           setSubmitError(msg);
+        } else if (err.code === '42501' || /row-level|policy/i.test(msg)) {
+          setSubmitError('Sesión caducada. Cierra sesión y vuelve a entrar.');
         } else if (/r2|firmar|subida|pesa más/i.test(msg)) {
           setSubmitError(msg);
         } else {
-          setSubmitError('Algo salió raro. Vuelve a intentarlo.');
+          setSubmitError(msg ? `No pudimos enviar: ${msg}` : 'Algo salió raro. Vuelve a intentarlo.');
         }
       }
     };

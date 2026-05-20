@@ -37,6 +37,7 @@ import { useBarrios } from '../hooks/useBarrios';
 import {
   useActualizarMiPerfil,
   useCambiarMiEmail,
+  useDefinirMiPassword,
 } from '../hooks/mutations/useMiPerfilMutations';
 import type { CasoPublico, EstadoCaso } from '../types/biss';
 
@@ -76,6 +77,7 @@ export function MiCuenta() {
 
   const actualizarPerfil = useActualizarMiPerfil();
   const cambiarEmail = useCambiarMiEmail();
+  const definirPassword = useDefinirMiPassword();
 
   useEffect(() => {
     document.body.classList.add('mc-body');
@@ -211,8 +213,10 @@ export function MiCuenta() {
                 sessionEmail={session.user.email ?? ''}
                 onSavePerfil={async (patch) => actualizarPerfil.mutateAsync(patch)}
                 onChangeEmail={async (email) => cambiarEmail.mutateAsync(email)}
+                onSetPassword={async (pass) => definirPassword.mutateAsync(pass)}
                 savingPerfil={actualizarPerfil.isPending}
                 savingEmail={cambiarEmail.isPending}
+                savingPassword={definirPassword.isPending}
               />
             ) : (
               <p className="caption" style={{ padding: '20px 0' }}>
@@ -401,8 +405,10 @@ interface DatosFormProps {
   sessionEmail: string;
   onSavePerfil: (patch: import('../hooks/mutations/useMiPerfilMutations').PerfilPatch) => Promise<void>;
   onChangeEmail: (email: string) => Promise<void>;
+  onSetPassword: (pass: string) => Promise<void>;
   savingPerfil: boolean;
   savingEmail: boolean;
+  savingPassword: boolean;
 }
 
 function DatosForm({
@@ -411,8 +417,10 @@ function DatosForm({
   sessionEmail,
   onSavePerfil,
   onChangeEmail,
+  onSetPassword,
   savingPerfil,
   savingEmail,
+  savingPassword,
 }: DatosFormProps) {
   const [form, setForm] = useState({
     nombres: perfil.nombres,
@@ -427,6 +435,9 @@ function DatosForm({
   const [feedback, setFeedback] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
   const [emailNuevo, setEmailNuevo] = useState('');
   const [emailFeedback, setEmailFeedback] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
+  const [pass1, setPass1] = useState('');
+  const [pass2, setPass2] = useState('');
+  const [passFeedback, setPassFeedback] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
 
   const cambiado = useMemo(() => {
     return (
@@ -687,6 +698,111 @@ function DatosForm({
                 }}
               >
                 {emailFeedback.text}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div
+        style={{
+          marginTop: 12,
+          padding: 14,
+          background: 'var(--surface-sunken)',
+          borderRadius: 8,
+          border: '1px solid var(--border)',
+        }}
+      >
+        <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--ink-strong)', marginBottom: 4 }}>
+          Contraseña (opcional)
+        </div>
+        <p style={{ fontSize: 12, color: 'var(--ink-soft)', marginBottom: 10, lineHeight: 1.4 }}>
+          Si defines una contraseña, podrás entrar sin esperar el código por email. Mínimo 6
+          caracteres.
+        </p>
+        <div style={{ display: 'grid', gap: 8 }}>
+          <input
+            type="password"
+            value={pass1}
+            onChange={(e) => setPass1(e.target.value)}
+            placeholder="Nueva contraseña"
+            autoComplete="new-password"
+            minLength={6}
+            style={{
+              padding: '10px 12px',
+              border: '1.5px solid var(--border)',
+              borderRadius: 8,
+              fontSize: 14,
+            }}
+            aria-label="Nueva contraseña"
+          />
+          <input
+            type="password"
+            value={pass2}
+            onChange={(e) => setPass2(e.target.value)}
+            placeholder="Repítela"
+            autoComplete="new-password"
+            minLength={6}
+            style={{
+              padding: '10px 12px',
+              border: '1.5px solid var(--border)',
+              borderRadius: 8,
+              fontSize: 14,
+            }}
+            aria-label="Confirmar contraseña"
+          />
+          <button
+            type="button"
+            className="btn btn-secondary btn-sm"
+            style={{ justifySelf: 'start' }}
+            disabled={
+              savingPassword ||
+              pass1.length < 6 ||
+              pass1 !== pass2
+            }
+            onClick={async () => {
+              setPassFeedback(null);
+              if (pass1 !== pass2) {
+                setPassFeedback({ kind: 'err', text: 'Las contraseñas no coinciden.' });
+                return;
+              }
+              try {
+                await onSetPassword(pass1);
+                setPassFeedback({ kind: 'ok', text: 'Contraseña guardada. Ya puedes entrar con ella.' });
+                setPass1('');
+                setPass2('');
+              } catch (err: unknown) {
+                const msg = String((err as { message?: string })?.message ?? err);
+                setPassFeedback({
+                  kind: 'err',
+                  text: /rate/i.test(msg) ? 'Demasiados intentos. Espera unos minutos.' : 'No pudimos guardar.',
+                });
+              }
+            }}
+          >
+            {savingPassword ? 'Guardando…' : 'Guardar contraseña'}
+          </button>
+        </div>
+        {passFeedback && (
+          <div
+            className={passFeedback.kind === 'ok' ? 'alert' : 'alert alert-critical'}
+            style={{
+              marginTop: 10,
+              padding: '8px 10px',
+              background: passFeedback.kind === 'ok' ? 'var(--state-resolved-bg)' : 'var(--state-critical-bg)',
+              border: `1px solid ${passFeedback.kind === 'ok' ? 'var(--state-resolved-border)' : 'var(--state-critical-border)'}`,
+            }}
+            role="status"
+          >
+            <div className="alert-body">
+              <div
+                className="alert-text"
+                style={{
+                  fontSize: 12,
+                  color: passFeedback.kind === 'ok' ? '#065F46' : 'var(--state-critical)',
+                }}
+              >
+                {passFeedback.text}
               </div>
             </div>
           </div>
