@@ -15,6 +15,7 @@ import {
   Search,
   WifiOff,
   Eye,
+  Instagram,
 } from 'lucide-react';
 
 import { Navbar } from '../components/layout/Navbar';
@@ -58,82 +59,6 @@ const CATEGORIA_VIEW = [
 
 type EstadoFilter = 'critical' | 'progress' | 'resolved';
 
-const CAPITULO_FALLBACK: Array<{
-  slug: string;
-  nombre: string;
-  zona: string;
-  resumen: string;
-  criticos: number;
-  progreso: number;
-  resueltos: number;
-  cover?: string;
-}> = [
-  {
-    slug: 'soledad-2000',
-    nombre: 'Soledad 2000',
-    zona: 'Zona occidental',
-    resumen: '12 mil habitantes. Calle 30 y carrera 18. La pavimentación llevó 8 años.',
-    criticos: 3,
-    progreso: 14,
-    resueltos: 6,
-  },
-  {
-    slug: 'don-bosco',
-    nombre: 'Don Bosco',
-    zona: 'Centro-norte',
-    resumen: 'Casas tradicionales. Cerca del Centro de Salud. Líderes muy activos.',
-    criticos: 2,
-    progreso: 9,
-    resueltos: 8,
-    cover:
-      'repeating-linear-gradient(135deg, var(--zone-centro-norte) 0 18px, #167F38 18px 36px)',
-  },
-  {
-    slug: 'la-candelaria',
-    nombre: 'La Candelaria',
-    zona: 'Oriental',
-    resumen: 'Frente al Magdalena. Inundaciones recurrentes en invierno.',
-    criticos: 4,
-    progreso: 8,
-    resueltos: 2,
-    cover:
-      'repeating-linear-gradient(135deg, var(--zone-oriental) 0 18px, #A37F08 18px 36px)',
-  },
-  {
-    slug: 'el-hipodromo',
-    nombre: 'El Hipódromo',
-    zona: 'Zona occidental',
-    resumen: 'Antiguo barrio comercial. Mercado Olímpico al lado.',
-    criticos: 1,
-    progreso: 7,
-    resueltos: 3,
-    cover:
-      'repeating-linear-gradient(135deg, #6E4A11 0 18px, #8B5C1A 18px 36px)',
-  },
-  {
-    slug: 'salamanca',
-    nombre: 'Salamanca',
-    zona: 'Zona sur',
-    resumen: 'Camino al aeropuerto. Transporte escaso después de las 8 PM.',
-    criticos: 0,
-    progreso: 5,
-    resueltos: 3,
-    cover:
-      'repeating-linear-gradient(135deg, var(--zone-sur) 0 18px, #B83F3D 18px 36px)',
-  },
-  {
-    slug: 'san-vicente',
-    nombre: 'San Vicente',
-    zona: 'Sur-occidental',
-    resumen: 'Cerca de la Escuela de Policía Antonio Nariño. Iluminación insuficiente.',
-    criticos: 1,
-    progreso: 4,
-    resueltos: 1,
-    cover:
-      'repeating-linear-gradient(135deg, var(--zone-sur-occidental) 0 18px, #6442A4 18px 36px)',
-  },
-];
-
 export function Home() {
   useScrollToHash();
   const { openFlow } = useFlowDrawer();
@@ -169,14 +94,14 @@ export function Home() {
     return s;
   }, [capitulos.data]);
 
-  // Default: lista solo los barrios CON casos. Si hay búsqueda, busca en
-  // todos para que el vecino encuentre el suyo aunque no tenga casos todavía.
+  // Lista TODOS los barrios. Los que ya tienen bitácora abierta llevan al
+  // capítulo; los que no, abren un modal invitando a reportar el primer caso.
   const barriosFiltrados = useMemo<Barrio[]>(() => {
     const list = barrios.data ?? [];
     const q = search.trim().toLowerCase();
     if (q) return list.filter((b) => b.nombre.toLowerCase().includes(q));
-    return list.filter((b) => barriosConCasos.has(b.id));
-  }, [barrios.data, barriosConCasos, search]);
+    return list;
+  }, [barrios.data, search]);
 
   const catCounts = useMemo<Record<string, number>>(() => {
     return (statsCat.data ?? []).reduce<Record<string, number>>((acc, c) => {
@@ -193,13 +118,13 @@ export function Home() {
         resolved: totals.casos_resueltos,
       };
     }
-    return { critical: 5, progress: 6, resolved: 3 };
+    return { critical: 0, progress: 0, resolved: 0 };
   }, [totals]);
 
-  // 6 capítulos para el grid "Bitácoras activas": vista publica si la hay, fallback prototipo.
+  // Capítulos reales para el grid "Bitácoras activas". Si aún no hay
+  // ninguna bitácora abierta, mostramos un empty state en lugar de demos.
   const capitulosVisibles = useMemo(() => {
     const list = capitulos.data ?? [];
-    if (list.length === 0) return CAPITULO_FALLBACK;
     return list.slice(0, 6).map((c: CapituloPublico) => ({
       slug: c.barrio_slug,
       nombre: c.barrio_nombre,
@@ -208,7 +133,7 @@ export function Home() {
       criticos: c.casos_criticos,
       progreso: c.casos_progreso,
       resueltos: c.casos_resueltos,
-      cover: undefined,
+      cover: undefined as string | undefined,
     }));
   }, [capitulos.data]);
 
@@ -248,7 +173,7 @@ export function Home() {
           <div className="hero-visual">
             <span className="badge-float-top">
               <Zap style={{ width: 12, height: 12 }} />
-              {formatNumber(totals?.casos_publicos ?? 142)} casos vivos
+              {formatNumber(totals?.casos_publicos ?? 0)} casos vivos
             </span>
             <img src="/biss-logo.png" alt="BISS" />
             <span className="badge-float">Soledad, Atlántico</span>
@@ -260,19 +185,19 @@ export function Home() {
       <section className="stats-band">
         <div className="stats-grid">
           <div className="stat-big">
-            <div className="n">{formatNumber(totals?.barrios_total ?? barrios.data?.length ?? 211)}</div>
+            <div className="n">{formatNumber(totals?.barrios_total ?? barrios.data?.length ?? 0)}</div>
             <div className="l">Barrios mapeados</div>
           </div>
           <div className="stat-big critical">
-            <div className="n">{formatNumber(totals?.casos_criticos ?? 23)}</div>
+            <div className="n">{formatNumber(totals?.casos_criticos ?? 0)}</div>
             <div className="l">Casos críticos</div>
           </div>
           <div className="stat-big progress">
-            <div className="n">{formatNumber(totals?.casos_progreso ?? 64)}</div>
+            <div className="n">{formatNumber(totals?.casos_progreso ?? 0)}</div>
             <div className="l">En gestión</div>
           </div>
           <div className="stat-big resolved">
-            <div className="n">{formatNumber(totals?.casos_resueltos ?? 55)}</div>
+            <div className="n">{formatNumber(totals?.casos_resueltos ?? 0)}</div>
             <div className="l">Resueltos</div>
           </div>
         </div>
@@ -596,38 +521,73 @@ export function Home() {
               para entrar.
             </p>
           </div>
-          <div className="barrios-grid">
-            {capitulosVisibles.map((b) => (
-              <a
-                key={b.slug}
-                className="barrio-card"
-                href={`/capitulo/${b.slug}`}
-                onClick={(e) => e.preventDefault()}
+          {capitulosVisibles.length === 0 ? (
+            <div
+              style={{
+                padding: '36px 24px',
+                textAlign: 'center',
+                background: 'var(--surface-sunken)',
+                borderRadius: 16,
+                border: '1px dashed var(--border)',
+                maxWidth: 720,
+                margin: '0 auto',
+              }}
+            >
+              <h3 style={{ margin: '0 0 8px', fontSize: 18 }}>
+                Aún no hay bitácoras abiertas.
+              </h3>
+              <p
+                style={{
+                  margin: '0 0 18px',
+                  color: 'var(--ink-soft)',
+                  fontSize: 14,
+                  lineHeight: 1.5,
+                }}
               >
-                <div
-                  className="barrio-cover"
-                  style={b.cover ? { backgroundImage: b.cover } : undefined}
+                Cuando un vecino reporta el primer caso de su barrio, abrimos un capítulo público.
+                Sé tú quien escriba la primera página.
+              </p>
+              <button
+                type="button"
+                className="btn btn-primary btn-sm"
+                onClick={() => openFlow('reportar')}
+              >
+                <Megaphone size={14} /> Reportar el primer caso
+              </button>
+            </div>
+          ) : (
+            <div className="barrios-grid">
+              {capitulosVisibles.map((b) => (
+                <Link
+                  key={b.slug}
+                  className="barrio-card"
+                  to={`/capitulo/${b.slug}`}
                 >
-                  <span className="zone-chip">{b.zona}</span>
-                </div>
-                <div className="barrio-body">
-                  <h3>{b.nombre}</h3>
-                  {b.resumen && <p>{b.resumen}</p>}
-                  <div className="barrio-stats">
-                    {b.criticos > 0 && (
-                      <span className="badge badge-critical">{b.criticos} críticos</span>
-                    )}
-                    {b.progreso > 0 && (
-                      <span className="badge badge-progress">{b.progreso} en gestión</span>
-                    )}
-                    {b.resueltos > 0 && (
-                      <span className="badge badge-resolved">{b.resueltos} resueltos</span>
-                    )}
+                  <div
+                    className="barrio-cover"
+                    style={b.cover ? { backgroundImage: b.cover } : undefined}
+                  >
+                    <span className="zone-chip">{b.zona}</span>
                   </div>
-                </div>
-              </a>
-            ))}
-          </div>
+                  <div className="barrio-body">
+                    <h3>{b.nombre}</h3>
+                    {b.resumen && <p>{b.resumen}</p>}
+                    <div className="barrio-stats">
+                      {b.criticos > 0 && (
+                        <span className="badge badge-critical">{b.criticos} críticos</span>
+                      )}
+                      {b.progreso > 0 && (
+                        <span className="badge badge-progress">{b.progreso} en gestión</span>
+                      )}
+                      {b.resueltos > 0 && (
+                        <span className="badge badge-resolved">{b.resueltos} resueltos</span>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -653,6 +613,17 @@ export function Home() {
                 también.
               </p>
               <div className="sig">Kevin Balvuena</div>
+              <a
+                className="kevin-ig"
+                href="https://www.instagram.com/kevinbalvuenav?igsh=MWU0ZDNyNHptYm41Yw=="
+                target="_blank"
+                rel="noreferrer noopener"
+                aria-label="Instagram de Kevin Balvuena"
+              >
+                <Instagram style={{ width: 14, height: 14 }} />
+                @kevinbalvuenab
+              </a>
+              <br></br>
               <span
                 style={{
                   fontSize: 12,

@@ -109,8 +109,8 @@ export function BarrioMapPicker({ lat, lng, nombre, onChange, neighbors }: Barri
       const icon = L.divIcon({
         className: 'pin-hito-marker',
         html: `<div class="pin-hito" style="opacity:0.55; background:#9AA3B2"></div>`,
-        iconSize: [20, 20],
-        iconAnchor: [10, 10],
+        iconSize: [12, 12],
+        iconAnchor: [6, 6],
       });
       const m = L.marker([n.lat, n.lng], { icon, opacity: 0.7, interactive: false });
       m.bindTooltip(n.nombre, { direction: 'top', offset: [0, -8], className: 'biss-map-tooltip' });

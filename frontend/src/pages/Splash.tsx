@@ -70,43 +70,27 @@ export function Splash() {
         </div>
 
         <div className="page-right">
-          <div className="toc-head">Índice de capítulos abiertos</div>
-          <h2 className="toc-title">Lo que se está moviendo.</h2>
-          <div className="toc-list">
-            <div className="toc-row">
-              <span className="dot" style={{ background: 'var(--state-critical)' }} />
-              <span className="name">Soledad 2000</span>
-              <span className="pg">cap. 01</span>
-              <div className="state">23 casos · 3 críticos · zona occidental</div>
+          <div className="toc-head">Página en blanco · cap. 01</div>
+          <h2 className="toc-title">La primera línea la escribes tú.</h2>
+          <div className="intro-body">
+            <p>
+              Soledad no tiene un libro que cuente lo que pasa en sus calles. Tampoco un lugar donde
+              cada vecino pueda firmar lo que ve y lo que necesita.
+            </p>
+            <p>
+              Hoy, este libro abre su primera página. Lo que escribas aquí queda. Cuando se mueva,
+              lo verás. Cuando no, también.
+            </p>
+            <div className="pull">
+              Tu calle, tu barrio, tu testimonio. Cada folio firmado es una página más.
             </div>
-            <div className="toc-row">
-              <span className="dot" style={{ background: 'var(--state-progress)' }} />
-              <span className="name">Don Bosco</span>
-              <span className="pg">cap. 02</span>
-              <div className="state">19 casos · 9 en gestión</div>
-            </div>
-            <div className="toc-row">
-              <span className="dot" style={{ background: 'var(--state-critical)' }} />
-              <span className="name">La Candelaria</span>
-              <span className="pg">cap. 03</span>
-              <div className="state">14 casos · 4 críticos · oriental</div>
-            </div>
-            <div className="toc-row">
-              <span className="dot" style={{ background: 'var(--state-resolved)' }} />
-              <span className="name">El Hipódromo</span>
-              <span className="pg">cap. 04</span>
-              <div className="state">11 casos · 3 resueltos esta semana</div>
-            </div>
-            <div className="toc-row">
-              <span className="dot" style={{ background: 'var(--cat-social)' }} />
-              <span className="name">San Vicente</span>
-              <span className="pg">cap. 06</span>
-              <div className="state">6 casos · comedor reabierto</div>
-            </div>
+            <p>
+              Abre el libro y empieza a contar. <em>Soledad te lee.</em>
+            </p>
           </div>
           <div className="toc-footer-block">
-            <div className="yr">211 barrios · 142 casos vivos</div>
-            <div className="tag">Edición 2026 · escrita por sus vecinos</div>
+            <div className="yr">Edición 2026 · Tomo I</div>
+            <div className="tag">Escrito en tiempo real por sus vecinos</div>
           </div>
           <div className="page-num">— II —</div>
         </div>

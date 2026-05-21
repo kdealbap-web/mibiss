@@ -1,0 +1,1795 @@
+[
+  {
+    "name": "Urbanización El Parque",
+    "lat": 10.931207,
+    "lng": -74.786943,
+    "type": "node",
+    "osm_id": 1596493345,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Ciudad Salitre",
+    "lat": 10.885618,
+    "lng": -74.806798,
+    "type": "node",
+    "osm_id": 2240457444,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "El Concorde",
+    "lat": 10.871263,
+    "lng": -74.777675,
+    "type": "node",
+    "osm_id": 2674569021,
+    "place": "suburb"
+  },
+  {
+    "name": "Carrizal",
+    "lat": 10.936272,
+    "lng": -74.807659,
+    "type": "node",
+    "osm_id": 4052208593,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Ciudadela 20 de Julio",
+    "lat": 10.928447,
+    "lng": -74.805818,
+    "type": "node",
+    "osm_id": 4052211292,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Las Cayenas",
+    "lat": 10.924204,
+    "lng": -74.809599,
+    "type": "node",
+    "osm_id": 4052214689,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Los Girasoles",
+    "lat": 10.924862,
+    "lng": -74.804995,
+    "type": "node",
+    "osm_id": 4052214690,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Sevilla",
+    "lat": 10.922474,
+    "lng": -74.800269,
+    "type": "node",
+    "osm_id": 4052214742,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Buenos Aires",
+    "lat": 10.94081,
+    "lng": -74.799207,
+    "type": "node",
+    "osm_id": 4052226686,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Cuchilla de los Angeles",
+    "lat": 10.918514,
+    "lng": -74.807471,
+    "type": "node",
+    "osm_id": 5726025154,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Estadio II",
+    "lat": 10.920721,
+    "lng": -74.80399,
+    "type": "node",
+    "osm_id": 7998678485,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Urbanización Lluvia de Oro",
+    "lat": 10.878382,
+    "lng": -74.803904,
+    "type": "node",
+    "osm_id": 8186917749,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Ciudad Belén I",
+    "lat": 10.875257,
+    "lng": -74.805138,
+    "type": "node",
+    "osm_id": 8194883459,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Ciudad Caribe II",
+    "lat": 10.878648,
+    "lng": -74.80132,
+    "type": "node",
+    "osm_id": 8194948641,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Ciudad del Puerto",
+    "lat": 10.917663,
+    "lng": -74.781916,
+    "type": "node",
+    "osm_id": 8202279306,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "La ilusión",
+    "lat": 10.915342,
+    "lng": -74.778434,
+    "type": "node",
+    "osm_id": 8202820388,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "El Esfuerzo",
+    "lat": 10.881867,
+    "lng": -74.770379,
+    "type": "node",
+    "osm_id": 8203895206,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Gladis",
+    "lat": 10.882956,
+    "lng": -74.771371,
+    "type": "node",
+    "osm_id": 8203895207,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Anita",
+    "lat": 10.881949,
+    "lng": -74.772744,
+    "type": "node",
+    "osm_id": 8203895208,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Hacienda San Antonio",
+    "lat": 10.884803,
+    "lng": -74.809747,
+    "type": "node",
+    "osm_id": 8207750858,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Urbanización Maria de Los Angeles",
+    "lat": 10.907253,
+    "lng": -74.807618,
+    "type": "node",
+    "osm_id": 8207996755,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Ciudad Camelot",
+    "lat": 10.898045,
+    "lng": -74.806029,
+    "type": "node",
+    "osm_id": 8222324399,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Ciudad de Los Sueños",
+    "lat": 10.901481,
+    "lng": -74.80834,
+    "type": "node",
+    "osm_id": 8222324400,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Portal del Jordan",
+    "lat": 10.902007,
+    "lng": -74.809417,
+    "type": "node",
+    "osm_id": 8222324401,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Los Loteros",
+    "lat": 10.901285,
+    "lng": -74.803523,
+    "type": "node",
+    "osm_id": 8231698246,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Ciudad Caribe",
+    "lat": 10.902999,
+    "lng": -74.80423,
+    "type": "node",
+    "osm_id": 8231698264,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "El Manantial",
+    "lat": 10.904802,
+    "lng": -74.807219,
+    "type": "node",
+    "osm_id": 8256277921,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Ciudad Transmetro",
+    "lat": 10.904371,
+    "lng": -74.803049,
+    "type": "node",
+    "osm_id": 8256277922,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "La Central",
+    "lat": 10.89005,
+    "lng": -74.808094,
+    "type": "node",
+    "osm_id": 8256277925,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Los Campanos II",
+    "lat": 10.909872,
+    "lng": -74.809295,
+    "type": "node",
+    "osm_id": 8256277930,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Río Verde",
+    "lat": 10.908153,
+    "lng": -74.808132,
+    "type": "node",
+    "osm_id": 8259996094,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Angelita",
+    "lat": 10.911889,
+    "lng": -74.809815,
+    "type": "node",
+    "osm_id": 8281512228,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Los Cedros",
+    "lat": 10.915672,
+    "lng": -74.807776,
+    "type": "node",
+    "osm_id": 8281757250,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Murillo",
+    "lat": 10.893714,
+    "lng": -74.803328,
+    "type": "node",
+    "osm_id": 8332267500,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villas del Portal",
+    "lat": 10.898355,
+    "lng": -74.801776,
+    "type": "node",
+    "osm_id": 8332283501,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Terranova II",
+    "lat": 10.903062,
+    "lng": -74.800254,
+    "type": "node",
+    "osm_id": 8332318645,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Estadio",
+    "lat": 10.91264,
+    "lng": -74.80178,
+    "type": "node",
+    "osm_id": 8335560213,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "La Septima",
+    "lat": 10.918881,
+    "lng": -74.804288,
+    "type": "node",
+    "osm_id": 8345833316,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "El Oasis",
+    "lat": 10.911379,
+    "lng": -74.775413,
+    "type": "node",
+    "osm_id": 8347109756,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Las Moras IV",
+    "lat": 10.92009,
+    "lng": -74.801164,
+    "type": "node",
+    "osm_id": 8359488956,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Jardin de Villa Estadio",
+    "lat": 10.920438,
+    "lng": -74.805962,
+    "type": "node",
+    "osm_id": 8359515086,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Los Robles IV",
+    "lat": 10.921077,
+    "lng": -74.807549,
+    "type": "node",
+    "osm_id": 8359519796,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Cabica",
+    "lat": 10.887279,
+    "lng": -74.742552,
+    "type": "node",
+    "osm_id": 8576407831,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Volver a Empezar",
+    "lat": 10.944644,
+    "lng": -74.767679,
+    "type": "node",
+    "osm_id": 8633137900,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Primero de Mayo",
+    "lat": 10.943313,
+    "lng": -74.764721,
+    "type": "node",
+    "osm_id": 8635724745,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Las Ferias",
+    "lat": 10.943765,
+    "lng": -74.769235,
+    "type": "node",
+    "osm_id": 8635724746,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Brisas del Rio",
+    "lat": 10.944748,
+    "lng": -74.760446,
+    "type": "node",
+    "osm_id": 8635724902,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "San Vicente",
+    "lat": 10.890849,
+    "lng": -74.786973,
+    "type": "node",
+    "osm_id": 8756710866,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Bella Jerusalen",
+    "lat": 10.889547,
+    "lng": -74.786638,
+    "type": "node",
+    "osm_id": 8756710910,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Esther",
+    "lat": 10.892239,
+    "lng": -74.788473,
+    "type": "node",
+    "osm_id": 8774952173,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Prado Soledad II",
+    "lat": 10.894846,
+    "lng": -74.785439,
+    "type": "node",
+    "osm_id": 8774952211,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Altos de Jesus",
+    "lat": 10.893487,
+    "lng": -74.786334,
+    "type": "node",
+    "osm_id": 8810249800,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Martha Gisella",
+    "lat": 10.896592,
+    "lng": -74.788249,
+    "type": "node",
+    "osm_id": 8810272938,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Tajamares 2",
+    "lat": 10.912133,
+    "lng": -74.780603,
+    "type": "node",
+    "osm_id": 8891457190,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Mesolandia",
+    "lat": 10.886889,
+    "lng": -74.766689,
+    "type": "node",
+    "osm_id": 9080794478,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Ciudad Belén II",
+    "lat": 10.876081,
+    "lng": -74.807297,
+    "type": "node",
+    "osm_id": 10090214419,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Portal de David",
+    "lat": 10.879855,
+    "lng": -74.80873,
+    "type": "node",
+    "osm_id": 10090228063,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Lorena",
+    "lat": 10.878299,
+    "lng": -74.809274,
+    "type": "node",
+    "osm_id": 10090228064,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Altos de las Lomas",
+    "lat": 10.877043,
+    "lng": -74.80969,
+    "type": "node",
+    "osm_id": 10090228065,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Nuevo Éxito",
+    "lat": 10.923792,
+    "lng": -74.791358,
+    "type": "node",
+    "osm_id": 10605368646,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "La Victoria",
+    "lat": 10.943224,
+    "lng": -74.771346,
+    "type": "node",
+    "osm_id": 10748975358,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Elif",
+    "lat": 10.895425,
+    "lng": -74.784506,
+    "type": "node",
+    "osm_id": 10951896563,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Los Campanos III",
+    "lat": 10.909363,
+    "lng": -74.807934,
+    "type": "node",
+    "osm_id": 10951931364,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Ciudad Cortizos",
+    "lat": 10.901544,
+    "lng": -74.776351,
+    "type": "node",
+    "osm_id": 11283978909,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Barrio Ríos de Agua Viva",
+    "lat": 10.926522,
+    "lng": -74.786433,
+    "type": "node",
+    "osm_id": 11384192872,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "San Juan Eudes",
+    "lat": 10.907029,
+    "lng": -74.774685,
+    "type": "node",
+    "osm_id": 11388864344,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Katanga",
+    "lat": 10.919123,
+    "lng": -74.793533,
+    "type": "node",
+    "osm_id": 11443166294,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Katanga II",
+    "lat": 10.920282,
+    "lng": -74.791022,
+    "type": "node",
+    "osm_id": 11443166295,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Urbanización Las Moras",
+    "lat": 10.9187,
+    "lng": -74.796923,
+    "type": "node",
+    "osm_id": 11443166296,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Las Moras I",
+    "lat": 10.914947,
+    "lng": -74.797449,
+    "type": "node",
+    "osm_id": 11443166297,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Muvdi",
+    "lat": 10.922764,
+    "lng": -74.788847,
+    "type": "node",
+    "osm_id": 11443166298,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Zambrano",
+    "lat": 10.919909,
+    "lng": -74.788539,
+    "type": "node",
+    "osm_id": 11443166299,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Lozano",
+    "lat": 10.917103,
+    "lng": -74.79022,
+    "type": "node",
+    "osm_id": 11443166300,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Las Colonias",
+    "lat": 10.914874,
+    "lng": -74.792027,
+    "type": "node",
+    "osm_id": 11443166301,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Viola",
+    "lat": 10.915262,
+    "lng": -74.793962,
+    "type": "node",
+    "osm_id": 11443166302,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa de Aragón",
+    "lat": 10.915479,
+    "lng": -74.795478,
+    "type": "node",
+    "osm_id": 11443166303,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Bella Murillo",
+    "lat": 10.912769,
+    "lng": -74.798177,
+    "type": "node",
+    "osm_id": 11443166304,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Los Rosales",
+    "lat": 10.91001,
+    "lng": -74.797597,
+    "type": "node",
+    "osm_id": 11443166305,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Urbano Normandía Norte",
+    "lat": 10.91934,
+    "lng": -74.785384,
+    "type": "node",
+    "osm_id": 11443166306,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Urbanización Normandía",
+    "lat": 10.914414,
+    "lng": -74.785544,
+    "type": "node",
+    "osm_id": 11443166307,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Nuevo Milenio",
+    "lat": 10.906343,
+    "lng": -74.798867,
+    "type": "node",
+    "osm_id": 11443166308,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "La Inmaculada",
+    "lat": 10.907008,
+    "lng": -74.795207,
+    "type": "node",
+    "osm_id": 11443166309,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Ciudadela Metropolitana",
+    "lat": 10.902909,
+    "lng": -74.789138,
+    "type": "node",
+    "osm_id": 11443166310,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Soledad 2000",
+    "lat": 10.906682,
+    "lng": -74.78552,
+    "type": "node",
+    "osm_id": 11443166311,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Vista Hermosa",
+    "lat": 10.940509,
+    "lng": -74.775744,
+    "type": "node",
+    "osm_id": 11443166312,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Costa Hermosa",
+    "lat": 10.93764,
+    "lng": -74.773542,
+    "type": "node",
+    "osm_id": 11443166313,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Salamanca",
+    "lat": 10.931884,
+    "lng": -74.769995,
+    "type": "node",
+    "osm_id": 11443166314,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "El Tucán",
+    "lat": 10.931287,
+    "lng": -74.776395,
+    "type": "node",
+    "osm_id": 11443166315,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "El Río",
+    "lat": 10.932081,
+    "lng": -74.774257,
+    "type": "node",
+    "osm_id": 11443166316,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Hipódromo",
+    "lat": 10.928117,
+    "lng": -74.769913,
+    "type": "node",
+    "osm_id": 11443166317,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "El Triunfo",
+    "lat": 10.929859,
+    "lng": -74.766437,
+    "type": "node",
+    "osm_id": 11443166318,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "El Porvenir",
+    "lat": 10.926863,
+    "lng": -74.762639,
+    "type": "node",
+    "osm_id": 11443166319,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Centenario",
+    "lat": 10.924697,
+    "lng": -74.766842,
+    "type": "node",
+    "osm_id": 11443166320,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "El Ferrocarril",
+    "lat": 10.922289,
+    "lng": -74.772585,
+    "type": "node",
+    "osm_id": 11443166321,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "San Antonio",
+    "lat": 10.914369,
+    "lng": -74.769768,
+    "type": "node",
+    "osm_id": 11443166322,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Pumarejo",
+    "lat": 10.91361,
+    "lng": -74.766822,
+    "type": "node",
+    "osm_id": 11443166323,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Barrio Centro",
+    "lat": 10.916141,
+    "lng": -74.763215,
+    "type": "node",
+    "osm_id": 11443166324,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Cruz de Mayo",
+    "lat": 10.922768,
+    "lng": -74.762206,
+    "type": "node",
+    "osm_id": 11443166325,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "La Loma",
+    "lat": 10.913073,
+    "lng": -74.764322,
+    "type": "node",
+    "osm_id": 11443166326,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "La Esperanza",
+    "lat": 10.909497,
+    "lng": -74.765443,
+    "type": "node",
+    "osm_id": 11443166327,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Manuela Beltrán",
+    "lat": 10.905315,
+    "lng": -74.779509,
+    "type": "node",
+    "osm_id": 11443166328,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Montecarmelo",
+    "lat": 10.90249,
+    "lng": -74.781974,
+    "type": "node",
+    "osm_id": 11443166329,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Ciudad Bolívar",
+    "lat": 10.903884,
+    "lng": -74.783992,
+    "type": "node",
+    "osm_id": 11443166330,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Adela I",
+    "lat": 10.901866,
+    "lng": -74.779714,
+    "type": "node",
+    "osm_id": 11443166331,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Adela II",
+    "lat": 10.900766,
+    "lng": -74.781016,
+    "type": "node",
+    "osm_id": 11443166332,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Los Cusules",
+    "lat": 10.903389,
+    "lng": -74.796265,
+    "type": "node",
+    "osm_id": 11443166334,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Carmen I",
+    "lat": 10.900821,
+    "lng": -74.798114,
+    "type": "node",
+    "osm_id": 11443166335,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Carmen II",
+    "lat": 10.896822,
+    "lng": -74.800524,
+    "type": "node",
+    "osm_id": 11443166336,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Las Cometas",
+    "lat": 10.89396,
+    "lng": -74.796115,
+    "type": "node",
+    "osm_id": 11443166338,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Karla",
+    "lat": 10.896853,
+    "lng": -74.794387,
+    "type": "node",
+    "osm_id": 11443166339,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Ciudad Paraíso",
+    "lat": 10.886384,
+    "lng": -74.79236,
+    "type": "node",
+    "osm_id": 11443166340,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Sol",
+    "lat": 10.892122,
+    "lng": -74.792119,
+    "type": "node",
+    "osm_id": 11443166341,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa María",
+    "lat": 10.892695,
+    "lng": -74.794752,
+    "type": "node",
+    "osm_id": 11443166342,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "La Candelaria I",
+    "lat": 10.8932,
+    "lng": -74.80175,
+    "type": "node",
+    "osm_id": 11443166343,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "La Candelaria II",
+    "lat": 10.892052,
+    "lng": -74.800112,
+    "type": "node",
+    "osm_id": 11443166344,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Prado Soledad",
+    "lat": 10.897873,
+    "lng": -74.785015,
+    "type": "node",
+    "osm_id": 11443166345,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Renacer",
+    "lat": 10.899262,
+    "lng": -74.778022,
+    "type": "node",
+    "osm_id": 11443166346,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Monik",
+    "lat": 10.898464,
+    "lng": -74.781305,
+    "type": "node",
+    "osm_id": 11443166347,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Viñas del Rey",
+    "lat": 10.896228,
+    "lng": -74.779339,
+    "type": "node",
+    "osm_id": 11443166348,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Zarabanda",
+    "lat": 10.89892,
+    "lng": -74.780602,
+    "type": "node",
+    "osm_id": 11443166349,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa del Rey",
+    "lat": 10.893641,
+    "lng": -74.783974,
+    "type": "node",
+    "osm_id": 11443166351,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Las Colonias II",
+    "lat": 10.91324,
+    "lng": -74.789896,
+    "type": "node",
+    "osm_id": 11443166352,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "La Fe",
+    "lat": 10.910244,
+    "lng": -74.778254,
+    "type": "node",
+    "osm_id": 11443166353,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "La Bonanza",
+    "lat": 10.908391,
+    "lng": -74.779469,
+    "type": "node",
+    "osm_id": 11443166354,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Las Nubes",
+    "lat": 10.910142,
+    "lng": -74.782634,
+    "type": "node",
+    "osm_id": 11443166355,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Urbanización Puerta de Oro",
+    "lat": 10.912061,
+    "lng": -74.793648,
+    "type": "node",
+    "osm_id": 11443166356,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Soledad",
+    "lat": 10.911505,
+    "lng": -74.791524,
+    "type": "node",
+    "osm_id": 11443166357,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Antonio Nariño",
+    "lat": 10.911074,
+    "lng": -74.789103,
+    "type": "node",
+    "osm_id": 11443166358,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Rosa",
+    "lat": 10.909044,
+    "lng": -74.78984,
+    "type": "node",
+    "osm_id": 11443166359,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Estefany",
+    "lat": 10.91074,
+    "lng": -74.786768,
+    "type": "node",
+    "osm_id": 11443166360,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Monaco",
+    "lat": 10.910685,
+    "lng": -74.784715,
+    "type": "node",
+    "osm_id": 11443166361,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Nueva Jerusalén",
+    "lat": 10.910323,
+    "lng": -74.783568,
+    "type": "node",
+    "osm_id": 11443166362,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Valentina",
+    "lat": 10.897604,
+    "lng": -74.793761,
+    "type": "node",
+    "osm_id": 11443166363,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Altos de la Metropolitana",
+    "lat": 10.899397,
+    "lng": -74.792232,
+    "type": "node",
+    "osm_id": 11443166364,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Bello Horizonte",
+    "lat": 10.900328,
+    "lng": -74.795205,
+    "type": "node",
+    "osm_id": 11443166365,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "La Farruca",
+    "lat": 10.912122,
+    "lng": -74.784125,
+    "type": "node",
+    "osm_id": 11443166366,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Merly",
+    "lat": 10.914819,
+    "lng": -74.788726,
+    "type": "node",
+    "osm_id": 11443166367,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Los Fundadores",
+    "lat": 10.917847,
+    "lng": -74.788574,
+    "type": "node",
+    "osm_id": 11443166368,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Portal de Las Moras",
+    "lat": 10.918322,
+    "lng": -74.786489,
+    "type": "node",
+    "osm_id": 11443242869,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Severa",
+    "lat": 10.932347,
+    "lng": -74.789986,
+    "type": "node",
+    "osm_id": 11443242871,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Cecilia",
+    "lat": 10.929845,
+    "lng": -74.791373,
+    "type": "node",
+    "osm_id": 11443242872,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa del Carmen",
+    "lat": 10.929011,
+    "lng": -74.79368,
+    "type": "node",
+    "osm_id": 11443242873,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Urbanización Las Gaviotas",
+    "lat": 10.925842,
+    "lng": -74.79511,
+    "type": "node",
+    "osm_id": 11443242874,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Urbanización La Arboleda",
+    "lat": 10.926023,
+    "lng": -74.783544,
+    "type": "node",
+    "osm_id": 11443242875,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Las Trinitarias",
+    "lat": 10.922248,
+    "lng": -74.796003,
+    "type": "node",
+    "osm_id": 11443242876,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Las Palmeras",
+    "lat": 10.934714,
+    "lng": -74.789827,
+    "type": "node",
+    "osm_id": 11495598866,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Los Laureles",
+    "lat": 10.933176,
+    "lng": -74.791736,
+    "type": "node",
+    "osm_id": 11495598867,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "El Milagro",
+    "lat": 10.933534,
+    "lng": -74.793303,
+    "type": "node",
+    "osm_id": 11495598868,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa del Carmen Sector Barranquilla",
+    "lat": 10.931641,
+    "lng": -74.793559,
+    "type": "node",
+    "osm_id": 11495600969,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Bella Arena",
+    "lat": 10.932227,
+    "lng": -74.796822,
+    "type": "node",
+    "osm_id": 11495600971,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Blanca",
+    "lat": 10.933618,
+    "lng": -74.797766,
+    "type": "node",
+    "osm_id": 11495600972,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "San Nicolás",
+    "lat": 10.937178,
+    "lng": -74.796092,
+    "type": "node",
+    "osm_id": 11495600973,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "José Antonio Galán",
+    "lat": 10.93682,
+    "lng": -74.791286,
+    "type": "node",
+    "osm_id": 11495600974,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Las Dunas",
+    "lat": 10.938211,
+    "lng": -74.792101,
+    "type": "node",
+    "osm_id": 11495600975,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Universal I",
+    "lat": 10.937069,
+    "lng": -74.787473,
+    "type": "node",
+    "osm_id": 11495600976,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Universal II",
+    "lat": 10.940591,
+    "lng": -74.785791,
+    "type": "node",
+    "osm_id": 11495600977,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Limón",
+    "lat": 10.942278,
+    "lng": -74.787323,
+    "type": "node",
+    "osm_id": 11495600978,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "La Magdalena",
+    "lat": 10.942762,
+    "lng": -74.794605,
+    "type": "node",
+    "osm_id": 11495600981,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Simón Bolívar",
+    "lat": 10.944283,
+    "lng": -74.777216,
+    "type": "node",
+    "osm_id": 11495600984,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Soluciones Minimas",
+    "lat": 10.942828,
+    "lng": -74.774382,
+    "type": "node",
+    "osm_id": 12150111551,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Sitio Hermoso",
+    "lat": 10.937038,
+    "lng": -74.777872,
+    "type": "node",
+    "osm_id": 12150266734,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "La Rivera",
+    "lat": 10.940724,
+    "lng": -74.770843,
+    "type": "node",
+    "osm_id": 12178544368,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Los Arrayanes",
+    "lat": 10.92891,
+    "lng": -74.77544,
+    "type": "node",
+    "osm_id": 12187304469,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Santa Inés",
+    "lat": 10.932278,
+    "lng": -74.771874,
+    "type": "node",
+    "osm_id": 12190832172,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Salamar",
+    "lat": 10.932225,
+    "lng": -74.76694,
+    "type": "node",
+    "osm_id": 12190951170,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Urbanización La Candelaria",
+    "lat": 10.890672,
+    "lng": -74.790796,
+    "type": "node",
+    "osm_id": 12333416152,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Villa Carmen III",
+    "lat": 10.895194,
+    "lng": -74.800265,
+    "type": "node",
+    "osm_id": 12333455561,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Boulevard Sol Real",
+    "lat": 10.916047,
+    "lng": -74.772349,
+    "type": "node",
+    "osm_id": 12601221767,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Conjunto Residencial Doña Soledad",
+    "lat": 10.90952,
+    "lng": -74.78599,
+    "type": "way",
+    "osm_id": 162320271,
+    "place": "residential"
+  },
+  {
+    "name": "Villa Serena",
+    "lat": 10.937893,
+    "lng": -74.769784,
+    "type": "way",
+    "osm_id": 206712092,
+    "place": "residential"
+  },
+  {
+    "name": "Puerto Tambora",
+    "lat": 10.918761,
+    "lng": -74.781323,
+    "type": "way",
+    "osm_id": 671754292,
+    "place": "residential"
+  },
+  {
+    "name": "Parques de Bolívar Manzana 1",
+    "lat": 10.908176,
+    "lng": -74.773191,
+    "type": "way",
+    "osm_id": 684662884,
+    "place": "residential"
+  },
+  {
+    "name": "Puerto Timbal",
+    "lat": 10.917486,
+    "lng": -74.783997,
+    "type": "way",
+    "osm_id": 690686230,
+    "place": "residential"
+  },
+  {
+    "name": "Parques de Bolívar Manzana 2",
+    "lat": 10.908913,
+    "lng": -74.775569,
+    "type": "way",
+    "osm_id": 697239438,
+    "place": "residential"
+  },
+  {
+    "name": "Villa Linda I",
+    "lat": 10.912376,
+    "lng": -74.797202,
+    "type": "way",
+    "osm_id": 697239439,
+    "place": "residential"
+  },
+  {
+    "name": "Villa Linda II",
+    "lat": 10.912364,
+    "lng": -74.796276,
+    "type": "way",
+    "osm_id": 697239440,
+    "place": "residential"
+  },
+  {
+    "name": "Conjunto Villas del Portal 2",
+    "lat": 10.8985,
+    "lng": -74.802123,
+    "type": "way",
+    "osm_id": 697239448,
+    "place": "residential"
+  },
+  {
+    "name": "Conjunto Villas del Portal 1",
+    "lat": 10.897317,
+    "lng": -74.802213,
+    "type": "way",
+    "osm_id": 697239449,
+    "place": "residential"
+  },
+  {
+    "name": "Palma",
+    "lat": 10.885034,
+    "lng": -74.810311,
+    "type": "way",
+    "osm_id": 697239450,
+    "place": "residential"
+  },
+  {
+    "name": "Nispero I",
+    "lat": 10.886409,
+    "lng": -74.810171,
+    "type": "way",
+    "osm_id": 697239451,
+    "place": "residential"
+  },
+  {
+    "name": "Yarumo",
+    "lat": 10.884676,
+    "lng": -74.809125,
+    "type": "way",
+    "osm_id": 879492162,
+    "place": "residential",
+    "alt_name": "Yarumo"
+  },
+  {
+    "name": "Puerto Millo",
+    "lat": 10.916465,
+    "lng": -74.783558,
+    "type": "way",
+    "osm_id": 881988373,
+    "place": "residential"
+  },
+  {
+    "name": "Puerto Cumbia",
+    "lat": 10.915166,
+    "lng": -74.782968,
+    "type": "way",
+    "osm_id": 881988374,
+    "place": "residential"
+  },
+  {
+    "name": "Puerto Conga",
+    "lat": 10.915658,
+    "lng": -74.781853,
+    "type": "way",
+    "osm_id": 882051232,
+    "place": "residential"
+  },
+  {
+    "name": "Puerto Gaita",
+    "lat": 10.915903,
+    "lng": -74.780125,
+    "type": "way",
+    "osm_id": 882051289,
+    "place": "residential"
+  },
+  {
+    "name": "Puerto Acordeón",
+    "lat": 10.919122,
+    "lng": -74.78419,
+    "type": "way",
+    "osm_id": 882051292,
+    "place": "residential"
+  },
+  {
+    "name": "Puerto Bongoe",
+    "lat": 10.919376,
+    "lng": -74.78332,
+    "type": "way",
+    "osm_id": 882051295,
+    "place": "residential"
+  },
+  {
+    "name": "Puerto Flauta",
+    "lat": 10.920284,
+    "lng": -74.780689,
+    "type": "way",
+    "osm_id": 882051296,
+    "place": "residential"
+  },
+  {
+    "name": "Puerto Armónica",
+    "lat": 10.917856,
+    "lng": -74.779158,
+    "type": "way",
+    "osm_id": 882051298,
+    "place": "residential"
+  },
+  {
+    "name": "Conjunto Alegría",
+    "lat": 10.902433,
+    "lng": -74.807565,
+    "type": "way",
+    "osm_id": 896658326,
+    "place": "residential"
+  },
+  {
+    "name": "Conjunto Felicidad",
+    "lat": 10.900678,
+    "lng": -74.808937,
+    "type": "way",
+    "osm_id": 896658352,
+    "place": "residential"
+  },
+  {
+    "name": "Conjunto Las Acacias",
+    "lat": 10.908139,
+    "lng": -74.802659,
+    "type": "way",
+    "osm_id": 896727377,
+    "place": "residential"
+  },
+  {
+    "name": "Conjunto Residencial Portal de Soledad",
+    "lat": 10.909734,
+    "lng": -74.800395,
+    "type": "way",
+    "osm_id": 896727378,
+    "place": "residential"
+  },
+  {
+    "name": "Caoba",
+    "lat": 10.883737,
+    "lng": -74.807469,
+    "type": "way",
+    "osm_id": 922916519,
+    "place": "residential"
+  },
+  {
+    "name": "Los Manantiales - Tulipán",
+    "lat": 10.902183,
+    "lng": -74.810254,
+    "type": "way",
+    "osm_id": 940623649,
+    "place": "residential"
+  },
+  {
+    "name": "Brisas de Sevilla",
+    "lat": 10.913001,
+    "lng": -74.805408,
+    "type": "way",
+    "osm_id": 940623657,
+    "place": "residential"
+  },
+  {
+    "name": "Conjunto Ventura",
+    "lat": 10.897722,
+    "lng": -74.808385,
+    "type": "way",
+    "osm_id": 941094900,
+    "place": "residential"
+  },
+  {
+    "name": "Bambú",
+    "lat": 10.882806,
+    "lng": -74.808115,
+    "type": "way",
+    "osm_id": 942041815,
+    "place": "residential"
+  },
+  {
+    "name": "Portal del Sol Apartamentos",
+    "lat": 10.924719,
+    "lng": -74.781448,
+    "type": "way",
+    "osm_id": 961172422,
+    "place": "residential"
+  },
+  {
+    "name": "Condominio Las Palmas",
+    "lat": 10.934894,
+    "lng": -74.788382,
+    "type": "way",
+    "osm_id": 975735425,
+    "place": "residential"
+  },
+  {
+    "name": "Conjunto Residencial Villa Linda",
+    "lat": 10.934813,
+    "lng": -74.789055,
+    "type": "way",
+    "osm_id": 975735431,
+    "place": "residential"
+  },
+  {
+    "name": "Puerto Guitarra",
+    "lat": 10.92014,
+    "lng": -74.779047,
+    "type": "way",
+    "osm_id": 983075589,
+    "place": "residential"
+  },
+  {
+    "name": "The Point Soledad",
+    "lat": 10.925499,
+    "lng": -74.780822,
+    "type": "way",
+    "osm_id": 989178732,
+    "place": "residential"
+  },
+  {
+    "name": "Padua Parque Residencial",
+    "lat": 10.913174,
+    "lng": -74.78389,
+    "type": "way",
+    "osm_id": 989200625,
+    "place": "residential"
+  },
+  {
+    "name": "Multifamiliar Sol Caribe",
+    "lat": 10.901885,
+    "lng": -74.784229,
+    "type": "way",
+    "osm_id": 995613127,
+    "place": "residential"
+  },
+  {
+    "name": "Conjunto Residencial Metrocentro",
+    "lat": 10.931023,
+    "lng": -74.800372,
+    "type": "way",
+    "osm_id": 1058335291,
+    "place": "residential"
+  },
+  {
+    "name": "Tcherassi",
+    "lat": 10.934546,
+    "lng": -74.802527,
+    "type": "way",
+    "osm_id": 1060374608,
+    "place": "residential"
+  },
+  {
+    "name": "Portal de Villa Sofía",
+    "lat": 10.937683,
+    "lng": -74.767908,
+    "type": "way",
+    "osm_id": 1067941314,
+    "place": "residential"
+  },
+  {
+    "name": "Villa Sofía",
+    "lat": 10.936803,
+    "lng": -74.768804,
+    "type": "way",
+    "osm_id": 1067941315,
+    "place": "residential"
+  },
+  {
+    "name": "Multifamiliar Los Mangos",
+    "lat": 10.933528,
+    "lng": -74.765701,
+    "type": "way",
+    "osm_id": 1068606049,
+    "place": "residential"
+  },
+  {
+    "name": "Doña Manuela",
+    "lat": 10.896052,
+    "lng": -74.790216,
+    "type": "way",
+    "osm_id": 1114742221,
+    "place": "residential"
+  },
+  {
+    "name": "Parques del Trebol",
+    "lat": 10.899026,
+    "lng": -74.788142,
+    "type": "way",
+    "osm_id": 1114742227,
+    "place": "residential"
+  },
+  {
+    "name": "Naos Developers",
+    "lat": 10.887078,
+    "lng": -74.805951,
+    "type": "way",
+    "osm_id": 1117002827,
+    "place": "residential"
+  },
+  {
+    "name": "Villas del Puerto",
+    "lat": 10.918274,
+    "lng": -74.785393,
+    "type": "way",
+    "osm_id": 1181009438,
+    "place": "residential"
+  },
+  {
+    "name": "Villas del Encanto 2",
+    "lat": 10.913666,
+    "lng": -74.79599,
+    "type": "way",
+    "osm_id": 1185369658,
+    "place": "residential"
+  },
+  {
+    "name": "Villas del Encanto 1",
+    "lat": 10.91398,
+    "lng": -74.795353,
+    "type": "way",
+    "osm_id": 1185369670,
+    "place": "residential"
+  },
+  {
+    "name": "+House Soledad",
+    "lat": 10.917215,
+    "lng": -74.772722,
+    "type": "way",
+    "osm_id": 1193655032,
+    "place": "residential"
+  },
+  {
+    "name": "Jade I",
+    "lat": 10.895808,
+    "lng": -74.786843,
+    "type": "way",
+    "osm_id": 1204558666,
+    "place": "residential"
+  },
+  {
+    "name": "Jade II",
+    "lat": 10.896646,
+    "lng": -74.787009,
+    "type": "way",
+    "osm_id": 1204558670,
+    "place": "residential"
+  },
+  {
+    "name": "Alcazar de Ivesur",
+    "lat": 10.922299,
+    "lng": -74.793778,
+    "type": "way",
+    "osm_id": 1214082596,
+    "place": "residential"
+  },
+  {
+    "name": "Altos de Sole mío",
+    "lat": 10.934109,
+    "lng": -74.783442,
+    "type": "way",
+    "osm_id": 1232662134,
+    "place": "residential"
+  },
+  {
+    "name": "El Parque Sector Barranquilla",
+    "lat": 10.935168,
+    "lng": -74.786757,
+    "type": "way",
+    "osm_id": 1288806119,
+    "place": "neighbourhood"
+  },
+  {
+    "name": "Puerto Campana",
+    "lat": 10.913911,
+    "lng": -74.781231,
+    "type": "way",
+    "osm_id": 1302165940,
+    "place": "residential"
+  },
+  {
+    "name": "Multifamiliar Los Cedros",
+    "lat": 10.927255,
+    "lng": -74.772333,
+    "type": "way",
+    "osm_id": 1316819919,
+    "place": "residential"
+  }
+]

@@ -20,6 +20,9 @@ import {
 
 import { BissMark } from '../brand/BissMark';
 import { useSession, useMiRol, useMiPerfil } from '../../hooks/useMiCuenta';
+import { useSolicitudes } from '../../hooks/useSolicitudes';
+import { useTestimoniosPendientes } from '../../hooks/useTestimonios';
+import { useStatsGlobales } from '../../hooks/useStats';
 import { initials } from '../../lib/format';
 import { supabase } from '../../lib/supabase';
 
@@ -48,7 +51,9 @@ function SideLink({ to, Icon, label, badge, urgent, end, onClick }: SideLinkProp
     >
       <Icon />
       <span style={{ flex: 1 }}>{label}</span>
-      {typeof badge === 'number' && <span className="badge-pill">{badge}</span>}
+      {typeof badge === 'number' && badge > 0 && (
+        <span className="badge-pill">{badge}</span>
+      )}
     </NavLink>
   );
 }
@@ -63,6 +68,13 @@ export function AdminSidebar({ open, onToggle, onNavigate }: AdminSidebarProps) 
   const session = useSession();
   const { data: rol } = useMiRol();
   const { data: perfil } = useMiPerfil();
+  const { data: solicitudes = [] } = useSolicitudes();
+  const { data: testimoniosPend = [] } = useTestimoniosPendientes();
+  const { data: stats } = useStatsGlobales();
+
+  const solicitudesCount = solicitudes.length;
+  const testimoniosCount = testimoniosPend.length;
+  const casosAbiertosCount = (stats?.casos_criticos ?? 0) + (stats?.casos_progreso ?? 0);
 
   const nombreSesion = perfil
     ? `${perfil.nombres} ${perfil.apellidos}`.trim()
@@ -102,9 +114,28 @@ export function AdminSidebar({ open, onToggle, onNavigate }: AdminSidebarProps) 
       <nav className="side-nav">
         <div className="side-nav-section">Operación</div>
         <SideLink to="/admin" Icon={LayoutDashboard} label="Dashboard" onClick={onNavigate} end />
-        <SideLink to="/admin/solicitudes" Icon={Inbox} label="Solicitudes" badge={18} urgent onClick={onNavigate} />
-        <SideLink to="/admin/testimonios" Icon={MessageSquareQuote} label="Testimonios" badge={7} onClick={onNavigate} />
-        <SideLink to="/admin/casos" Icon={FolderOpen} label="Casos abiertos" badge={142} onClick={onNavigate} />
+        <SideLink
+          to="/admin/solicitudes"
+          Icon={Inbox}
+          label="Solicitudes"
+          badge={solicitudesCount}
+          urgent={solicitudesCount > 0}
+          onClick={onNavigate}
+        />
+        <SideLink
+          to="/admin/testimonios"
+          Icon={MessageSquareQuote}
+          label="Testimonios"
+          badge={testimoniosCount}
+          onClick={onNavigate}
+        />
+        <SideLink
+          to="/admin/casos"
+          Icon={FolderOpen}
+          label="Casos abiertos"
+          badge={casosAbiertosCount}
+          onClick={onNavigate}
+        />
 
         <div className="side-nav-section">Contenido</div>
         <SideLink to="/admin/casos" Icon={FileEdit} label="Casos" onClick={onNavigate} />
@@ -119,18 +150,36 @@ export function AdminSidebar({ open, onToggle, onNavigate }: AdminSidebarProps) 
         <SideLink to="/admin/ajustes" Icon={Settings} label="Ajustes" onClick={onNavigate} />
       </nav>
 
-      <div className="side-user" style={{ position: 'relative' }}>
-        <div className="av">{initials(nombreSesion)}</div>
-        <div style={{ flex: 1, minWidth: 0 }}>
+      <div className="side-user">
+        <div
+          className="av"
+          aria-hidden
+          style={{
+            width: 36,
+            height: 36,
+            minWidth: 36,
+            minHeight: 36,
+            flexShrink: 0,
+            flexGrow: 0,
+            borderRadius: '50%',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 13,
+            lineHeight: 1,
+          }}
+        >
+          {initials(nombreSesion)}
+        </div>
+        <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
           <div
             className="name"
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: 6,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
+              minWidth: 0,
+              lineHeight: 1.2,
             }}
           >
             <span
@@ -146,15 +195,34 @@ export function AdminSidebar({ open, onToggle, onNavigate }: AdminSidebarProps) 
                 flexShrink: 0,
               }}
             />
-            {nombreSesion}
+            <span
+              style={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                minWidth: 0,
+              }}
+            >
+              {nombreSesion}
+            </span>
           </div>
-          <div className="role" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+          <div
+            className="role"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 4,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
             {rol === 'superadmin' || rol === 'admin' ? (
-              <Crown style={{ width: 11, height: 11 }} />
+              <Crown style={{ width: 11, height: 11, flexShrink: 0 }} />
             ) : isCms ? (
-              <ShieldIcon style={{ width: 11, height: 11 }} />
+              <ShieldIcon style={{ width: 11, height: 11, flexShrink: 0 }} />
             ) : null}
-            {rolLabel}
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{rolLabel}</span>
           </div>
         </div>
         <button
@@ -167,6 +235,7 @@ export function AdminSidebar({ open, onToggle, onNavigate }: AdminSidebarProps) 
             border: 0,
             width: 30,
             height: 30,
+            minWidth: 30,
             borderRadius: 8,
             color: 'rgba(255,255,255,0.85)',
             cursor: 'pointer',

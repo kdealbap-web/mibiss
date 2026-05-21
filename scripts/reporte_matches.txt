@@ -1,0 +1,226 @@
+═══════════════════════════════════════════════════════════════
+         REPORTE DE MATCHING: BD vs OpenStreetMap
+═══════════════════════════════════════════════════════════════
+
+Total barrios en BD:           204
+Total barrios en OSM/Soledad:  224
+
+✓ Matches confiables:    118  (score >= 0.85)
+⚠ Matches dudosos:        11  (score 0.70-0.85)
+✗ Sin match en OSM:      75  (se quedan con coords OCR)
+
+───────────────────────────────────────────────────────────────
+✓ MATCHES CONFIABLES
+───────────────────────────────────────────────────────────────
+  Altos De Jesus                      → Altos de Jesus                      [1.00]
+  Altos De La Metropolitana           → Altos de la Metropolitana           [1.00]
+  Antonio Nariño                      → Antonio Nariño                      [1.00]
+  Bella Jerusalen                     → Bella Jerusalen                     [1.00]
+  Bella Murillo                       → Bella Murillo                       [1.00]
+  Bello Horizonte                     → Bello Horizonte                     [1.00]
+  Centro                              → Barrio Centro                       [1.00]
+  Ciudad Bolivar                      → Ciudad Bolívar                      [1.00]
+  Ciudad Camelot                      → Ciudad Camelot                      [1.00]
+  Ciudad Caribe                       → Ciudad Caribe                       [1.00]
+  Ciudad Caribe Iv                    → Ciudad Caribe II                    [0.94]
+  Ciudad Paraiso                      → Ciudad Paraíso                      [1.00]
+  Ciudad Salitre                      → Ciudad Salitre                      [1.00]
+  Ciudad Trasnmetro                   → Ciudad Transmetro                   [0.88]
+  Ciudadela Metropolitana             → Ciudadela Metropolitana             [1.00]
+  Costa Hermosa                       → Costa Hermosa                       [1.00]
+  Cruz De Mayo                        → Cruz de Mayo                        [1.00]
+  Cuchilla De Los Angeles             → Cuchilla de los Angeles             [1.00]
+  Doña Manuela                        → Doña Manuela                        [1.00]
+  El Esfuerzo                         → El Esfuerzo                         [1.00]
+  El Ferrocarril                      → El Ferrocarril                      [1.00]
+  El Manantial                        → El Manantial                        [1.00]
+  El Oasis                            → El Oasis                            [1.00]
+  El Porvenir                         → El Porvenir                         [1.00]
+  El Rio                              → El Río                              [1.00]
+  El Triunfo                          → El Triunfo                          [1.00]
+  El Tucan                            → El Tucán                            [1.00]
+  Elparque                            → Urbanización El Parque              [0.89]
+  Jardin De Villa Estadio             → Jardin de Villa Estadio             [1.00]
+  La Arboleda                         → Urbanización La Arboleda            [1.00]
+  La Bonanza                          → La Bonanza                          [1.00]
+  La Candelaria                       → Urbanización La Candelaria          [1.00]
+  La Candelaria I                     → La Candelaria I                     [1.00]
+  La Candelaria Ii                    → La Candelaria II                    [1.00]
+  La Central                          → La Central                          [1.00]
+  La Esperanza                        → La Esperanza                        [1.00]
+  La Farruca                          → La Farruca                          [1.00]
+  La Fe                               → La Fe                               [1.00]
+  La Ilusion                          → La ilusión                          [1.00]
+  La Inmaculada                       → La Inmaculada                       [1.00]
+  La Loma                             → La Loma                             [1.00]
+  La Rivera                           → La Rivera                           [1.00]
+  La Victoria                         → La Victoria                         [1.00]
+  Las Colonias                        → Las Colonias                        [1.00]
+  Las Colonias Ii                     → Las Colonias II                     [1.00]
+  Las Cometas                         → Las Cometas                         [1.00]
+  Las Ferias                          → Las Ferias                          [1.00]
+  Las Gaviotas                        → Urbanización Las Gaviotas           [1.00]
+  Las Nubes                           → Las Nubes                           [1.00]
+  Las Trinitarias                     → Las Trinitarias                     [1.00]
+  Los Arayanes                        → Los Arrayanes                       [0.92]
+  Los Cedros                          → Los Cedros                          [1.00]
+  Los Cusules                         → Los Cusules                         [1.00]
+  Los Fundadores                      → Los Fundadores                      [1.00]
+  Los Loteros                         → Los Loteros                         [1.00]
+  Los Robles Iv                       → Los Robles IV                       [1.00]
+  Los Rosales                         → Los Rosales                         [1.00]
+  Manuela Beltran                     → Manuela Beltrán                     [1.00]
+  Maria De Los Angeles                → Urbanización Maria de Los Angeles   [1.00]
+  Martha Gisella                      → Martha Gisella                      [1.00]
+  Montecarmelo                        → Montecarmelo                        [1.00]
+  Normandia                           → Urbanización Normandía              [1.00]
+  Nueva Jerusalen                     → Nueva Jerusalén                     [1.00]
+  Nuevo Milenio                       → Nuevo Milenio                       [1.00]
+  Portal De Jordan                    → Portal del Jordan                   [0.94]
+  Portal De Las Moras                 → Portal de Las Moras                 [1.00]
+  Prado Soledad Iii                   → Prado Soledad II                    [0.94]
+  Primero De Mayo                     → Primero de Mayo                     [1.00]
+  Pumarejo                            → Pumarejo                            [1.00]
+  Renacer                             → Renacer                             [1.00]
+  Rios De Agua Viva                   → Barrio Ríos de Agua Viva            [1.00]
+  Salamanca                           → Salamanca                           [1.00]
+  San Antonio                         → San Antonio                         [1.00]
+  San Juan Eudes                      → San Juan Eudes                      [1.00]
+  San Vicente                         → San Vicente                         [1.00]
+  Sitio Hermoso                       → Sitio Hermoso                       [1.00]
+  Soluciones Minimas                  → Soluciones Minimas                  [1.00]
+  Terranova Ii                        → Terranova II                        [1.00]
+  Urb. Las Moras                      → Urbanización Las Moras              [1.00]
+  Villa Adela I                       → Villa Adela I                       [1.00]
+  Villa Adela Ii                      → Villa Adela II                      [1.00]
+  Villa Angelita                      → Villa Angelita                      [1.00]
+  Villa Anita                         → Villa Anita                         [1.00]
+  Villa Carmen I                      → Villa Carmen I                      [1.00]
+  Villa Carmen Ii                     → Villa Carmen II                     [1.00]
+  Villa Cecilia                       → Villa Cecilia                       [1.00]
+  Villa De Aragon                     → Villa de Aragón                     [1.00]
+  Villa Del Carmen                    → Villa del Carmen                    [1.00]
+  Villa Del Rey                       → Villa del Rey                       [1.00]
+  Villa Estadio                       → Villa Estadio                       [1.00]
+  Villa Estadio Ii                    → Villa Estadio II                    [1.00]
+  Villa Estefany                      → Villa Estefany                      [1.00]
+  Villa Esther                        → Villa Esther                        [1.00]
+  Villa Gladis                        → Villa Gladis                        [1.00]
+  Villa Katanga                       → Villa Katanga                       [1.00]
+  Villa Katanga Ii                    → Villa Katanga II                    [1.00]
+  Villa Las Moras I                   → Villa Las Moras I                   [1.00]
+  Villa Linda I                       → Villa Linda I                       [1.00]
+  Villa Lozano                        → Villa Lozano                        [1.00]
+  Villa Maria                         → Villa María                         [1.00]
+  Villa Merly                         → Villa Merly                         [1.00]
+  Villa Monaco                        → Villa Monaco                        [1.00]
+  Villa Monika                        → Villa Monik                         [0.92]
+  Villa Murillo                       → Villa Murillo                       [1.00]
+  Villa Muvdi                         → Villa Muvdi                         [1.00]
+  Villa Rosa                          → Villa Rosa                          [1.00]
+  Villa Salamar                       → Villa Salamar                       [1.00]
+  Villa Severa                        → Villa Severa                        [1.00]
+  Villa Sevilla                       → Villa Sevilla                       [1.00]
+  Villa Sofia                         → Villa Sofía                         [1.00]
+  Villa Sol                           → Villa Sol                           [1.00]
+  Villa Soledad                       → Villa Soledad                       [1.00]
+  Villa Valentina                     → Villa Valentina                     [1.00]
+  Villa Viola                         → Villa Viola                         [1.00]
+  Villa Zambrano                      → Villa Zambrano                      [1.00]
+  Viñas Del Rey                       → Viñas del Rey                       [1.00]
+  Vista Hermosa                       → Vista Hermosa                       [1.00]
+  Zarabanda                           → Zarabanda                           [1.00]
+
+───────────────────────────────────────────────────────────────
+⚠ MATCHES DUDOSOS (revisar manualmente)
+───────────────────────────────────────────────────────────────
+  Altos De Los Robles                 → Altos de las Lomas                  [0.74]
+  Altos De Sevilla                    → Brisas de Sevilla                   [0.71]
+  Ciudad Del Parque                   → Ciudad del Puerto                   [0.71]
+  El Centenario                       → Centenario                          [0.77]
+  El Hipodromo                        → Hipódromo                           [0.75]
+  La Puerta De Oro                    → Urbanización Puerta de Oro          [0.81]
+  Los Campanos                        → Los Campanos II                     [0.80]
+  Prado De Soledad                    → Prado Soledad                       [0.81]
+  Villa Campanos Ii                   → Los Campanos III                    [0.71]
+  Villa Karla I                       → Villa Karla                         [0.85]
+  Villa Santa                         → Villa Blanca                        [0.75]
+
+───────────────────────────────────────────────────────────────
+✗ SIN MATCH EN OSM (se quedan con coordenadas del OCR)
+───────────────────────────────────────────────────────────────
+  12 De Octubre
+  16 De Junio
+  20 De Julio
+  23 De Noviembre
+  7 De Agosto
+  Aeropuerto
+  Altos De La Villa
+  Altos De Los Almendros
+  Cachimbero
+  Calle De Las Flores
+  Ciudad Bonita
+  Ciudad Fallace
+  Conj Res Los Robles
+  Costa De Oro
+  Don Bosco
+  El Cabrera
+  El Carnero
+  El Cortijo
+  El Encanto
+  El Exito
+  El Oriental
+  El Pasito
+  El Recuerdo
+  Granabastos
+  Juan D Romero
+  La Alianza
+  La Floresta I
+  La Floresta Plan Ii
+  La Maria
+  Las Gaviotas Ii
+  Las Margaritas
+  Linda Maria
+  Linda Maria Ii
+  Los Almendros
+  Los Almendros Ii
+  Los Almendros Iii
+  Los Almendros Iv
+  Los Balkanes
+  Los Cerezos
+  Los Mangos
+  Los Robles
+  Los Robles Ix
+  Los Robles Viii
+  Los Robles X
+  Moras Iv Etapa
+  Moras Norte
+  Moras Occidente
+  Muvdi
+  Normandia Norte
+  Nueva Esperanza
+  Nuevo Horizonte
+  Nuevo Horizonte Ii
+  Nuevo Triunfo
+  Portal De Los Manantiales
+  Portal De Los Nogales
+  Portal De S Antonio
+  Reserva De Los Almendros
+  Rigoberta Menchu
+  Salcedo
+  San Bernardo
+  Santana
+  Si Nos Dejan
+  Soledad Dos Mil
+  Tajamar
+  Tajamar Ii
+  Terminal
+  Terranova
+  Transmetro
+  Urb Parque Muvdi
+  Urb. Salamanca
+  Urb. Sol Real
+  Villa Estadio Norte
+  Villa Las Moras Ii
+  Villa Maria Silena
+  Zona Industrial

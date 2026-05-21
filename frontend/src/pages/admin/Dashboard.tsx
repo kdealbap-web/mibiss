@@ -15,15 +15,26 @@ import { useStatsGlobales } from '../../hooks/useStats';
 import { useStatsPorCategoria } from '../../hooks/useCategorias';
 import { useCapitulosPublicos } from '../../hooks/useCapitulos';
 import { useSolicitudes } from '../../hooks/useSolicitudes';
+import { useMiPerfil } from '../../hooks/useMiCuenta';
 import { formatNumber, formatRelative } from '../../lib/format';
+
+function getSaludo(h: number): string {
+  if (h < 12) return 'Buenos días';
+  if (h < 19) return 'Buenas tardes';
+  return 'Buenas noches';
+}
 
 export function Dashboard() {
   const { data: stats } = useStatsGlobales();
   const { data: catStats = [] } = useStatsPorCategoria();
   const { data: capitulos = [] } = useCapitulosPublicos();
   const { data: solicitudes = [] } = useSolicitudes();
+  const { data: perfil } = useMiPerfil();
 
   const colaCount = solicitudes.length;
+  const saludo = getSaludo(new Date().getHours());
+  const primerNombre = perfil?.nombres?.split(' ')[0] ?? '';
+  const tituloSaludo = primerNombre ? `${saludo}, ${primerNombre}` : saludo;
 
   const catBars = useMemo(() => {
     const sorted = [...catStats].sort((a, b) => b.casos - a.casos).slice(0, 5);
@@ -51,7 +62,7 @@ export function Dashboard() {
             Operación / <span style={{ color: 'var(--ink-strong)', fontWeight: 600 }}>Dashboard</span>
           </>
         }
-        title="Buenos días, Kevin"
+        title={tituloSaludo}
         actions={
           <>
             <button type="button" className="btn btn-secondary btn-sm">

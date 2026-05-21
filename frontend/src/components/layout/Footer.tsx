@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Instagram } from 'lucide-react';
 import { BissLogo } from '../brand/BissLogo';
 import { useFlowDrawer } from '../../context/FlowDrawer';
 
@@ -55,11 +56,13 @@ export function Footer() {
               <li><Link to="/login">Panel admin</Link></li>
               <li>
                 <a
-                  href="https://wa.me/573201234567"
+                  href="https://www.instagram.com/kevinbalvuenav?igsh=MWU0ZDNyNHptYm41Yw=="
                   target="_blank"
                   rel="noreferrer noopener"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
                 >
-                  WhatsApp 320 123 4567
+                  <Instagram style={{ width: 14, height: 14 }} />
+                  @kevinbalvuenab
                 </a>
               </li>
             </ul>
@@ -69,6 +72,10 @@ export function Footer() {
         <div className="footer-bottom">
           <span>© {new Date().getFullYear()} BISS · Soledad, Atlántico — Solo cosas buenas</span>
           <span>Hecho con cosas buenas</span>
+          
+          <span>Desarrollado por: </span>
+          <span>Kevin De Alba - Dev Master </span>
+
         </div>
       </div>
     </footer>

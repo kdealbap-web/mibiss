@@ -130,8 +130,8 @@ export function FlowApadrinar() {
         aporte_descripcion: draft.descripcion.trim(),
       });
 
-      // TODO Sprint D: enviar email a contacto_privado_email confirmando recepción
-      // + email a admin alertando nueva inscripción.
+      // Los emails (confirmación al padrino + alerta al admin) los dispara
+      // el trigger AFTER INSERT en public.padrinos (ver db/28-notify-padrinos.sql).
 
       clearDraft();
       setStep(3);

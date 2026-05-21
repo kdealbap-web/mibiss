@@ -71,7 +71,7 @@ export function MapaBarrios() {
             <span style={{ color: 'var(--ink-strong)', fontWeight: 600 }}>Mapa & barrios</span>
           </>
         }
-        title={`Mapa & barrios · ${barrios.length || 211} barrios · ${zonas.length || 5} zonas`}
+        title={`Mapa & barrios · ${barrios.length} barrios · ${zonas.length} zonas`}
         actions={
           <>
             <button type="button" className="btn btn-secondary btn-sm">
@@ -90,9 +90,8 @@ export function MapaBarrios() {
           <div className="alert-body">
             <div className="alert-title">Sincronización con shapefile pendiente</div>
             <div className="alert-text">
-              La DB tiene <strong>{barrios.length || 204} barrios</strong>; el PDF oficial 2021 lista{' '}
-              <strong>211</strong>. Coordenadas precisas se cargarán cuando la Alcaldía entregue el shapefile oficial
-              (oficio Secretaría de Planeación · Iris Polo).
+              La DB tiene <strong>{barrios.length} barrios</strong> registrados. Coordenadas precisas se cargarán cuando
+              la Alcaldía entregue el shapefile oficial (oficio Secretaría de Planeación · Iris Polo).
             </div>
           </div>
         </div>
@@ -227,7 +226,7 @@ export function MapaBarrios() {
               }}
             >
               <span className="caption">
-                {Math.min(50, filtered.length)} de {barrios.length || 211} barrios visibles
+                {Math.min(50, filtered.length)} de {barrios.length} barrios visibles
               </span>
               <button type="button" className="btn btn-ghost btn-sm">
                 Ver todos →
@@ -239,7 +238,7 @@ export function MapaBarrios() {
         <div className="admin-card">
           <div className="admin-card-head">
             <div>
-              <h2>Hitos municipales · 8 activos</h2>
+              <h2>Hitos municipales · {HITOS.length} activos</h2>
               <div className="card-sub">
                 Aeropuerto, hospitales, alcaldía, estadios, etc. Aparecen en el mapa público con icono distinto.
               </div>

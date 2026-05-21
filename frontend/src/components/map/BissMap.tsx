@@ -141,8 +141,8 @@ export function BissMap({
       const icon = L.divIcon({
         className: 'pin-hito-marker',
         html: '<div class="pin-hito"></div>',
-        iconSize: [26, 26],
-        iconAnchor: [13, 13],
+        iconSize: [12, 12],
+        iconAnchor: [6, 6],
       });
       const marker = L.marker([b.coord_lat, b.coord_lng], { icon, title: b.nombre });
       marker.bindTooltip(b.nombre, {

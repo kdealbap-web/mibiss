@@ -1,7 +1,15 @@
 // =============================================================================
-// notify-email · POST { tipo, ciudadano_id, ...payload }
-// Tipos: 'bienvenida' | 'solicitud_recibida' | 'solicitud_aprobada' | 'solicitud_rechazada' | 'caso_avanzo'
-// Solo invocada desde service_role.
+// notify-email · POST envelope:
+//   Modo ciudadano (existente):
+//     { tipo, ciudadano_id, payload }
+//     Lookup en `ciudadanos` (respeta acepta_notificaciones / eliminado_en).
+//   Modo directo (nuevo, para padrinos / alerta admin):
+//     { tipo, to_email, to_nombre, payload }
+//     No requiere fila en ciudadanos; útil para padrinos e inscripciones públicas.
+//
+// Tipos:
+//   'bienvenida' | 'solicitud_recibida' | 'solicitud_aprobada' | 'solicitud_rechazada' | 'caso_avanzo'
+//   'padrino_inscripcion' | 'padrino_admin'
 // =============================================================================
 import { handleCors, jsonResponse } from '../_shared/cors.ts';
 import { getServiceClient } from '../_shared/supabase.ts';
@@ -41,14 +49,62 @@ const TPL: Record<string, (p: any) => { subject: string; html: string }> = {
       <p>El caso pasó a estado <b>${p.estado}</b>.</p>
       <p><a href="${p.url}">Ver línea de tiempo</a></p>`,
   }),
+  padrino_inscripcion: (p) => ({
+    subject: '🤝 Recibimos tu inscripción como padrino',
+    html: `<h1>Hola, ${p.nombres}</h1>
+      <p>Gracias por querer ayudar a Soledad. Recibimos tu inscripción como padrino${p.tier ? ` (nivel ${p.tier})` : ''}.</p>
+      <p>El equipo de Kevin la revisará y te contactará a este correo para coordinar tu aporte.</p>
+      ${p.caso_titulo ? `<p>Caso al que te inscribiste: <b>${p.caso_titulo}</b></p>` : ''}
+      <p style="margin-top:24px"><a href="${p.base}" style="background:#0CB9C1;color:white;padding:12px 24px;border-radius:8px;text-decoration:none">Ver BISS</a></p>`,
+  }),
+  padrino_admin: (p) => ({
+    subject: `🤝 Nueva inscripción de padrino — ${p.nombres}`,
+    html: `<h1>Nueva inscripción de padrino</h1>
+      <p><b>${p.nombres}</b> se inscribió como padrino${p.tier ? ` (nivel ${p.tier})` : ''}.</p>
+      <p><b>Tipo de apoyo:</b> ${p.tipo_apoyo ?? '—'}</p>
+      <p><b>Email:</b> ${p.email ?? '—'}<br/><b>Teléfono:</b> ${p.telefono ?? '—'}</p>
+      ${p.descripcion ? `<p><b>Descripción:</b><br/>${p.descripcion}</p>` : ''}
+      ${p.caso_titulo ? `<p><b>Caso:</b> ${p.caso_titulo}</p>` : ''}
+      <p style="margin-top:24px"><a href="${p.base}/admin/padrinos" style="background:#0CB9C1;color:white;padding:12px 24px;border-radius:8px;text-decoration:none">Revisar en /admin/padrinos</a></p>`,
+  }),
 };
+
+interface Body {
+  tipo?: string;
+  ciudadano_id?: string | null;
+  to_email?: string | null;
+  to_nombre?: string | null;
+  payload?: Record<string, unknown>;
+}
 
 Deno.serve(async (req) => {
   const cors = handleCors(req); if (cors) return cors;
   if (req.method !== 'POST') return jsonResponse({ error: 'method_not_allowed' }, 405);
 
-  const { tipo, ciudadano_id, payload } = await req.json();
-  if (!tipo || !ciudadano_id || !TPL[tipo]) return jsonResponse({ error: 'tipo_invalido' }, 400);
+  const body = (await req.json()) as Body;
+  const { tipo, ciudadano_id, to_email, to_nombre, payload } = body;
+  if (!tipo || !TPL[tipo]) return jsonResponse({ error: 'tipo_invalido' }, 400);
+
+  const base = Deno.env.get('SITE_URL') ?? 'https://mibiss.com.co';
+
+  // Modo directo (padrinos / admin / inscripciones públicas)
+  if (to_email) {
+    const tpl = TPL[tipo]({ ...payload, nombres: to_nombre ?? '', base });
+    const r = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from: FROM, to: to_email, subject: tpl.subject, html: tpl.html }),
+    });
+    if (!r.ok) {
+      const txt = await r.text();
+      console.error('Resend error', r.status, txt);
+      return jsonResponse({ error: 'resend_error' }, 502);
+    }
+    return jsonResponse({ ok: true });
+  }
+
+  // Modo ciudadano (existente)
+  if (!ciudadano_id) return jsonResponse({ error: 'destinatario_invalido' }, 400);
 
   const supa = getServiceClient();
   const { data: cdn } = await supa.from('ciudadanos')
@@ -58,7 +114,7 @@ Deno.serve(async (req) => {
     return jsonResponse({ ok: true, skipped: true });
   }
 
-  const tpl = TPL[tipo]({ ...payload, nombres: cdn.nombres, base: Deno.env.get('SITE_URL') ?? 'https://mibiss.com.co' });
+  const tpl = TPL[tipo]({ ...payload, nombres: cdn.nombres, base });
 
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST',

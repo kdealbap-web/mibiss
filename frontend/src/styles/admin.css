@@ -201,17 +201,23 @@
     padding: 12px;
     background: rgba(255,255,255,0.08);
     border-radius: 12px;
+    min-width: 0;
   }
   .side-user .av {
-    width: 36px; height: 36px;
-    border-radius: 99px;
+    width: 36px !important; height: 36px !important;
+    min-width: 36px; min-height: 36px;
+    flex: 0 0 36px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
     background: var(--biss-teal);
     display: inline-flex; align-items: center; justify-content: center;
     font-weight: 800; color: #FFFFFF;
-    flex-shrink: 0;
+    font-size: 13px;
+    line-height: 1;
+    overflow: hidden;
   }
-  .side-user .name { font-size: 13px; font-weight: 700; color: #FFFFFF; }
-  .side-user .role { font-size: 11px; color: rgba(255,255,255,0.7); }
+  .side-user .name { font-size: 13px; font-weight: 700; color: #FFFFFF; min-width: 0; }
+  .side-user .role { font-size: 11px; color: rgba(255,255,255,0.7); min-width: 0; }
 
   /* ===== MAIN AREA ===== */
   .admin-main {
