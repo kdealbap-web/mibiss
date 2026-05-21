@@ -265,37 +265,57 @@ export function FlowReportar() {
         fotosMeta: next.map((f) => ({ name: f.name, size: f.size, type: f.type })),
       }));
     };
-    const previews = fotos.map((f) => URL.createObjectURL(f));
+    const previews = fotos.map((f) => ({
+      src: URL.createObjectURL(f),
+      isVideo: f.type.startsWith('video/'),
+      name: f.name,
+    }));
     return (
       <FlowShell
         step={4}
         totalSteps={5}
-        title="Si tienes fotos, súbelas"
-        lead="Hasta 6 fotos o un video corto. Si no tienes, puedes saltarte este paso."
+        title="Si tienes fotos o video, súbelos"
+        lead="Hasta 6 archivos (fotos o un video corto). Si no tienes, puedes saltarte este paso."
         onClose={onClose}
         onBack={() => setStep(3)}
         body={
           <>
             <div className="photo-grid">
-              {previews.map((src, i) => (
+              {previews.map((p, i) => (
                 <div
                   key={i}
                   className="photo-thumb"
                   style={{
-                    backgroundImage: `url(${src})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
+                    position: 'relative',
+                    background: '#0B0B0B',
                     color: 'transparent',
+                    overflow: 'hidden',
                   }}
+                  aria-label={p.isVideo ? `Video ${i + 1}` : `Foto ${i + 1}`}
                 >
-                  FOTO {String(i + 1).padStart(2, '0')}
+                  {p.isVideo ? (
+                    <video
+                      src={p.src}
+                      muted
+                      playsInline
+                      preload="metadata"
+                      controls
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                    />
+                  ) : (
+                    <img
+                      src={p.src}
+                      alt=""
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                    />
+                  )}
                 </div>
               ))}
               {fotos.length < 6 && (
                 <label className="photo-add" style={{ cursor: 'pointer' }}>
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/*,video/*"
                     multiple
                     style={{ display: 'none' }}
                     onChange={onPickFiles}
@@ -655,6 +675,8 @@ function BarrioPreviewMap({ barrio, pinColor }: BarrioPreviewMapProps) {
           overflow: 'hidden',
           border: '1px solid var(--border)',
           background: 'var(--surface-sunken)',
+          position: 'relative',
+          zIndex: 0,
         }}
         aria-label={barrio ? `Mapa del barrio ${barrio.nombre}` : 'Mapa de Soledad'}
       />

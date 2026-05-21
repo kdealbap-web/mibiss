@@ -138,10 +138,10 @@ export function Splash() {
       </div>
 
       <div className="below">
-        <p className="lema">
+{/*         <p className="lema">
           El <span className="accent">primer libro vivo</span> de Soledad — escrito en tiempo
           real por sus vecinos.
-        </p>
+        </p> */}
         <button type="button" className="splash-cta" onClick={enter}>
           Abrir el libro <ArrowRight size={18} />
         </button>

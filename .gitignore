@@ -14,6 +14,11 @@ out/
 .vercel/
 .wrangler/
 
+# --- Multimedia local (no commitear; vive en R2) -----------------------------
+frontend/src/assets/img/*.mp4
+frontend/src/assets/img/*.mov
+frontend/src/assets/img/*.webm
+
 # --- Caches ------------------------------------------------------------------
 .cache/
 .parcel-cache/

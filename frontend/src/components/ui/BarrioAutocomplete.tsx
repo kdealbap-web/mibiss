@@ -104,7 +104,11 @@ export function BarrioAutocomplete({
   };
 
   return (
-    <div ref={wrapRef} style={{ position: 'relative' }} className="mini-field">
+    <div
+      ref={wrapRef}
+      style={{ position: 'relative', zIndex: open ? 1100 : 'auto' }}
+      className="mini-field"
+    >
       {label && (
         <label htmlFor="barrio-ac" style={{ display: 'block', marginBottom: 4 }}>
           {label}
@@ -176,7 +180,7 @@ export function BarrioAutocomplete({
           role="listbox"
           style={{
             position: 'absolute',
-            zIndex: 50,
+            zIndex: 1100,
             top: 'calc(100% + 4px)',
             left: 0,
             right: 0,
@@ -220,7 +224,7 @@ export function BarrioAutocomplete({
         <div
           style={{
             position: 'absolute',
-            zIndex: 50,
+            zIndex: 1100,
             top: 'calc(100% + 4px)',
             left: 0,
             right: 0,

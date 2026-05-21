@@ -255,34 +255,54 @@ function SolicitudRow({
               {fotos.length > 0 && (
                 <div>
                   <strong style={{ fontSize: 12, color: 'var(--ink-soft)' }}>
-                    Fotos ({fotos.length})
+                    Multimedia ({fotos.length})
                   </strong>
                   <div
                     style={{
                       display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fill, minmax(96px, 1fr))',
+                      gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
                       gap: 8,
                       marginTop: 6,
                     }}
                   >
-                    {fotos.map((url) => (
-                      <a
-                        key={url}
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          display: 'block',
-                          aspectRatio: '1',
-                          backgroundImage: `url(${url})`,
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                          borderRadius: 8,
-                          border: '1px solid var(--border)',
-                        }}
-                        aria-label="Abrir foto en tamaño completo"
-                      />
-                    ))}
+                    {fotos.map((url) => {
+                      const isVideo = /\.(mp4|webm|mov|m4v|ogg)(\?|$)/i.test(url);
+                      return isVideo ? (
+                        <video
+                          key={url}
+                          src={url}
+                          controls
+                          playsInline
+                          preload="metadata"
+                          style={{
+                            width: '100%',
+                            aspectRatio: '1',
+                            objectFit: 'cover',
+                            borderRadius: 8,
+                            border: '1px solid var(--border)',
+                            background: '#0B0B0B',
+                          }}
+                          aria-label="Reproducir video"
+                        />
+                      ) : (
+                        <a
+                          key={url}
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            display: 'block',
+                            aspectRatio: '1',
+                            backgroundImage: `url(${url})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            borderRadius: 8,
+                            border: '1px solid var(--border)',
+                          }}
+                          aria-label="Abrir archivo en tamaño completo"
+                        />
+                      );
+                    })}
                   </div>
                 </div>
               )}

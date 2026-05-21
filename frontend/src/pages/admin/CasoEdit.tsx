@@ -14,7 +14,7 @@ import {
 
 import { AdminLayout } from '../../components/layout/AdminLayout';
 import { AdminTopbar } from '../../components/layout/AdminTopbar';
-import { useCaso } from '../../hooks/useCaso';
+import { useCaso, useMultimediaCaso } from '../../hooks/useCaso';
 import { useActualizaciones } from '../../hooks/useActualizaciones';
 import { useBarrios } from '../../hooks/useBarrios';
 import { useCategorias } from '../../hooks/useCategorias';
@@ -61,6 +61,7 @@ export function CasoEdit() {
   const slug = folio.toLowerCase();
   const { data: caso, isLoading } = useCaso(slug);
   const { data: actualizaciones = [] } = useActualizaciones(caso?.id ?? null);
+  const { data: media = [] } = useMultimediaCaso(caso?.id ?? null);
   const { data: categorias = [] } = useCategorias();
   const { data: barrios = [] } = useBarrios();
   const session = useSession();
@@ -265,11 +266,61 @@ export function CasoEdit() {
 
               <div className="admin-card">
                 <h2>Multimedia</h2>
-                <div className="card-sub">Hasta 6 imágenes + 2 videos. Upload conectado a R2 en Sprint C.</div>
-                <div className="media-grid">
-                  <button type="button" className="media-add">
-                    <Plus />Subir
-                  </button>
+                <div className="card-sub">
+                  Archivos subidos al reportar el caso. {media.length} de 8 (fotos + videos).
+                </div>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
+                    gap: 10,
+                    marginTop: 10,
+                  }}
+                >
+                  {media.length === 0 && (
+                    <p className="caption" style={{ gridColumn: '1 / -1' }}>
+                      Sin fotos ni videos todavía.
+                    </p>
+                  )}
+                  {media.map((m) => {
+                    const isVideo =
+                      m.tipo === 'video' || /\.(mp4|webm|mov|m4v|ogg)(\?|$)/i.test(m.url);
+                    return isVideo ? (
+                      <video
+                        key={m.id}
+                        src={m.url}
+                        poster={m.thumb_url ?? undefined}
+                        controls
+                        playsInline
+                        preload="metadata"
+                        style={{
+                          width: '100%',
+                          aspectRatio: '1',
+                          objectFit: 'cover',
+                          borderRadius: 10,
+                          border: '1px solid var(--border)',
+                          background: '#0B0B0B',
+                        }}
+                      />
+                    ) : (
+                      <a
+                        key={m.id}
+                        href={m.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'block',
+                          aspectRatio: '1',
+                          backgroundImage: `url(${m.thumb_url ?? m.url})`,
+                          backgroundSize: 'cover',
+                          backgroundPosition: 'center',
+                          borderRadius: 10,
+                          border: '1px solid var(--border)',
+                        }}
+                        aria-label="Abrir archivo"
+                      />
+                    );
+                  })}
                 </div>
               </div>
 
