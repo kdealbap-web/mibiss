@@ -2,7 +2,8 @@ import { supabase } from '../lib/supabase';
 import type { RelacionTestimonio } from '../types/biss';
 
 export interface CrearTestimonioInput {
-  ciudadano_id: string;
+  /** null cuando se publica sin sesión (anónimo público). */
+  ciudadano_id: string | null;
   capitulo_id?: string | null;
   caso_id?: string | null;
   firmar_como: string | null;

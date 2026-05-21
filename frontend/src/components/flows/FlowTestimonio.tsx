@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
   ArrowLeft,
@@ -13,6 +14,7 @@ import {
   Send,
   MessageSquareQuote,
   Check,
+  LogIn,
 } from 'lucide-react';
 
 import { FlowShell, useFlowDraft } from './FlowShell';
@@ -64,13 +66,21 @@ const ROL_TO_RELACION: Record<string, RelacionTestimonio> = {
 
 export function FlowTestimonio() {
   const { closeFlow, meta } = useFlowDrawer();
+  const navigate = useNavigate();
   const [draft, setDraft, clearDraft] = useFlowDraft<TestimonioDraft>('testimonio', INITIAL);
   const [step, setStep] = useState(1);
   const [enviado, setEnviado] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [needsLogin, setNeedsLogin] = useState(false);
 
   const { data: miPerfil } = useMiPerfil();
   const sumar = useSumarTestimonio();
+
+  const goToLogin = () => {
+    const returnTo = window.location.pathname + window.location.search;
+    closeFlow();
+    navigate(`/login?return=${encodeURIComponent(returnTo)}`);
+  };
 
   const renderStep1 = () => (
     <FlowShell
@@ -168,24 +178,26 @@ export function FlowTestimonio() {
   const renderStep3 = () => {
     const publicar = async () => {
       setSubmitError(null);
+      setNeedsLogin(false);
       try {
-        if (!miPerfil) {
-          throw new Error('Necesitas iniciar sesión para sumar tu voz.');
-        }
         if (!draft.rol) throw new Error('Falta rol');
         if (draft.historia.trim().length < 20) {
           throw new Error('Tu historia debe tener al menos 20 caracteres.');
         }
 
+        // Sin sesión, ciudadano_id va NULL (RLS p_testimonios_insert_anon).
+        // Con sesión, va el id del perfil para que el testimonio quede
+        // vinculado en /mi-cuenta y respete RLS p_testimonios_insert_self.
         const firmarComo = draft.anonimo
           ? null
-          : draft.nombre.trim() || `${miPerfil.nombres} ${miPerfil.apellidos}`.trim();
+          : draft.nombre.trim() ||
+            (miPerfil ? `${miPerfil.nombres} ${miPerfil.apellidos}`.trim() : '');
 
         await sumar.mutateAsync({
-          ciudadano_id: miPerfil.id,
+          ciudadano_id: miPerfil?.id ?? null,
           capitulo_id: meta.capituloId ?? null,
           caso_id: meta.casoId ?? null,
-          firmar_como: firmarComo,
+          firmar_como: firmarComo || null,
           relacion: ROL_TO_RELACION[draft.rol] ?? 'otro',
           mensaje: draft.historia.trim(),
         });
@@ -197,14 +209,15 @@ export function FlowTestimonio() {
         const detail = err.details ?? '';
         // eslint-disable-next-line no-console
         console.error('[testimonio] INSERT error', { msg, code: err.code, detail });
-        if (/iniciar sesi/i.test(msg) || /al menos 20/i.test(msg)) {
+        if (/al menos 20/i.test(msg)) {
           setSubmitError(msg);
         } else if (/asociado a un caso o a un cap/i.test(msg)) {
           setSubmitError('Sumamos testimonios desde un caso o un capítulo. Vuelve atrás y elige uno.');
         } else if (/length|chk_testimonios/i.test(msg) || /chk_testimonios/i.test(detail)) {
           setSubmitError('Tu mensaje debe tener entre 20 y 1500 caracteres.');
         } else if (err.code === '42501' || /row-level|policy/i.test(msg)) {
-          setSubmitError('Sesión caducada. Cierra sesión y vuelve a entrar.');
+          setSubmitError('No pudimos publicar tu testimonio. Si ya tenías cuenta, vuelve a iniciar sesión.');
+          setNeedsLogin(true);
         } else {
           setSubmitError(msg ? `No pudimos publicar: ${msg}` : 'Algo salió raro. Vuelve a intentarlo.');
         }
@@ -215,7 +228,9 @@ export function FlowTestimonio() {
         step={3}
         totalSteps={3}
         title="¿Cómo firmas?"
-        lead="Puedes firmar con tu nombre o ir anónimo. Tú decides."
+        lead={miPerfil
+          ? 'Puedes firmar con tu nombre o ir anónimo. Tú decides.'
+          : 'No necesitas cuenta. Pon tu nombre o publica anónimo.'}
         onClose={closeFlow}
         onBack={() => setStep(2)}
         body={
@@ -278,15 +293,31 @@ export function FlowTestimonio() {
               />
               <div className="alert-body">
                 <div className="alert-text" style={{ fontSize: 12, color: 'var(--biss-teal-900)' }}>
-                  Tu celular siempre queda privado. Solo lo ve BISS para confirmar que eres tú.
+                  {miPerfil
+                    ? 'Tu testimonio entra a moderación. Solo lo aprobamos cuando confirmamos que cuenta una historia real.'
+                    : 'Puedes sumar tu voz sin registrarte. Tu testimonio entra a moderación antes de aparecer.'}
                 </div>
               </div>
             </div>
             {submitError && (
-              <div className="alert alert-critical" style={{ padding: '10px 12px' }} role="alert">
+              <div
+                className="alert alert-critical"
+                style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 8 }}
+                role="alert"
+              >
                 <div className="alert-body">
                   <div className="alert-text" style={{ fontSize: 12 }}>{submitError}</div>
                 </div>
+                {needsLogin && (
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-sm"
+                    onClick={goToLogin}
+                    style={{ alignSelf: 'flex-start' }}
+                  >
+                    <LogIn size={14} /> Iniciar sesión
+                  </button>
+                )}
               </div>
             )}
           </>
