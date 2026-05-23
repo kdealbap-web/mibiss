@@ -7,11 +7,11 @@ import { SOLEDAD_CENTER, SOLEDAD_BOUNDS } from '../../lib/config';
 import type { Barrio, CasoPublico, EstadoCaso } from '../../types/biss';
 
 const CENTER: L.LatLngTuple = [SOLEDAD_CENTER[0], SOLEDAD_CENTER[1]];
-// Zoom inicial subido un nivel completo (~+20% más cerca dentro del municipio).
-// Antes 13 (vista lejana del municipio entero); ahora 14 muestra mejor calles.
-const ZOOM = 14;
+// Zoom inicial 15 (otro nivel +20% más cerca; antes 14, original 13).
+// A este nivel se leen avenidas y barrios sin perder la vista municipal.
+const ZOOM = 15;
 // Zoom al hacer focus en un barrio específico.
-const ZOOM_BARRIO = 16;
+const ZOOM_BARRIO = 17;
 
 function inSoledad(lat: number | null | undefined, lng: number | null | undefined): boolean {
   if (lat == null || lng == null) return false;

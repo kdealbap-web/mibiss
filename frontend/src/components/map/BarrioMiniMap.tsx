@@ -9,7 +9,8 @@ interface BarrioMiniMapProps {
   zonaNombre?: string;
   lat: number | null;
   lng: number | null;
-  /** GeoJSON Polygon opcional. Si no, dibuja un círculo aproximado. */
+  /** Deprecated: ignorado por ahora (las geocercas actuales son placeholders
+      cuadrados que se ven mal). Se reactivará con el shapefile oficial. */
   geocerca?: unknown;
   /** Color del polígono / círculo (acento del barrio o categoría). */
   accent?: string;
@@ -25,10 +26,11 @@ export function BarrioMiniMap({
   zonaNombre,
   lat,
   lng,
-  geocerca,
+  geocerca: _geocercaIgnored,
   accent = 'var(--biss-teal)',
   height = 200,
 }: BarrioMiniMapProps) {
+  void _geocercaIgnored;
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
 
@@ -36,6 +38,9 @@ export function BarrioMiniMap({
     if (!containerRef.current || mapRef.current) return;
     if (lat == null || lng == null) return;
 
+    // Zoom subido a 16 (~+25% más cerca). Solo pin centrado: las geocercas
+    // actuales son placeholders cuadrados que se ven feos. Cuando llegue el
+    // shapefile oficial podemos volver a dibujar polígonos reales.
     const map = L.map(containerRef.current, {
       zoomControl: false,
       attributionControl: false,
@@ -44,10 +49,9 @@ export function BarrioMiniMap({
       touchZoom: false,
       dragging: false,
       keyboard: false,
-      // Sin tap option: Leaflet 1.9 no la acepta como tipo.
-    }).setView([lat, lng], 15);
+    }).setView([lat, lng], 16);
 
-    L.tileLayer(TILES, { subdomains: 'abcd', maxZoom: 18 }).addTo(map);
+    L.tileLayer(TILES, { subdomains: 'abcd', maxZoom: 19 }).addTo(map);
 
     // Resolver color CSS (acepta var(...) si lo pasaron así).
     const resolved = (() => {
@@ -56,36 +60,6 @@ export function BarrioMiniMap({
       if (m && m[1]) return root.getPropertyValue(m[1]).trim() || '#06777C';
       return accent;
     })();
-
-    // Polígono del barrio si la geocerca es válida.
-    let usedPolygon = false;
-    if (geocerca && typeof geocerca === 'object') {
-      const gc = geocerca as { type?: string; coordinates?: number[][][] };
-      if (gc.type === 'Polygon' && Array.isArray(gc.coordinates) && gc.coordinates[0]) {
-        const ring = gc.coordinates[0]!.map(
-          ([lon, la]) => [la, lon] as L.LatLngTuple,
-        );
-        const poly = L.polygon(ring, {
-          color: resolved,
-          fillColor: resolved,
-          fillOpacity: 0.18,
-          weight: 2.5,
-        }).addTo(map);
-        map.fitBounds(poly.getBounds(), { padding: [12, 12] });
-        usedPolygon = true;
-      }
-    }
-
-    // Círculo si no había geocerca.
-    if (!usedPolygon) {
-      L.circle([lat, lng], {
-        radius: 320,
-        color: resolved,
-        fillColor: resolved,
-        fillOpacity: 0.14,
-        weight: 2,
-      }).addTo(map);
-    }
 
     // Pin del centro del barrio.
     const pinHtml = `<div style="
@@ -116,7 +90,7 @@ export function BarrioMiniMap({
       map.remove();
       mapRef.current = null;
     };
-  }, [lat, lng, geocerca, accent]);
+  }, [lat, lng, accent]);
 
   if (lat == null || lng == null) {
     return (
