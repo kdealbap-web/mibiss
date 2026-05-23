@@ -116,7 +116,20 @@
     background: var(--surface-sunken);
   }
   @media (min-width: 900px) {
-    .admin-shell { grid-template-columns: 260px 1fr; }
+    .admin-shell {
+      grid-template-columns: 260px 1fr;
+      /* La franja izquierda hereda el color del sidebar incluso cuando el
+         main scrollea más allá de 100vh. Sin esto, el sidebar sticky termina
+         en 100vh y debajo queda visible el background del shell — el "espacio
+         blanco" reportado. */
+      background: linear-gradient(
+        to right,
+        var(--biss-teal-900) 0,
+        var(--biss-teal-900) 260px,
+        var(--surface-sunken) 260px,
+        var(--surface-sunken) 100%
+      );
+    }
   }
 
   .admin-sidebar {
@@ -127,6 +140,7 @@
     gap: 18px;
     position: sticky; top: 0;
     height: 100vh;
+    overflow-y: auto;
   }
 
   /* admin-burger y admin-overlay viven en bloque mobile fuera de @layer

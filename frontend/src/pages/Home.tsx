@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Megaphone,
   Map as MapIcon,
@@ -61,6 +61,7 @@ type EstadoFilter = 'critical' | 'progress' | 'resolved';
 
 export function Home() {
   useScrollToHash();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { openFlow } = useFlowDrawer();
   const navigate = useNavigate();
   const stats = useStatsGlobales();
@@ -76,6 +77,24 @@ export function Home() {
   const [barrioSinCasos, setBarrioSinCasos] = useState<Barrio | null>(null);
   const [focusBarrioId, setFocusBarrioId] = useState<number | null>(null);
   const [drawerCaso, setDrawerCaso] = useState<CasoPublico | null>(null);
+
+  // Si vienen con /home?barrio=<id>, focuseamos ese barrio en el mapa al cargar
+  // y limpiamos el query string para que no quede en el historial.
+  useEffect(() => {
+    const raw = searchParams.get('barrio');
+    if (!raw) return;
+    const id = Number(raw);
+    if (!Number.isFinite(id) || id <= 0) return;
+    setFocusBarrioId(id);
+    // Eliminar el param sin recargar.
+    const next = new URLSearchParams(searchParams);
+    next.delete('barrio');
+    setSearchParams(next, { replace: true });
+    // Scroll al mapa tras un tick para que React Router termine.
+    window.setTimeout(() => {
+      document.getElementById('mapa')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 60);
+  }, [searchParams, setSearchParams]);
 
   const totals = stats.data;
 

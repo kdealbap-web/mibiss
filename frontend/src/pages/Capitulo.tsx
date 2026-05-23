@@ -16,6 +16,7 @@ import {
 
 import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
+import { BarrioMiniMap } from '../components/map/BarrioMiniMap';
 import { useFlowDrawer } from '../context/FlowDrawer';
 import { useCapituloPorSlug, useCasosPorCapitulo } from '../hooks/useCapitulos';
 import { useTestimoniosPorCapitulo } from '../hooks/useTestimonios';
@@ -210,6 +211,20 @@ export function Capitulo() {
           </div>
 
           <aside>
+            <div className="side-card">
+              <h3 style={{ marginBottom: 12 }}>Ubicación del barrio</h3>
+              <BarrioMiniMap
+                barrioId={capitulo.barrio_id}
+                barrioNombre={capitulo.barrio_nombre}
+                zonaNombre={capitulo.zona_nombre}
+                lat={capitulo.coord_lat}
+                lng={capitulo.coord_lng}
+                geocerca={capitulo.geocerca}
+                accent={capitulo.zona_color || 'var(--biss-teal)'}
+                height={220}
+              />
+            </div>
+
             <div className="side-card">
               <h3>El barrio en una línea</h3>
               <p style={{ fontSize: 14, color: 'var(--ink-soft)', lineHeight: 1.55 }}>

@@ -19,6 +19,7 @@ import {
 import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
 import { MediaGalleryCaso } from '../components/caso/MediaGalleryCaso';
+import { BarrioMiniMap } from '../components/map/BarrioMiniMap';
 import { useFlowDrawer } from '../context/FlowDrawer';
 import { useCaso, useMultimediaCaso } from '../hooks/useCaso';
 import { useActualizaciones } from '../hooks/useActualizaciones';
@@ -286,6 +287,19 @@ function CasoContent({ caso, media, actualizaciones, testimonios, padrinos, open
 
         <aside>
           <div className="caso-side-card">
+            <h3 style={{ marginBottom: 12 }}>Ubicación</h3>
+            <BarrioMiniMap
+              barrioId={caso.barrio_id}
+              barrioNombre={caso.barrio_nombre}
+              zonaNombre={caso.zona_codigo ? undefined : undefined}
+              lat={caso.lat ?? null}
+              lng={caso.lng ?? null}
+              accent={caso.categoria_color || 'var(--biss-teal)'}
+              height={200}
+            />
+          </div>
+
+          <div className="caso-side-card">
             <h3>Datos del caso</h3>
             <div className="data-row"><span className="k">Folio</span><span className="v mono">{folioVisible}</span></div>
             <div className="data-row"><span className="k">Reportado</span><span className="v">{fechaCorta(caso.publicado_en ?? caso.actualizado_en)}</span></div>
@@ -364,7 +378,10 @@ function CasoContent({ caso, media, actualizaciones, testimonios, padrinos, open
           >
             <Share2 />Compartir
           </button>
-          <Link to="/home#mapa" className="btn btn-secondary btn-sm">
+          <Link
+            to={`/home?barrio=${caso.barrio_id}#mapa`}
+            className="btn btn-secondary btn-sm"
+          >
             <MapPin />Ver en mapa
           </Link>
         </div>
