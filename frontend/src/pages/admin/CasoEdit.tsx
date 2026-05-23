@@ -204,6 +204,63 @@ export function CasoEdit() {
           </div>
         )}
 
+        {caso && caso.reportado_por_nombre && (
+          <div
+            className="admin-card"
+            style={{
+              padding: '14px 18px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              flexWrap: 'wrap',
+              borderLeft: '3px solid var(--biss-teal)',
+              marginBottom: 18,
+            }}
+          >
+            <div
+              className="av"
+              aria-hidden
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+                background: 'var(--biss-teal)',
+                color: '#fff',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 800,
+                fontSize: 13,
+              }}
+            >
+              {caso.reportado_por_nombre
+                .split(/\s+/)
+                .filter(Boolean)
+                .slice(0, 2)
+                .map((w) => w[0]!.toUpperCase())
+                .join('')}
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 11, color: 'var(--ink-soft)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                Reportado por
+              </div>
+              <div style={{ fontWeight: 700, color: 'var(--ink-strong)' }}>
+                {caso.reportado_por_nombre}
+                {caso.reportado_en && (
+                  <span style={{ fontWeight: 400, color: 'var(--ink-soft)', marginLeft: 8, fontSize: 12 }}>
+                    · {new Date(caso.reportado_en).toLocaleDateString('es-CO', {
+                      day: '2-digit',
+                      month: 'short',
+                      year: 'numeric',
+                    })}{' '}
+                    ({formatRelative(caso.reportado_en)})
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         {caso && (
           <div className="editor-grid">
             <div>

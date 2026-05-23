@@ -8,6 +8,8 @@ export function useAprobarSolicitud() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['solicitudes'] });
       qc.invalidateQueries({ queryKey: ['casos', 'publicos'] });
+      qc.invalidateQueries({ queryKey: ['casos-admin'] });
+      qc.invalidateQueries({ queryKey: ['capitulos-publicos'] });
       qc.invalidateQueries({ queryKey: ['stats'] });
       qc.invalidateQueries({ queryKey: ['mv-stats-globales'] });
     },

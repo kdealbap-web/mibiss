@@ -98,6 +98,9 @@ export interface CasoPublico {
   categoria_icono: string;
   categoria_color: string;
   portada_url: string | null;
+  creado_en?: string | null;
+  reportado_por_nombre?: string | null;
+  reportado_en?: string | null;
 }
 
 export interface StatsGlobales {

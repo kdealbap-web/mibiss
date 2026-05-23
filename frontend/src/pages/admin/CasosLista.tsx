@@ -220,7 +220,15 @@ export function CasosLista() {
               </thead>
               <tbody>
                 {slice.map((c) => (
-                  <Row key={c.id} c={c} onOpen={() => navigate(`/admin/caso/${c.slug || c.id}`)} />
+                  <Row
+                    key={c.id}
+                    c={c}
+                    onOpen={() => {
+                      if (c.slug) navigate(`/admin/caso/${c.slug}`);
+                      // sin slug aún (caso recién creado): no abrimos editor para
+                      // evitar que /admin/caso/{uuid} caiga en "caso no encontrado".
+                    }}
+                  />
                 ))}
               </tbody>
             </table>
@@ -288,7 +296,7 @@ function Row({ c, onOpen }: { c: CasoAdmin; onOpen: () => void }) {
               {c.titulo}
             </div>
             <div className="row-meta mono" style={{ fontSize: 11 }}>
-              {c.slug ? c.slug.toUpperCase() : c.id.slice(0, 8)} · {c.categoria_nombre}
+              {c.slug ? c.slug.toUpperCase() : '— sin folio aún —'} · {c.categoria_nombre}
             </div>
           </div>
         </div>
@@ -331,9 +339,11 @@ function Row({ c, onOpen }: { c: CasoAdmin; onOpen: () => void }) {
             <Eye style={{ width: 14, height: 14 }} />
           </Link>
         )}
-        <Link to={`/admin/caso/${c.slug || c.id}`} aria-label="Editar caso">
-          <Edit style={{ width: 14, height: 14 }} />
-        </Link>
+        {c.slug && (
+          <Link to={`/admin/caso/${c.slug}`} aria-label="Editar caso">
+            <Edit style={{ width: 14, height: 14 }} />
+          </Link>
+        )}
       </td>
     </tr>
   );

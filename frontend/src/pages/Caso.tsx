@@ -181,6 +181,24 @@ function CasoContent({ caso, media, actualizaciones, testimonios, padrinos, open
                 Publicado {formatRelative(caso.publicado_en)}
               </span>
             )}
+            {caso.reportado_por_nombre && (
+              <span
+                className="caption row row-2"
+                title={
+                  caso.reportado_en
+                    ? `Reportado el ${new Date(caso.reportado_en).toLocaleString('es-CO')}`
+                    : undefined
+                }
+              >
+                <strong style={{ color: 'var(--ink-strong)' }}>Reportado por:</strong>
+                {caso.reportado_por_nombre}
+                {caso.reportado_en && (
+                  <> · {new Date(caso.reportado_en).toLocaleDateString('es-CO', {
+                    day: '2-digit', month: 'short', year: 'numeric',
+                  })}</>
+                )}
+              </span>
+            )}
           </div>
         </div>
       </section>
