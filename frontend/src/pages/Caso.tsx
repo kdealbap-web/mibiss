@@ -18,6 +18,7 @@ import {
 
 import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
+import { MediaGalleryCaso } from '../components/caso/MediaGalleryCaso';
 import { useFlowDrawer } from '../context/FlowDrawer';
 import { useCaso, useMultimediaCaso } from '../hooks/useCaso';
 import { useActualizaciones } from '../hooks/useActualizaciones';
@@ -212,67 +213,7 @@ function CasoContent({ caso, media, actualizaciones, testimonios, padrinos, open
 
           <div className="caso-card">
             <h2>Multimedia</h2>
-            {media.length === 0 ? (
-              <p className="caption">Todavía no hay fotos o videos. Cuando los suban, aparecen aquí.</p>
-            ) : (
-              <div className="gallery">
-                {media.map((m, i) => {
-                  const big = i === 0;
-                  const isVideo =
-                    m.tipo === 'video' || /\.(mp4|webm|mov|m4v|ogg)(\?|$)/i.test(m.url);
-                  if (isVideo) {
-                    return (
-                      <div
-                        key={m.id}
-                        className={`ph${big ? ' big' : ''}`}
-                        style={{ background: '#0B0B0B', overflow: 'hidden' }}
-                      >
-                        <video
-                          src={m.url}
-                          poster={m.thumb_url ?? undefined}
-                          controls
-                          playsInline
-                          preload="metadata"
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                            display: 'block',
-                          }}
-                        />
-                      </div>
-                    );
-                  }
-                  if (m.tipo === 'foto') {
-                    return (
-                      <div
-                        key={m.id}
-                        className={`ph${big ? ' big' : ''}`}
-                        style={{
-                          backgroundImage: `url(${m.thumb_url ?? m.url})`,
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                          color: 'transparent',
-                        }}
-                      >
-                        FOTO {String(i + 1).padStart(2, '0')}
-                      </div>
-                    );
-                  }
-                  return (
-                    <a
-                      key={m.id}
-                      href={m.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`ph${big ? ' big' : ''}`}
-                    >
-                      {m.tipo.toUpperCase()}
-                    </a>
-                  );
-                })}
-              </div>
-            )}
+            <MediaGalleryCaso media={media} />
           </div>
 
           <div className="caso-card">

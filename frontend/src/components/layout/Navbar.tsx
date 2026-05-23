@@ -54,8 +54,8 @@ export function Navbar({ active = 'mapa' }: NavbarProps) {
 
           <div className="navbar-links">
             {link('mapa', '/home#mapa', MapIcon, 'Mapa')}
-            {link('casos', '/home#casos', Shield, 'Casos')}
-            {link('barrios', '/home#barrios', HomeIcon, 'Barrios')}
+            {link('casos', '/casos', Shield, 'Casos')}
+            {link('barrios', '/barrios', HomeIcon, 'Barrios')}
             {link('concejal', '/home#concejal', UserRound, 'El concejal')}
             {link('como-funciona', '/home#como-funciona', HelpCircle, 'Cómo funciona')}
           </div>

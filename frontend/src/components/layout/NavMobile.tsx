@@ -69,7 +69,7 @@ export function NavMobile({ open, onClose, active }: NavMobileProps) {
         <Link
           className="nav-mobile-link"
           data-active={active === 'casos' ? 'true' : undefined}
-          to="/home#casos"
+          to="/casos"
           onClick={onClose}
         >
           <Shield />Casos
@@ -77,7 +77,7 @@ export function NavMobile({ open, onClose, active }: NavMobileProps) {
         <Link
           className="nav-mobile-link"
           data-active={active === 'barrios' ? 'true' : undefined}
-          to="/home#barrios"
+          to="/barrios"
           onClick={onClose}
         >
           <HomeIcon />Barrios

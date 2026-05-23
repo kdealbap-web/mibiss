@@ -7,7 +7,11 @@ import { SOLEDAD_CENTER, SOLEDAD_BOUNDS } from '../../lib/config';
 import type { Barrio, CasoPublico, EstadoCaso } from '../../types/biss';
 
 const CENTER: L.LatLngTuple = [SOLEDAD_CENTER[0], SOLEDAD_CENTER[1]];
-const ZOOM = 13;
+// Zoom inicial subido un nivel completo (~+20% más cerca dentro del municipio).
+// Antes 13 (vista lejana del municipio entero); ahora 14 muestra mejor calles.
+const ZOOM = 14;
+// Zoom al hacer focus en un barrio específico.
+const ZOOM_BARRIO = 16;
 
 function inSoledad(lat: number | null | undefined, lng: number | null | undefined): boolean {
   if (lat == null || lng == null) return false;
@@ -61,6 +65,8 @@ interface BissMapProps {
   categoryFilter?: string;
   /** Filtra los pines por estado. null/undefined = sin filtro. */
   stateFilter?: EstadoCaso | null;
+  /** Si cambia, el mapa se centra/zoomea en el barrio + lo destaca temporalmente. */
+  focusBarrioId?: number | null;
 }
 
 export function BissMap({
@@ -68,11 +74,13 @@ export function BissMap({
   onCasoClick,
   categoryFilter,
   stateFilter,
+  focusBarrioId,
 }: BissMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerBarriosRef = useRef<L.LayerGroup | null>(null);
   const layerCasosRef = useRef<L.LayerGroup | null>(null);
+  const focusMarkerRef = useRef<L.CircleMarker | null>(null);
 
   const { data: barrios = [], isLoading: barriosLoading, error: barriosError } = useBarriosConCoords();
   const { data: allBarrios = [] } = useBarrios();
@@ -198,6 +206,31 @@ export function BissMap({
       marker.addTo(layer);
     });
   }, [casos, onCasoClick, barrioById]);
+
+  // Cuando cambia focusBarrioId, recentra el mapa, zoomea y dibuja un anillo
+  // pulsante temporal sobre el barrio para que el usuario lo encuentre.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    if (focusMarkerRef.current) {
+      map.removeLayer(focusMarkerRef.current);
+      focusMarkerRef.current = null;
+    }
+    if (focusBarrioId == null) return;
+    const b = barrioById.get(focusBarrioId);
+    if (!b?.coord_lat || !b?.coord_lng) return;
+    map.flyTo([b.coord_lat, b.coord_lng], ZOOM_BARRIO, { duration: 0.7 });
+    const ring = L.circleMarker([b.coord_lat, b.coord_lng], {
+      radius: 22,
+      color: 'var(--biss-teal)',
+      fillColor: 'var(--biss-teal)',
+      fillOpacity: 0.18,
+      weight: 3,
+      className: 'pin-focus-ring',
+    }).addTo(map);
+    focusMarkerRef.current = ring;
+    // El anillo se queda hasta que el usuario haga focus en otro barrio o limpie.
+  }, [focusBarrioId, barrioById]);
 
   return (
     <div id="biss-map" ref={containerRef}>

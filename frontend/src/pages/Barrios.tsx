@@ -1,17 +1,275 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Megaphone, BookOpen } from 'lucide-react';
+import { ArrowLeft, Megaphone, BookOpen, Search } from 'lucide-react';
 
 import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
-import { SearchInput, Select, Modal } from '../components/ui';
+import { Modal } from '../components/ui';
 import { useBarrios } from '../hooks/useBarrios';
 import { useZonas } from '../hooks/useZonas';
 import { useCapitulosPublicos } from '../hooks/useCapitulos';
 import { useFlowDrawer } from '../context/FlowDrawer';
 import type { Barrio } from '../types/biss';
 
-type FiltroEstado = 'todos' | 'con-casos' | 'sin-casos';
+const PAGE_SIZE = 24;
+
+interface BloqueBarriosProps {
+  titulo: string;
+  subtitulo: string;
+  barrios: Barrio[];
+  capituloByBarrio: Map<number, { casos: number; criticos: number; resueltos: number }>;
+  zonaById: Map<number, { nombre: string; color_hex: string }>;
+  onBarrioClick: (b: Barrio) => void;
+  emptyMsg: string;
+  highlight?: 'teal' | 'soft';
+}
+
+function BloqueBarrios({
+  titulo,
+  subtitulo,
+  barrios,
+  capituloByBarrio,
+  zonaById,
+  onBarrioClick,
+  emptyMsg,
+  highlight = 'soft',
+}: BloqueBarriosProps) {
+  const [q, setQ] = useState('');
+  const [page, setPage] = useState(0);
+
+  const filtered = useMemo(() => {
+    const t = q.trim().toLowerCase();
+    if (!t) return barrios;
+    return barrios.filter((b) => b.nombre.toLowerCase().includes(t));
+  }, [barrios, q]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const slice = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
+  const accent = highlight === 'teal' ? 'var(--biss-teal)' : 'var(--border)';
+
+  return (
+    <section
+      style={{
+        background: 'var(--surface)',
+        border: `1.5px solid ${accent}`,
+        borderRadius: 16,
+        padding: '20px 22px 24px',
+        marginBottom: 22,
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'flex-end',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: 12,
+          marginBottom: 14,
+        }}
+      >
+        <div>
+          <h2
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontWeight: 900,
+              fontSize: 'clamp(1.05rem, 2.6vw, 1.35rem)',
+              margin: 0,
+              color: 'var(--ink-strong)',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            {titulo}
+          </h2>
+          <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--ink-soft)' }}>{subtitulo}</p>
+        </div>
+        <div
+          style={{
+            position: 'relative',
+            width: '100%',
+            maxWidth: 320,
+          }}
+        >
+          <Search
+            size={14}
+            style={{
+              position: 'absolute',
+              left: 10,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: 'var(--ink-soft)',
+              pointerEvents: 'none',
+            }}
+          />
+          <input
+            type="search"
+            value={q}
+            onChange={(e) => {
+              setQ(e.target.value);
+              setPage(0);
+            }}
+            placeholder={`Buscar en ${barrios.length} barrios…`}
+            aria-label={`Buscar barrio en ${titulo}`}
+            style={{
+              width: '100%',
+              padding: '8px 12px 8px 32px',
+              borderRadius: 10,
+              border: '1.5px solid var(--border)',
+              fontSize: 13,
+              background: 'var(--surface)',
+              color: 'var(--ink-strong)',
+            }}
+          />
+        </div>
+      </div>
+
+      {filtered.length === 0 && (
+        <p className="caption" style={{ padding: '14px 4px' }}>
+          {q.trim() ? 'Sin coincidencias para esa búsqueda.' : emptyMsg}
+        </p>
+      )}
+
+      {slice.length > 0 && (
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+            gap: 10,
+          }}
+        >
+          {slice.map((b) => {
+            const cap = capituloByBarrio.get(b.id);
+            const tieneCasos = (cap?.casos ?? 0) > 0;
+            const zona = zonaById.get(b.zona_id);
+            return (
+              <button
+                key={b.id}
+                type="button"
+                onClick={() => onBarrioClick(b)}
+                style={{
+                  textAlign: 'left',
+                  padding: '12px 14px',
+                  background: 'var(--surface)',
+                  border: '1.5px solid var(--border)',
+                  borderRadius: 12,
+                  cursor: 'pointer',
+                  display: 'grid',
+                  gap: 4,
+                  transition: 'transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start',
+                    gap: 8,
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 }}>
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        width: 8,
+                        height: 8,
+                        borderRadius: '50%',
+                        background: zona?.color_hex ?? '#9AA3B2',
+                        flexShrink: 0,
+                      }}
+                      aria-hidden
+                    />
+                    <strong
+                      style={{
+                        color: 'var(--ink-strong)',
+                        fontSize: 14,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {b.nombre}
+                    </strong>
+                  </div>
+                  {tieneCasos && (
+                    <span
+                      className="badge"
+                      style={{
+                        background: 'var(--biss-teal-50)',
+                        color: 'var(--biss-teal-900)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 4,
+                        flexShrink: 0,
+                      }}
+                    >
+                      <BookOpen size={11} />
+                      {cap?.casos ?? 0}
+                    </span>
+                  )}
+                </div>
+                <div style={{ fontSize: 11, color: 'var(--ink-soft)' }}>
+                  {zona?.nombre ?? '—'}
+                </div>
+                {tieneCasos && (cap!.criticos > 0 || cap!.resueltos > 0) && (
+                  <div style={{ display: 'flex', gap: 8, fontSize: 10, marginTop: 2 }}>
+                    {cap!.criticos > 0 && (
+                      <span style={{ color: 'var(--state-critical)', fontWeight: 700 }}>
+                        {cap!.criticos} críticos
+                      </span>
+                    )}
+                    {cap!.resueltos > 0 && (
+                      <span style={{ color: 'var(--state-resolved)', fontWeight: 700 }}>
+                        {cap!.resueltos} resueltos
+                      </span>
+                    )}
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginTop: 14,
+            paddingTop: 12,
+            borderTop: '1px solid var(--border)',
+            fontSize: 12,
+            color: 'var(--ink-soft)',
+          }}
+        >
+          <span>
+            Página {page + 1} de {totalPages} · {filtered.length}
+            {q.trim() ? ' coincidencias' : ' barrios'}
+          </span>
+          <div style={{ display: 'flex', gap: 6 }}>
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm"
+              disabled={page === 0}
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+            >
+              Anterior
+            </button>
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm"
+              disabled={page >= totalPages - 1}
+              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+            >
+              Siguiente
+            </button>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
 
 export function Barrios() {
   const navigate = useNavigate();
@@ -19,10 +277,6 @@ export function Barrios() {
   const { data: barrios = [], isLoading } = useBarrios();
   const { data: zonas = [] } = useZonas();
   const { data: capitulos = [] } = useCapitulosPublicos();
-
-  const [q, setQ] = useState('');
-  const [zonaFiltro, setZonaFiltro] = useState<string>('');
-  const [estado, setEstado] = useState<FiltroEstado>('con-casos');
   const [barrioSinCasos, setBarrioSinCasos] = useState<Barrio | null>(null);
 
   const capituloByBarrio = useMemo(() => {
@@ -38,35 +292,28 @@ export function Barrios() {
   }, [capitulos]);
 
   const zonaById = useMemo(() => {
-    const m = new Map<number, typeof zonas[number]>();
+    const m = new Map<number, { nombre: string; color_hex: string }>();
     zonas.forEach((z) => m.set(z.id, z));
     return m;
   }, [zonas]);
 
-  const filtered = useMemo(() => {
-    const t = q.trim().toLowerCase();
-    return barrios
-      .filter((b) => {
-        if (t && !b.nombre.toLowerCase().includes(t)) return false;
-        if (zonaFiltro && String(b.zona_id) !== zonaFiltro) return false;
-        const tieneCasos = (capituloByBarrio.get(b.id)?.casos ?? 0) > 0;
-        if (estado === 'con-casos' && !tieneCasos) return false;
-        if (estado === 'sin-casos' && tieneCasos) return false;
-        return true;
-      })
-      .sort((a, b) => {
-        const ca = capituloByBarrio.get(a.id)?.casos ?? 0;
-        const cb = capituloByBarrio.get(b.id)?.casos ?? 0;
-        if (ca !== cb) return cb - ca;
-        return a.nombre.localeCompare(b.nombre, 'es');
-      });
-  }, [barrios, q, zonaFiltro, estado, capituloByBarrio]);
-
-  const stats = useMemo(() => {
-    const total = barrios.length;
-    const conCasos = barrios.filter((b) => (capituloByBarrio.get(b.id)?.casos ?? 0) > 0).length;
-    return { total, conCasos, sinCasos: total - conCasos };
+  const { conBitacora, sinBitacora } = useMemo(() => {
+    const con: Barrio[] = [];
+    const sin: Barrio[] = [];
+    const ordered = [...barrios].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
+    for (const b of ordered) {
+      const tiene = (capituloByBarrio.get(b.id)?.casos ?? 0) > 0;
+      if (tiene) con.push(b);
+      else sin.push(b);
+    }
+    return { conBitacora: con, sinBitacora: sin };
   }, [barrios, capituloByBarrio]);
+
+  const onBarrioClick = (b: Barrio) => {
+    const tiene = (capituloByBarrio.get(b.id)?.casos ?? 0) > 0;
+    if (tiene) navigate(`/capitulo/${b.slug}`);
+    else setBarrioSinCasos(b);
+  };
 
   return (
     <>
@@ -104,62 +351,24 @@ export function Barrios() {
               color: 'var(--ink-strong)',
             }}
           >
-            Barrios de Soledad
+            Los {barrios.length} barrios de Soledad
           </h1>
           <p style={{ color: 'var(--ink-soft)', fontSize: 14, marginTop: 6 }}>
-            {stats.total} barrios · {stats.conCasos} con bitácora abierta · {stats.sinCasos} pendientes
-            de su primer caso.
+            {conBitacora.length} con bitácora abierta · {sinBitacora.length} esperando su primer
+            caso. Toca cualquier barrio para abrir su capítulo o reportar el primero.
           </p>
         </div>
       </section>
 
       <section style={{ padding: '24px 24px 64px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div
-            style={{
-              display: 'flex',
-              gap: 10,
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              marginBottom: 18,
-            }}
-          >
-            <SearchInput
-              className="grow"
-              style={{ minWidth: 220, maxWidth: 380 }}
-              placeholder="Busca tu barrio…"
-              aria-label="Buscar barrio"
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-            />
-            <Select
-              value={zonaFiltro}
-              onChange={(e) => setZonaFiltro(e.target.value)}
-              aria-label="Filtrar por zona"
-              options={[
-                { value: '', label: 'Todas las zonas' },
-                ...zonas.map((z) => ({ value: String(z.id), label: z.nombre })),
-              ]}
-            />
-            <Select
-              value={estado}
-              onChange={(e) => setEstado(e.target.value as FiltroEstado)}
-              aria-label="Filtrar por estado"
-              options={[
-                { value: 'con-casos', label: 'Con bitácora' },
-                { value: 'sin-casos', label: 'Sin bitácora' },
-                { value: 'todos', label: 'Todos' },
-              ]}
-            />
-          </div>
-
           {isLoading && (
             <div style={{ display: 'grid', gap: 8 }} aria-hidden>
               {[0, 1, 2, 3].map((i) => (
                 <div
                   key={i}
                   style={{
-                    height: 72,
+                    height: 80,
                     borderRadius: 12,
                     background: 'var(--surface-sunken)',
                     opacity: 0.7 - i * 0.12,
@@ -169,99 +378,29 @@ export function Barrios() {
             </div>
           )}
 
-          {!isLoading && filtered.length === 0 && (
-            <div className="admin-card" style={{ padding: 24, textAlign: 'center' }}>
-              <p className="caption">Sin resultados con esos filtros.</p>
-            </div>
-          )}
-
-          {filtered.length > 0 && (
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-                gap: 12,
-              }}
-            >
-              {filtered.map((b) => {
-                const cap = capituloByBarrio.get(b.id);
-                const tieneCasos = (cap?.casos ?? 0) > 0;
-                const zona = zonaById.get(b.zona_id);
-                return (
-                  <button
-                    key={b.id}
-                    type="button"
-                    onClick={() => {
-                      if (tieneCasos) navigate(`/capitulo/${b.slug}`);
-                      else setBarrioSinCasos(b);
-                    }}
-                    style={{
-                      textAlign: 'left',
-                      padding: '14px 16px',
-                      background: 'var(--surface)',
-                      border: '1.5px solid var(--border)',
-                      borderRadius: 'var(--radius-lg)',
-                      cursor: 'pointer',
-                      display: 'grid',
-                      gap: 6,
-                      transition: 'transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease',
-                    }}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span
-                          style={{
-                            display: 'inline-flex',
-                            width: 10,
-                            height: 10,
-                            borderRadius: '50%',
-                            background: zona?.color_hex ?? '#9AA3B2',
-                          }}
-                          aria-hidden
-                        />
-                        <strong style={{ color: 'var(--ink-strong)', fontSize: 15 }}>{b.nombre}</strong>
-                      </div>
-                      {tieneCasos ? (
-                        <span
-                          className="badge"
-                          style={{
-                            background: 'var(--biss-teal-50)',
-                            color: 'var(--biss-teal-900)',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 4,
-                          }}
-                        >
-                          <BookOpen size={12} />
-                          {cap?.casos ?? 0}
-                        </span>
-                      ) : (
-                        <span className="badge" style={{ color: 'var(--ink-soft)' }}>
-                          Sin casos
-                        </span>
-                      )}
-                    </div>
-                    <div style={{ fontSize: 12, color: 'var(--ink-soft)' }}>
-                      {zona?.nombre ?? '—'}
-                    </div>
-                    {tieneCasos && (
-                      <div style={{ display: 'flex', gap: 8, fontSize: 11, color: 'var(--ink-soft)' }}>
-                        {cap!.criticos > 0 && (
-                          <span style={{ color: 'var(--state-critical)', fontWeight: 700 }}>
-                            {cap!.criticos} críticos
-                          </span>
-                        )}
-                        {cap!.resueltos > 0 && (
-                          <span style={{ color: 'var(--state-resolved)', fontWeight: 700 }}>
-                            {cap!.resueltos} resueltos
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+          {!isLoading && (
+            <>
+              <BloqueBarrios
+                titulo={`Con bitácora abierta · ${conBitacora.length}`}
+                subtitulo="Barrios que ya tienen al menos un caso público."
+                barrios={conBitacora}
+                capituloByBarrio={capituloByBarrio}
+                zonaById={zonaById}
+                onBarrioClick={onBarrioClick}
+                emptyMsg="Todavía no hay bitácoras abiertas."
+                highlight="teal"
+              />
+              <BloqueBarrios
+                titulo={`Sin bitácora · ${sinBitacora.length}`}
+                subtitulo="Barrios listos para ser los primeros en contar su historia."
+                barrios={sinBitacora}
+                capituloByBarrio={capituloByBarrio}
+                zonaById={zonaById}
+                onBarrioClick={onBarrioClick}
+                emptyMsg="Todos los barrios ya tienen bitácora."
+                highlight="soft"
+              />
+            </>
           )}
         </div>
       </section>
@@ -281,8 +420,9 @@ export function Barrios() {
               type="button"
               className="btn btn-primary btn-sm"
               onClick={() => {
+                const b = barrioSinCasos;
                 setBarrioSinCasos(null);
-                openFlow('reportar');
+                if (b) openFlow('reportar', { barrioId: b.id });
               }}
             >
               <Megaphone size={14} />

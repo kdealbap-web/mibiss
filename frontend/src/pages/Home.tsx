@@ -74,6 +74,7 @@ export function Home() {
   const [catFilter, setCatFilter] = useState<string>('all');
   const [stateFilter, setStateFilter] = useState<EstadoFilter | null>(null);
   const [barrioSinCasos, setBarrioSinCasos] = useState<Barrio | null>(null);
+  const [focusBarrioId, setFocusBarrioId] = useState<number | null>(null);
   const [drawerCaso, setDrawerCaso] = useState<CasoPublico | null>(null);
 
   const totals = stats.data;
@@ -298,7 +299,16 @@ export function Home() {
 
           <div className="map-wrap">
             <BissMap
-              onBarrioClick={(b) => navigate(`/capitulo/${b.slug}`)}
+              onBarrioClick={(b) => {
+                // Solo navega si el barrio tiene casos (tiene capítulo activo).
+                // Si no, lo destaca en el mapa y abre el modal de invitación.
+                if (barriosConCasos.has(b.id)) {
+                  navigate(`/capitulo/${b.slug}`);
+                } else {
+                  setFocusBarrioId(b.id);
+                  setBarrioSinCasos(b);
+                }
+              }}
               onCasoClick={(c) => setDrawerCaso(c)}
               categoryFilter={catFilter}
               stateFilter={
@@ -307,6 +317,7 @@ export function Home() {
                 stateFilter === 'resolved' ? 'resuelto' :
                 null
               }
+              focusBarrioId={focusBarrioId}
             />
             <MapDrawer
               open={drawerCaso !== null}
@@ -378,7 +389,16 @@ export function Home() {
                       key={b.id}
                       type="button"
                       className="barrio-mini"
-                      onClick={() => setBarrioSinCasos(b)}
+                      onClick={() => {
+                        // Centra el mapa en el barrio y abre modal de invitación.
+                        setFocusBarrioId(b.id);
+                        setBarrioSinCasos(b);
+                        // Scroll al mapa para que se vea el anillo destacado.
+                        document.getElementById('mapa')?.scrollIntoView({
+                          behavior: 'smooth',
+                          block: 'start',
+                        });
+                      }}
                       aria-label={`${b.nombre} aún no tiene casos`}
                       style={{
                         border: 0,
@@ -694,7 +714,10 @@ export function Home() {
 
       <Modal
         open={barrioSinCasos !== null}
-        onClose={() => setBarrioSinCasos(null)}
+        onClose={() => {
+          setBarrioSinCasos(null);
+          setFocusBarrioId(null);
+        }}
         title={`${barrioSinCasos?.nombre ?? ''} aún no tiene casos`}
         description="Sé el primero en abrir un caso en tu barrio."
         size="sm"
@@ -703,7 +726,10 @@ export function Home() {
             <button
               type="button"
               className="btn btn-ghost btn-sm"
-              onClick={() => setBarrioSinCasos(null)}
+              onClick={() => {
+                setBarrioSinCasos(null);
+                setFocusBarrioId(null);
+              }}
             >
               Cerrar
             </button>
@@ -711,8 +737,9 @@ export function Home() {
               type="button"
               className="btn btn-primary btn-sm"
               onClick={() => {
+                const b = barrioSinCasos;
                 setBarrioSinCasos(null);
-                openFlow('reportar');
+                if (b) openFlow('reportar', { barrioId: b.id });
               }}
             >
               <Megaphone size={14} />

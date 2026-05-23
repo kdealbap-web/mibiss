@@ -74,19 +74,26 @@ export function FlowReportar() {
   // Files locales — fuera del draft serializado (no se pueden serializar a JSON).
   const [fotos, setFotos] = useState<File[]>([]);
 
+  const { meta } = useFlowDrawer();
   const { data: categorias = [] } = useCategorias();
   const { data: barrios = [] } = useBarrios();
   const { data: miPerfil } = useMiPerfil();
   const reportar = useReportarCaso();
   const { upload: uploadFotos, uploading, progress } = useR2Upload('solicitudes-multimedia');
 
-  // Pre-poblar barrio desde el perfil del ciudadano (si no eligió otro aún).
+  // Pre-poblar barrio: prioridad meta.barrioId (vienes de /barrios o modal),
+  // si no, el del perfil del ciudadano.
   useEffect(() => {
-    if (draft.barrioId == null && miPerfil?.barrio_id != null) {
+    if (draft.barrioId != null) return;
+    if (meta.barrioId != null) {
+      setDraft((d) => ({ ...d, barrioId: meta.barrioId! }));
+      return;
+    }
+    if (miPerfil?.barrio_id != null) {
       setDraft((d) => ({ ...d, barrioId: miPerfil.barrio_id! }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [miPerfil?.barrio_id]);
+  }, [miPerfil?.barrio_id, meta.barrioId]);
 
   const onClose = () => {
     closeFlow();

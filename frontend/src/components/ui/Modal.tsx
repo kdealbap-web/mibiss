@@ -45,7 +45,7 @@ export function Modal({ open, onClose, title, description, children, footer, siz
         inset: 0,
         background: 'rgba(6, 119, 124, 0.45)',
         backdropFilter: 'blur(2px)',
-        zIndex: 200,
+        zIndex: 1200,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

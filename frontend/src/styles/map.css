@@ -49,3 +49,12 @@
   background: var(--state-critical);
   color: #FFFFFF;
 }
+
+/* Anillo destacado para focusBarrioId — pulsa para llamar la atención */
+.pin-focus-ring {
+  animation: biss-focus-pulse 1.8s ease-in-out infinite;
+}
+@keyframes biss-focus-pulse {
+  0%, 100% { stroke-opacity: 1;   fill-opacity: 0.22; stroke-width: 3; }
+  50%      { stroke-opacity: 0.5; fill-opacity: 0.06; stroke-width: 6; }
+}
