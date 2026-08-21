@@ -73,8 +73,4 @@ Variables: `frontend/.env.development.local` (gitignored; pídela al equipo).
 | Iconos | Lucide React |
 | Hosting | Cloudflare Pages |
 
-## Contribuir
 
-El prototipo HTML en `Design/` es la fuente visual de verdad. **No** se introduce Tailwind atómico, **no** se cambia la fuente VAG Rounded Next, **no** se reemplaza el logo PNG canónico. Tono UI: tú, nunca usted.
-
-Para detalles: `HANDOFF.md`.
